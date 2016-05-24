@@ -1,0 +1,10 @@
+﻿
+WHITESPACE := \s+
+KEYWORD    := return|for|while|do|if
+TYPE	   := void|int|float|char|long
+NUMBER     := \d+
+IDENTIFIER := \w+
+BRACKET_O  := \(|\{
+BRACKET_C  := \)|\}
+SEMICOLON  := \;
+ASSIGNMENT := \=
