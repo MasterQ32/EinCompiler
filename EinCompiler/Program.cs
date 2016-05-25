@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EinCompiler.FrontEnds;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,10 +11,10 @@ namespace EinCompiler
 	{
 		static void Main(string[] args)
 		{
-			Tokenizer tok = Tokenizer.Load("./Grammars/c-minor.tok");
+			Tokenizer tok = Tokenizer.Load("./Grammars/c-flat.tok");
 			
 
-			var source = File.ReadAllText("./Examples/c-minor.c");
+			var source = File.ReadAllText("./Examples/c-flat.c");
 
 			var tokens = tok.Tokenize(source);
 
@@ -21,6 +22,8 @@ namespace EinCompiler
 			{
 				Console.WriteLine("[{0}] {1}", token.Type.Name, token.Text);
 			}
+
+			var rawTree = Parser.Parse<CFlatParser>(tokens);
 
 			Console.ReadLine();
 		}

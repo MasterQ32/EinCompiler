@@ -11,7 +11,10 @@ O_SBRACKET          := \[
 C_SBRACKET          := \]
 SEPARATOR           := \,
 DELIMITER           := \;
+COLON               := \:
+ARROW               := \-\>
 ASSIGNMENT          := \=
 NUMBER              := (?<sign>-?)(?:(?<hex>0x[0-9A-Fa-f]+)|(?<bin>0b[01]+)|(?<float>\d+\.\d*)|(?<int>\d+))
 BINARY_OPERATOR     := \+|\-|\*|\/|\%
-IDENTIFIER          := [A-Za-z_]\w*
+KEYWORD             := \b(var|fn|const|static|private|global|shared|export)\b
+IDENTIFIER          := \b[A-Za-z_]\w*\b
