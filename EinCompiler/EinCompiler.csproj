@@ -47,11 +47,17 @@
     <Compile Include="Tokenizer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Grammars\c-minor.tok">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Grammars\tokens.tok">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Examples\c-minor.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Examples\tokenizer-test.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -23,6 +23,8 @@ namespace EinCompiler
 
 		public Regex Regex => this.regex;
 
+		public bool Emitted { get; set; } = true;
+
 		public override string ToString() => $"{this.Name} := {this.Regex}";
 	}
 }

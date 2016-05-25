@@ -1,10 +1,6 @@
 ﻿
-WHITESPACE := \s+
-KEYWORD    := return|for|while|do|if
-TYPE	   := void|int|float|char|long
-NUMBER     := \d+
-IDENTIFIER := \w+
-BRACKET_O  := \(|\{
-BRACKET_C  := \)|\}
-SEMICOLON  := \;
-ASSIGNMENT := \=
+WHITESPACE         := \s+
+O_BRACKET          := \(
+C_BRACKET          := \)
+NUMBER             := -?\d+(\.\d+)?
+OPERATOR           := \+|\-|\*|\/

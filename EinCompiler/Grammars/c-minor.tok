@@ -1,0 +1,17 @@
+﻿
+
+COMMENT(noemit)     := \/\/[^\n]*
+COMMENT(noemit,singleline) := \/\*.*?\*\/
+WHITESPACE(noemit)  := \s+
+O_BRACKET           := \(
+C_BRACKET           := \)
+O_CBRACKET          := \{
+C_CBRACKET          := \}
+O_SBRACKET          := \[
+C_SBRACKET          := \]
+SEPARATOR           := \,
+DELIMITER           := \;
+ASSIGNMENT          := \=
+NUMBER              := (?<sign>-?)(?:(?<hex>0x[0-9A-Fa-f]+)|(?<bin>0b[01]+)|(?<float>\d+\.\d*)|(?<int>\d+))
+BINARY_OPERATOR     := \+|\-|\*|\/|\%
+IDENTIFIER          := [A-Za-z_]\w*

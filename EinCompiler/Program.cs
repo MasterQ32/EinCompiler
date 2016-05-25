@@ -10,9 +10,10 @@ namespace EinCompiler
 	{
 		static void Main(string[] args)
 		{
-			Tokenizer tok = Tokenizer.Load("./Grammars/tokens.tok");
+			Tokenizer tok = Tokenizer.Load("./Grammars/c-minor.tok");
+			
 
-			var source = File.ReadAllText("./Examples/tokenizer-test.txt");
+			var source = File.ReadAllText("./Examples/c-minor.c");
 
 			var tokens = tok.Tokenize(source);
 
@@ -20,6 +21,8 @@ namespace EinCompiler
 			{
 				Console.WriteLine("[{0}] {1}", token.Type.Name, token.Text);
 			}
+
+			Console.ReadLine();
 		}
 	}
 }
