@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EinCompiler.RawSyntaxTree
 {
@@ -8,9 +9,19 @@ namespace EinCompiler.RawSyntaxTree
 
 		public RawBodyNode(IEnumerable<RawInstructionNode> instructions)
 		{
-			 this.instructions = new List<RawInstructionNode>(instructions);
+			this.instructions = new List<RawInstructionNode>(instructions);
 		}
 
 		public IReadOnlyList<RawInstructionNode> Instructions => this.instructions;
+
+		public BodyDescription Translate(TypeContainer types, VariableContainer variables)
+		{
+			var instructions = new List<InstructionDescription>();
+			foreach (var instr in this.Instructions)
+			{
+				instructions.Add(instr.Translate(types, variables));
+			}
+			return new BodyDescription(instructions);
+		}
 	}
 }

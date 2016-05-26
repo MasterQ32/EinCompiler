@@ -216,9 +216,9 @@ namespace EinCompiler.FrontEnds
 				if (tok.Type.Name == "IDENTIFIER")
 					return new RawVariableExpressionNode(tok.Text);
 				else if (tok.Type.Name == "STRING")
-					return new RawLiteraltExpressionNode(tok.Text);
+					return new RawLiteralExpressionNode(tok.Text);
 				else if (tok.Type.Name == "NUMBER")
-					return new RawLiteraltExpressionNode(tok.Text);
+					return new RawLiteralExpressionNode(tok.Text);
 				else
 					throw new ParserException(tok, "Expected string, variable, constant or number.");
 			}
@@ -232,7 +232,7 @@ namespace EinCompiler.FrontEnds
 
 			var operators = new[]
 			{
-				"+", "-", "*", "/", "%"
+				"=", "+", "-", "*", "/", "%"
 			};
 			foreach (var op in operators)
 			{
@@ -242,7 +242,7 @@ namespace EinCompiler.FrontEnds
 						break;
 
 					var t = tokens[i];
-					if (t.Type.Name != "BINARY_OPERATOR" || t.Text != op)
+					if ((t.Type.Name != "BINARY_OPERATOR" && t.Type.Name != "ASSIGNMENT") || t.Text != op)
 						continue;
 
 					var prefix = tokens.Take(i).ToArray();

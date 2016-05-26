@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace EinCompiler.RawSyntaxTree
+namespace EinCompiler
 {
 	public sealed class BodyDescription : IReadOnlyList<InstructionDescription>
 	{

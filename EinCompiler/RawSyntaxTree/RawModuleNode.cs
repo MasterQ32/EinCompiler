@@ -84,26 +84,26 @@ namespace EinCompiler.RawSyntaxTree
 				description.Variables.Add(vardesc);
 			}
 
+			// First, create all function prototypes to make
+			// them available at all code.
 			foreach(var func in this.functions)
 			{
-				var funcdesc = new FunctionDescription(
+				description.Functions.Add(new FunctionDescription(
 					func.Name,
 					func.ReturnType != null ? types[func.ReturnType] : TypeDescription.Void,
-					func.Parameters.Select(p => new ParameterDescription(types[p.Type], p.Name)).ToArray(),
-					TranslateBody(func.Body, types));
+					func.Parameters.Select(p => new ParameterDescription(types[p.Type], p.Name)).ToArray()));
+			}
+
+			// Then, translate all function bodies to
+			// have them without the need of forward
+			// declaration
+			foreach (var func in this.functions)
+			{
+				description.Functions[func.Name].Body = 
+					func.Body.Translate(types, description.Variables);
 			}
 
 			return description;
-		}
-
-		private BodyDescription TranslateBody(RawBodyNode body, TypeContainer types)
-		{
-			var instructions = new List<InstructionDescription>();
-			foreach(var instr in body.Instructions)
-			{
-				instructions.Add(instr.Translate(types));
-			}
-			return new BodyDescription(instructions);
 		}
 
 		public ICollection<RawFunctionNode> Functions => this.functions;

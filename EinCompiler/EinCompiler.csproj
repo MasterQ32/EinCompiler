@@ -43,16 +43,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConstantDescription.cs" />
+    <Compile Include="Descriptions\ConstantDescription.cs" />
     <Compile Include="FrontEnds\CFlatFrontend.cs" />
     <Compile Include="FrontEnds\Parser.cs" />
     <Compile Include="FrontEnds\ParserException.cs" />
     <Compile Include="IDescription.cs" />
-    <Compile Include="ModuleDescription.cs" />
-    <Compile Include="RawSyntaxTree\BodyDescription.cs" />
-    <Compile Include="RawSyntaxTree\FunctionDescription.cs" />
-    <Compile Include="RawSyntaxTree\InstructionDescription.cs" />
-    <Compile Include="RawSyntaxTree\ParameterDescription.cs" />
+    <Compile Include="Descriptions\ModuleDescription.cs" />
+    <Compile Include="Descriptions\BodyDescription.cs" />
+    <Compile Include="Expression.cs" />
+    <Compile Include="Descriptions\Instructions\ExpressionInstruction.cs" />
+    <Compile Include="Descriptions\FunctionDescription.cs" />
+    <Compile Include="Descriptions\InstructionDescription.cs" />
+    <Compile Include="Descriptions\ParameterDescription.cs" />
+    <Compile Include="Descriptions\Instructions\Expressions\AssignmentExpression.cs" />
+    <Compile Include="Descriptions\Instructions\Expressions\BinaryOperatorExpression.cs" />
+    <Compile Include="Descriptions\Instructions\Expressions\ConditionalInstruction.cs" />
+    <Compile Include="Descriptions\Instructions\LoopInstruction.cs" />
+    <Compile Include="Descriptions\Instructions\BreakLoopInstruction.cs" />
+    <Compile Include="Descriptions\Instructions\NopInstruction.cs" />
     <Compile Include="RawSyntaxTree\RawNopInstructionNode.cs" />
     <Compile Include="RawSyntaxTree\RawBodyNode.cs" />
     <Compile Include="RawSyntaxTree\RawExpressionNode.cs" />
@@ -65,12 +73,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawSyntaxNode.cs" />
+    <Compile Include="Descriptions\Instructions\Expressions\UntypedLiteralExpression.cs" />
+    <Compile Include="Descriptions\Instructions\Expressions\VariableExpression.cs" />
+    <Compile Include="Descriptions\Instructions\ReturnInstruction.cs" />
     <Compile Include="TokenType.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="Tokenizer.cs" />
-    <Compile Include="TypeDescription.cs" />
-    <Compile Include="ValueDescription.cs" />
-    <Compile Include="VariableDescription.cs" />
+    <Compile Include="Descriptions\TypeDescription.cs" />
+    <Compile Include="Descriptions\ValueDescription.cs" />
+    <Compile Include="Descriptions\VariableDescription.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

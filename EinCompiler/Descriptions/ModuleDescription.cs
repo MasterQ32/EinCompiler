@@ -7,16 +7,29 @@ namespace EinCompiler
 {
 	public sealed class ModuleDescription
 	{
-		private readonly DescriptionContainer<VariableDescription> variables = new DescriptionContainer<VariableDescription>();
-		private readonly DescriptionContainer<ConstantDescription> constants = new DescriptionContainer<ConstantDescription>();
+		public VariableContainer Variables { get; } = new VariableContainer();
 
+		public ConstantContainer Constants { get; } = new ConstantContainer();
 
-		public DescriptionContainer<VariableDescription> Variables => this.variables;
-
-		public DescriptionContainer<ConstantDescription> Constants => this.constants;
+		public FunctionContainer Functions { get; } = new FunctionContainer();
 	}
 
 	public class TypeContainer : DescriptionContainer<TypeDescription>
+	{
+
+	}
+
+	public class FunctionContainer : DescriptionContainer<FunctionDescription>
+	{
+
+	}
+
+	public class VariableContainer : DescriptionContainer<VariableDescription>
+	{
+
+	}
+
+	public class ConstantContainer : DescriptionContainer<ConstantDescription>
 	{
 
 	}

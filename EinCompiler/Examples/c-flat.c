@@ -51,6 +51,11 @@ shared         var variable8 : int; // one per executing system
 	each method can be exported by placing an 'export'
 	keyword in front of the method header.
 */
+
+var x : int;
+var a : int;
+var i : int;
+
 fn main() -> int
 {
 	
@@ -58,21 +63,20 @@ fn main() -> int
 
 fn test_expressions()
 {
-	1; // RawLiteralExpressionNode
-	variable; // RawVariableExpressionNode
-	; // NopInstructionNode
-	1 + 2;
-	a + 1;
-	1 + a;
-	a + a;
-	1 + 2 + 3;
-	1 * 2 + 3;
-	1 + 2 * 3;
-	(1);
-	(a);
-	(1 + 2);
-	(1 * (2 + 3));
-	(1 * (2 - (3 + 4)));
+	x = 1; 
+	x = variable1; 
+	x = 1 + 2;
+	x = a + 1;
+	x = 1 + a;
+	x = a + a;
+	x = 1 + 2 + 3;
+	x = 1 * 2 + 3;
+	x = 1 + 2 * 3;
+	x = (1);
+	x = (a);
+	x = (1 + 2);
+	x = (1 * (2 + 3));
+	x = (1 * (2 - (3 + 4)));
 }
 
 fn test_return()
@@ -84,18 +88,18 @@ fn test_if()
 {
 	if(1 + 2)
 	{
-		block;
-		block;
+		i = x;
+		i = x;
 	}
 
 	if(1 + 2)
 	{
-		block;
-		block;
+		i = x;
+		i = x;
 	}
 	else
 	{
-		andererBlock;
+		i = x;
 	}
 }
 
@@ -103,8 +107,8 @@ fn test_while()
 {
 	while (i * i)
 	{
-		body;
-		10 * 10;
+		i = x;
+		i = 10 * 10;
 	}
 
 	while(i * i)

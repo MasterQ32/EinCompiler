@@ -1,6 +1,6 @@
-﻿namespace EinCompiler.RawSyntaxTree
+﻿namespace EinCompiler
 {
-	internal class ParameterDescription
+	public sealed class ParameterDescription
 	{
 		private string name;
 		private TypeDescription typeDescription;
@@ -10,5 +10,11 @@
 			this.typeDescription = typeDescription;
 			this.name = name;
 		}
+
+		public TypeDescription Type { get; private set; }
+
+		public string Name { get; private set; }
+
+		public override string ToString() => $"{Type} {Name}";
 	}
 }

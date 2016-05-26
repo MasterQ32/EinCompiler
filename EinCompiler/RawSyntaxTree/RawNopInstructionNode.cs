@@ -4,9 +4,9 @@ namespace EinCompiler.RawSyntaxTree
 {
 	public sealed class RawNopInstructionNode : RawInstructionNode
 	{
-		public override InstructionDescription Translate(TypeContainer types)
+		public override InstructionDescription Translate(TypeContainer types, VariableContainer vars)
 		{
-			throw new NotImplementedException();
+			return new NopInstruction();
 		}
 
 		public override string ToString() => "nop";
