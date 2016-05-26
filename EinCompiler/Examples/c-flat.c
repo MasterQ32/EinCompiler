@@ -53,15 +53,17 @@ shared  var variable : int ; // one per executing system
 */
 fn main() -> int
 {
-	return 1;
+	1; // RawLiteralExpressionNode
+	variable; // RawVariableExpressionNode
+	; // NopInstructionNode
 }
 
 fn square(i : int) -> int
 {
-	return i * i;
+//	return i * i;
 }
 
 export fn sum(a : int, b : int) -> int
 {
-	return a + b;
+//	return a + b;
 }

@@ -46,7 +46,11 @@
     <Compile Include="FrontEnds\CFlatFrontend.cs" />
     <Compile Include="FrontEnds\Parser.cs" />
     <Compile Include="FrontEnds\ParserException.cs" />
+    <Compile Include="RawSyntaxTree\RawNopInstructionNode.cs" />
+    <Compile Include="RawSyntaxTree\RawBodyNode.cs" />
+    <Compile Include="RawSyntaxTree\RawExpressionNode.cs" />
     <Compile Include="RawSyntaxTree\RawFunctionNode.cs" />
+    <Compile Include="RawSyntaxTree\RawInstructionNode.cs" />
     <Compile Include="RawSyntaxTree\RawParameterNode.cs" />
     <Compile Include="RawSyntaxTree\RawVariableNode.cs" />
     <Compile Include="RawSyntaxTree\RawModuleNode.cs" />

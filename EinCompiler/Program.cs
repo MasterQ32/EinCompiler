@@ -1,4 +1,5 @@
 ﻿using EinCompiler.FrontEnds;
+using EinCompiler.RawSyntaxTree;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,18 +14,12 @@ namespace EinCompiler
 		{
 			Tokenizer tok = Tokenizer.Load("./Grammars/c-flat.tok");
 			
-
 			var source = File.ReadAllText("./Examples/c-flat.c");
 
 			var tokens = tok.Tokenize(source);
-
-			foreach (var token in tokens)
-			{
-				Console.WriteLine("[{0}] {1}", token.Type.Name, token.Text);
-			}
-
+			
 			var rawTree = Parser.Parse<CFlatParser>(tokens);
-
+			
 			Console.ReadLine();
 		}
 	}

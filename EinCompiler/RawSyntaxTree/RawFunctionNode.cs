@@ -6,11 +6,16 @@ namespace EinCompiler.RawSyntaxTree
 	{
 		private List<RawParameterNode> parameters;
 
-		public RawFunctionNode(string text1, string text2, List<RawParameterNode> parameters)
+		public RawFunctionNode(
+			string name, 
+			string type, 
+			List<RawParameterNode> parameters,
+			RawBodyNode body)
 		{
-			this.Name = text1;
-			this.Type = text2;
+			this.Name = name;
+			this.Type = type;
 			this.parameters = new List<RawParameterNode>( parameters);
+			this.Body = body;
 		}
 
 		public string Name { get; private set; }
@@ -19,6 +24,8 @@ namespace EinCompiler.RawSyntaxTree
 
 		public IReadOnlyList<RawParameterNode> Parameters => this.parameters;
 
-		public bool IsExported { get; internal set; }
+		public bool IsExported { get; set; }
+
+		public RawBodyNode Body { get; private set; }
 	}
 }
