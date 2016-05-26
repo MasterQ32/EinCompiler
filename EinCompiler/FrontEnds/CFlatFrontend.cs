@@ -265,7 +265,49 @@ namespace EinCompiler.FrontEnds
 				return ConvertToExpression(tokens.Skip(1).Take(tokens.Length - 2).ToArray());
 			}
 
+			if(tokens.Length >= 3)
+			{
+				if(tokens[0].Type.Name == "IDENTIFIER" && tokens[1].Type.Name == "O_BRACKET" && tokens[tokens.Length - 1].Type.Name == "C_BRACKET")
+				{
+					// This is a function call
+					var args = SplitTokens(
+						tokens.Skip(2).Take(tokens.Length - 3).ToArray(),
+						t => t.Type.Name == "SEPARATOR");
+
+
+					return new RawFunctionCallExpression(
+						tokens[0].Text,
+						args.Select(p => ConvertToExpression(p)).ToArray());
+				}
+			}
+
 			throw new ParserException(tokens[0]);
+		}
+
+		List<Token[]> SplitTokens(Token[] tokens, Predicate<Token> isSeparator)
+		{
+			var list = new List<Token[]>();
+			int start = 0;
+			for (int i = 0; i < tokens.Length; i++)
+			{
+				if (SkipOverBracket(tokens, ref i))
+					break;
+
+				var t = tokens[i];
+				if (isSeparator(t) == false)
+					continue;
+				
+				var portion = tokens.Skip(start).Take(i - start).ToArray();
+				list.Add(portion);
+
+				start = i + 1;
+			}
+			if(start < tokens.Length)
+			{
+				var portion = tokens.Skip(start).ToArray();
+				list.Add(portion);
+			}
+			return list;
 		}
 
 		/// <summary>

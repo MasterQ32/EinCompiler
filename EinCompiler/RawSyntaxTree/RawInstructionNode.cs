@@ -4,7 +4,10 @@ namespace EinCompiler.RawSyntaxTree
 {
 	public abstract class RawInstructionNode : RawSyntaxNode
 	{
-		public abstract InstructionDescription Translate(TypeContainer types, VariableContainer vars);
+		public abstract InstructionDescription Translate(
+			TypeContainer types, 
+			VariableContainer vars, 
+			FunctionContainer funcs);
 	}
 
 	public sealed class RawExpressionInstructionNode : RawInstructionNode
@@ -16,9 +19,12 @@ namespace EinCompiler.RawSyntaxTree
 
 		public RawExpressionNode Expression { get; private set; }
 
-		public override InstructionDescription Translate(TypeContainer types, VariableContainer vars)
+		public override InstructionDescription Translate(
+			TypeContainer types, 
+			VariableContainer vars, 
+			FunctionContainer funcs)
 		{
-			var expression = this.Expression.Translate(types, vars);
+			var expression = this.Expression.Translate(types, vars, funcs);
 			if (expression.IsTopLevelPossible == false)
 				throw new InvalidOperationException();
 			return new ExpressionInstruction(expression);
@@ -34,9 +40,13 @@ namespace EinCompiler.RawSyntaxTree
 			this.Expression = expression;
 		}
 
-		public override InstructionDescription Translate(TypeContainer types, VariableContainer vars)
+		public override InstructionDescription Translate(
+			TypeContainer types, 
+			VariableContainer vars, 
+			FunctionContainer funcs)
 		{
-			return new ReturnInstruction(this.Expression.Translate(types, vars));
+			return new ReturnInstruction(
+				this.Expression.Translate(types, vars, funcs));
 		}
 
 		public RawExpressionNode Expression { get; private set; }
@@ -56,12 +66,15 @@ namespace EinCompiler.RawSyntaxTree
 			this.Condition = condition;
 		}
 
-		public override InstructionDescription Translate(TypeContainer types, VariableContainer vars)
+		public override InstructionDescription Translate(
+			TypeContainer types, 
+			VariableContainer vars,
+			FunctionContainer funcs)
 		{
 			return new ConditionalInstruction(
-				this.Condition.Translate(types, vars),
-				this.TrueBody.Translate(types, vars),
-				this.FalseBody?.Translate(types, vars));
+				this.Condition.Translate(types, vars, funcs),
+				this.TrueBody.Translate(types, vars, funcs),
+				this.FalseBody?.Translate(types, vars, funcs));
 		}
 
 		public RawBodyNode TrueBody { get; private set; }
@@ -82,11 +95,14 @@ namespace EinCompiler.RawSyntaxTree
 			this.Condition = condition;
 		}
 
-		public override InstructionDescription Translate(TypeContainer types, VariableContainer vars)
+		public override InstructionDescription Translate(
+			TypeContainer types, 
+			VariableContainer vars,
+			FunctionContainer funcs)
 		{
 			return new LoopInstruction(
-				this.Condition.Translate(types, vars),
-				this.Body.Translate(types, vars));
+				this.Condition.Translate(types, vars, funcs),
+				this.Body.Translate(types, vars, funcs));
 		}
 
 		public RawBodyNode Body { get; private set; }
@@ -103,7 +119,10 @@ namespace EinCompiler.RawSyntaxTree
 
 		}
 
-		public override InstructionDescription Translate(TypeContainer types, VariableContainer vars)
+		public override InstructionDescription Translate(
+			TypeContainer types, 
+			VariableContainer vars,
+			FunctionContainer funcs)
 		{
 			return new BreakLoopInstruction();
 		}

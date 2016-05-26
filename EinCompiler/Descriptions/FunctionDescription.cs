@@ -29,5 +29,8 @@
 		public ParameterDescription[] Parameters { get; private set; }
 
 		public TypeDescription ReturnType { get; private set; }
+
+		public override string ToString() =>
+			$"{ReturnType} {Name}({string.Join<ParameterDescription>(", ", Parameters)})";
 	}
 }

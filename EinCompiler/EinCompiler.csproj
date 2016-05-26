@@ -47,6 +47,8 @@
     <Compile Include="FrontEnds\CFlatFrontend.cs" />
     <Compile Include="FrontEnds\Parser.cs" />
     <Compile Include="FrontEnds\ParserException.cs" />
+    <Compile Include="Descriptions\Instructions\Expressions\FunctionCallExpression.cs" />
+    <Compile Include="RawSyntaxTree\RawFunctionCallExpression.cs" />
     <Compile Include="IDescription.cs" />
     <Compile Include="Descriptions\ModuleDescription.cs" />
     <Compile Include="Descriptions\BodyDescription.cs" />

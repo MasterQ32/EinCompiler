@@ -2,13 +2,10 @@
 {
 	public sealed class ParameterDescription
 	{
-		private string name;
-		private TypeDescription typeDescription;
-
 		public ParameterDescription(TypeDescription typeDescription, string name)
 		{
-			this.typeDescription = typeDescription;
-			this.name = name;
+			this.Type = typeDescription;
+			this.Name = name;
 		}
 
 		public TypeDescription Type { get; private set; }

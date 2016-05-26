@@ -117,8 +117,15 @@ fn test_while()
 	}
 }
 
+fn test_call()
+{
+	sum(10, 5 + 5);
+	i = sum(10, 5 + 5);
+}
+
 export fn sum(a : int, b : int) -> int
 {
+// TODO: Implement correct parameter variables
 //	return a + b;
 }
 

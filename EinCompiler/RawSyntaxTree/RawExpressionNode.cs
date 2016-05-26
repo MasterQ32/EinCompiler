@@ -4,7 +4,7 @@ namespace EinCompiler.RawSyntaxTree
 {
 	public abstract class RawExpressionNode
 	{
-		public abstract Expression Translate(TypeContainer types, VariableContainer vars);
+		public abstract Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs);
 	}
 
 	public sealed class RawVariableExpressionNode : RawExpressionNode
@@ -14,7 +14,7 @@ namespace EinCompiler.RawSyntaxTree
 			this.Variable = variableName;
 		}
 
-		public override Expression Translate(TypeContainer types, VariableContainer vars)
+		public override Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs)
 		{
 			return new VariableExpression(vars[this.Variable]);
 		}
@@ -31,7 +31,7 @@ namespace EinCompiler.RawSyntaxTree
 			this.Literal = literal;
 		}
 
-		public override Expression Translate(TypeContainer types, VariableContainer vars)
+		public override Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs)
 		{
 			return new UntypedLiteralExpression(this.Literal);
 		}
@@ -49,7 +49,7 @@ namespace EinCompiler.RawSyntaxTree
 			this.Expression = expression;
 		}
 
-		public override Expression Translate(TypeContainer types, VariableContainer vars)
+		public override Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs)
 		{
 			throw new NotImplementedException();
 		}
@@ -73,20 +73,20 @@ namespace EinCompiler.RawSyntaxTree
 			this.RightHandSide = rhs;
 		}
 
-		public override Expression Translate(TypeContainer types, VariableContainer vars)
+		public override Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs)
 		{
 			if(this.Operator == "=")
 			{
 				return new AssignmentExpression(
-					this.LeftHandSide.Translate(types, vars),
-					this.RightHandSide.Translate(types, vars));
+					this.LeftHandSide.Translate(types, vars, funcs),
+					this.RightHandSide.Translate(types, vars, funcs));
 			}
 			else
 			{
 				return new BinaryOperatorExpression(
-					this.LeftHandSide.Translate(types, vars),
+					this.LeftHandSide.Translate(types, vars, funcs),
 					GetOperator(this.Operator),
-					this.RightHandSide.Translate(types, vars));
+					this.RightHandSide.Translate(types, vars, funcs));
 			}
 		}
 

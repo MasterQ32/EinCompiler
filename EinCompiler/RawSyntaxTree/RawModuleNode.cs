@@ -100,7 +100,10 @@ namespace EinCompiler.RawSyntaxTree
 			foreach (var func in this.functions)
 			{
 				description.Functions[func.Name].Body = 
-					func.Body.Translate(types, description.Variables);
+					func.Body.Translate(
+						types, 
+						description.Variables,
+						description.Functions);
 			}
 
 			return description;
