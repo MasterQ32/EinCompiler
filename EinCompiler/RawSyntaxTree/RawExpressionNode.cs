@@ -13,6 +13,8 @@
 		}
 
 		public string Variable { get; private set; }
+
+		public override string ToString() => $"({Variable})";
 	}
 
 	public sealed class RawLiteraltExpressionNode : RawExpressionNode
@@ -23,6 +25,8 @@
 		}
 
 		public string Literal { get; private set; }
+
+		public override string ToString() => $"({Literal})";
 	}
 
 	public sealed class RawUnaryOperatorExpressionNode : RawExpressionNode
@@ -34,7 +38,10 @@
 		}
 
 		public RawExpressionNode Expression { get; private set; }
+
 		public string Operator { get; private set; }
+
+		public override string ToString() => $"({Operator} {Expression})";
 	}
 
 	public sealed class RawBinaryOperatorExpressionNode : RawExpressionNode
@@ -54,5 +61,7 @@
 		public string Operator { get; private set; }
 
 		public RawExpressionNode RightHandSide { get; private set; }
-	}
+
+		public override string ToString() => $"({LeftHandSide} {Operator} {RightHandSide})";
+    }
 }

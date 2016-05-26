@@ -13,5 +13,7 @@
 		}
 
 		public RawExpressionNode Expression { get; private set; }
+
+		public override string ToString() => $"{Expression}";
 	}
 }

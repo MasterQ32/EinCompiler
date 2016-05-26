@@ -165,7 +165,79 @@ namespace EinCompiler.FrontEnds
 					throw new ParserException(tok, "Expected string, variable, constant or number.");
 			}
 
+			if (tokens[0].Type.Name == "UNARY_OPERATOR")
+			{
+				return new RawUnaryOperatorExpressionNode(
+					tokens[0].Text,
+					ConvertToExpression(tokens.Skip(1).ToArray()));
+			}
+
+			var operators = new[]
+			{
+				"+", "-", "*", "/", "%"
+			};
+			foreach(var op in operators)
+			{
+				for(int i = 0; i < tokens.Length; i++)
+				{
+					if (SkipOverBracket(tokens, ref i))
+						break;
+
+					var t = tokens[i];
+					if (t.Type.Name != "BINARY_OPERATOR" || t.Text != op)
+						continue;
+
+					var prefix = tokens.Take(i).ToArray();
+					var postfix = tokens.Skip(i + 1).ToArray();
+
+					var lhs = ConvertToExpression(prefix);
+					var rhs = ConvertToExpression(postfix);
+
+					return new RawBinaryOperatorExpressionNode(
+						op,
+						lhs,
+						rhs);
+				}
+			}
+
+			if (tokens[0].Type.Name == "O_BRACKET")
+			{
+				if (tokens[tokens.Length - 1].Type.Name != "C_BRACKET")
+					throw new ParserException(tokens[tokens.Length - 1], "closing bracket excepted.");
+				return ConvertToExpression(tokens.Skip(1).Take(tokens.Length - 2).ToArray());
+			}
+
 			throw new NotSupportedException();
+		}
+
+		/// <summary>
+		/// Skips all bracket enclosed tokens.
+		/// </summary>
+		/// <param name="tokens"></param>
+		/// <param name="i"></param>
+		/// <returns>True if the function got to the end of tokens.</returns>
+		private bool SkipOverBracket(Token[] tokens, ref int i)
+		{
+			int initial = i;
+			if (tokens[initial].Type.Name != "O_BRACKET")
+				return false;
+			int stack = 1;
+			for(i = i + 1; i < tokens.Length; i++)
+			{
+				if (tokens[i].Type.Name == "O_BRACKET")
+					stack++;
+				else if (tokens[i].Type.Name == "C_BRACKET")
+				{
+					if (--stack == 0)
+					{
+						i += 1;
+						if (i >= tokens.Length)
+							return true;
+						return false;
+					}
+				}
+			}
+			throw new ParserException(tokens[initial], "Closing bracket missing!");
 		}
 	}
 }

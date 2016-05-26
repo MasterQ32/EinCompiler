@@ -56,6 +56,18 @@ fn main() -> int
 	1; // RawLiteralExpressionNode
 	variable; // RawVariableExpressionNode
 	; // NopInstructionNode
+	1 + 2;
+	a + 1;
+	1 + a;
+	a + a;
+	1 + 2 + 3;
+	1 * 2 + 3;
+	1 + 2 * 3;
+	(1);
+	(a);
+	(1 + 2);
+	(1 * (2 + 3));
+	(1 * (2 - (3 + 4)));
 }
 
 fn square(i : int) -> int

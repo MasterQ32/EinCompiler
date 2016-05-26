@@ -27,5 +27,7 @@ namespace EinCompiler.RawSyntaxTree
 		public bool IsExported { get; set; }
 
 		public RawBodyNode Body { get; private set; }
+
+		public override string ToString() => $"fn {Type} {Name} ({string.Join(", ", this.Parameters)})";
 	}
 }

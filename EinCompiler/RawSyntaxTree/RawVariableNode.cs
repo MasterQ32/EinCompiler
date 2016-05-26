@@ -19,5 +19,7 @@ namespace EinCompiler.RawSyntaxTree
 		public string Value { get; private set; }
 
 		public string[] Modifiers { get; private set; }
+
+		public override string ToString() => $"{Type} {Name} = {Value}";
 	}
 }
