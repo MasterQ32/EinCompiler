@@ -46,6 +46,23 @@
 		public RawExpressionNode Condition { get; private set; }
 		public RawBodyNode FalseBody { get; private set; }
 
-		public override string ToString() => $"return ( {Condition} ) {{ {TrueBody} }} else {{ {FalseBody} }}";
-    }
+		public override string ToString() => $"if ( {Condition} ) {{ {TrueBody} }} else {{ {FalseBody} }}";
+	}
+
+	public sealed class RawWhileInstructionNode : RawInstructionNode
+	{
+		public RawWhileInstructionNode(
+			RawExpressionNode condition,
+			RawBodyNode body)
+		{
+			this.Body = body;
+			this.Condition = condition;
+		}
+
+		public RawBodyNode Body { get; private set; }
+
+		public RawExpressionNode Condition { get; private set; }
+
+		public override string ToString() => $"while ( {Condition} ) {{ {Body} }} ";
+	}
 }

@@ -157,6 +157,17 @@ namespace EinCompiler.FrontEnds
 							trueBlock,
 							falseBlock);
 					}
+					case "while":
+					{
+						this.ReadToken("KEYWORD");
+						this.ReadToken("O_BRACKET");
+						var condition = ConvertToExpression(
+							this.ReadTokensUntil("C_BRACKET"));
+						var block = this.ReadBody();
+						return new RawWhileInstructionNode(
+							condition,
+							block);
+					}
 					default: throw new ParserException(tok);
 				}
 			}
