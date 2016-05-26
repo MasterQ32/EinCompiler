@@ -65,4 +65,14 @@
 
 		public override string ToString() => $"while ( {Condition} ) {{ {Body} }} ";
 	}
+
+	public sealed class RawBreakInstructionNode : RawInstructionNode
+	{
+		public RawBreakInstructionNode()
+		{
+
+		}
+		
+		public override string ToString() => "break";
+	}
 }

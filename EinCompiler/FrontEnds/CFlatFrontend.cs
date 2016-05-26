@@ -129,6 +129,11 @@ namespace EinCompiler.FrontEnds
 			{
 				switch (tok.Text)
 				{
+					case "break":
+					{
+						this.ReadToken("KEYWORD");
+						return new RawBreakInstructionNode();
+					}
 					case "return":
 					{
 						this.ReadToken("KEYWORD");

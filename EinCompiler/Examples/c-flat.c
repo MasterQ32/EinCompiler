@@ -106,6 +106,11 @@ fn test_while()
 		body;
 		10 * 10;
 	}
+
+	while(i * i)
+	{
+		break;
+	}
 }
 
 export fn sum(a : int, b : int) -> int
