@@ -16,7 +16,7 @@ namespace EinCompiler.RawSyntaxTree
 
 		public void Add(RawSyntaxNode node)
 		{
-			if(node is RawFunctionNode)
+			if (node is RawFunctionNode)
 			{
 				functions.Add((RawFunctionNode)node);
 			}
@@ -32,6 +32,38 @@ namespace EinCompiler.RawSyntaxTree
 			{
 				throw new NotSupportedException($"{node} is not a supported node type.");
 			}
+		}
+
+		public ModuleDescription Translate(TypeContainer types)
+		{
+			var description = new ModuleDescription();
+
+			foreach (var con in this.constants)
+			{
+				description.Constants.Add(new ConstantDescription(
+					types[con.Type],
+					con.Name,
+					types[con.Type].CreateValueFromString(con.Value)));
+			}
+
+			foreach (var var in this.variables)
+			{
+				if (var.Value != null)
+				{
+					description.Variables.Add(new VariableDescription(
+						types[var.Type],
+						var.Name,
+						types[var.Type].CreateValueFromString(var.Value)));
+				}
+				else
+				{
+					description.Variables.Add(new VariableDescription(
+						types[var.Type],
+						var.Name));
+				}
+			}
+
+			return description;
 		}
 
 		public ICollection<RawFunctionNode> Functions => this.functions;

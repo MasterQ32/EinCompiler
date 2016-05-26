@@ -43,9 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConstantDescription.cs" />
     <Compile Include="FrontEnds\CFlatFrontend.cs" />
     <Compile Include="FrontEnds\Parser.cs" />
     <Compile Include="FrontEnds\ParserException.cs" />
+    <Compile Include="IDescription.cs" />
+    <Compile Include="ModuleDescription.cs" />
     <Compile Include="RawSyntaxTree\RawNopInstructionNode.cs" />
     <Compile Include="RawSyntaxTree\RawBodyNode.cs" />
     <Compile Include="RawSyntaxTree\RawExpressionNode.cs" />
@@ -61,6 +64,9 @@
     <Compile Include="TokenType.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="Tokenizer.cs" />
+    <Compile Include="TypeDescription.cs" />
+    <Compile Include="ValueDescription.cs" />
+    <Compile Include="VariableDescription.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -19,7 +19,12 @@ namespace EinCompiler
 			var tokens = tok.Tokenize(source);
 			
 			var rawTree = Parser.Parse<CFlatParser>(tokens);
-			
+
+			var types = new TypeContainer();
+			types.Add(new TypeDescription("int"));
+
+			var tree = rawTree.Translate(types);
+
 			Console.ReadLine();
 		}
 	}

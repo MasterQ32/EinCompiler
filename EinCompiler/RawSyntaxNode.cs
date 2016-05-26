@@ -8,6 +8,6 @@ namespace EinCompiler
 {
 	public abstract class RawSyntaxNode
 	{
-
+		
 	}
 }
