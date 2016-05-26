@@ -34,5 +34,7 @@ namespace EinCompiler
 				this,
 				value);
 		}
+
+		public override string ToString() => this.Name;
 	}
 }

@@ -17,5 +17,8 @@
 		public TypeDescription Type { get; private set; }
 
 		public ValueDescription InitialValue { get; private set; }
+
+		public override string ToString() =>
+			$"{Type} {Name} = {InitialValue}";
 	}
 }

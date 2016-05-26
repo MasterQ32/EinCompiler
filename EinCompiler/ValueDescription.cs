@@ -13,5 +13,7 @@
 		public TypeDescription Type { get; private set; }
 
 		public object Value { get; private set; }
+
+		public override string ToString() => this.Value?.ToString();
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EinCompiler.RawSyntaxTree
 {
@@ -48,20 +49,42 @@ namespace EinCompiler.RawSyntaxTree
 
 			foreach (var var in this.variables)
 			{
+				VariableDescription vardesc;
 				if (var.Value != null)
 				{
-					description.Variables.Add(new VariableDescription(
+					vardesc = new VariableDescription(
 						types[var.Type],
 						var.Name,
-						types[var.Type].CreateValueFromString(var.Value)));
+						types[var.Type].CreateValueFromString(var.Value));
 				}
 				else
 				{
-					description.Variables.Add(new VariableDescription(
+					vardesc = new VariableDescription(
 						types[var.Type],
-						var.Name));
+						var.Name);
 				}
+				
+				foreach(var mod in var.Modifiers)
+				{
+					var storage = (StorageModifier)Enum.Parse(typeof(StorageModifier), mod, true);
+					vardesc.Storage |= storage;
+				}
+
+				var validMods = new[]
+				{
+					StorageModifier.Global,
+					StorageModifier.Static,
+					StorageModifier.Private,
+					StorageModifier.Shared,
+					StorageModifier.Private | StorageModifier.Static,
+				};
+				if (validMods.Contains(vardesc.Storage) == false)
+					throw new InvalidOperationException("Invalid variable storage.");
+
+				description.Variables.Add(vardesc);
 			}
+
+			
 
 			return description;
 		}

@@ -21,20 +21,20 @@ const ANSWER_1over2 : int = 21;
 	It's declaration consists of a type and a name
 	and may also define an initial value.
 */
-var variable : int;
-var variable : int = 10;
-var variable : int = 0x10;
+var variable1 : int;
+var variable2 : int = 10;
+var variable3 : int = 0x10;
 
 /*
 	variables may also have a storage class
 	specifier that defines where the variable is
 	stored and how it's memory is shared.
 */
-private var variable : int; // one per instance
-static  var variable : int ; // one per thread
-private static var  variable : int; // one per instance and thread
-global  var variable : int ; // one per process (default)
-shared  var variable : int ; // one per executing system
+private        var variable4 : int; // one per instance
+static         var variable5 : int; // one per thread
+private static var variable6 : int; // one per instance and thread
+global         var variable7 : int; // one per process (default)
+shared         var variable8 : int; // one per executing system
 
 /* 
 	methods are declared by a type and a name
