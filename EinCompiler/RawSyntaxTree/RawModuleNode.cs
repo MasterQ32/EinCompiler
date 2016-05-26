@@ -99,10 +99,21 @@ namespace EinCompiler.RawSyntaxTree
 			// declaration
 			foreach (var func in this.functions)
 			{
+				var localVariables = new VariableContainer(description.Variables);
+
+				for(int i = 0; i < func.Parameters.Count; i++)
+				{
+					var var = new ParameterVariableDescription(
+						types[func.Parameters[i].Type],
+						func.Parameters[i].Name,
+						i);
+					localVariables.Add(var);
+				}
+
 				description.Functions[func.Name].Body = 
 					func.Body.Translate(
-						types, 
-						description.Variables,
+						types,
+						localVariables,
 						description.Functions);
 			}
 

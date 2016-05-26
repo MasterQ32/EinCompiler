@@ -26,7 +26,11 @@ namespace EinCompiler
 
 	public class VariableContainer : DescriptionContainer<VariableDescription>
 	{
+		public VariableContainer(VariableContainer shadow = null) :
+			base(shadow)
+		{
 
+		}
 	}
 
 	public class ConstantContainer : DescriptionContainer<ConstantDescription>
@@ -39,9 +43,24 @@ namespace EinCompiler
 	{
 		private readonly List<T> items = new List<T>();
 
+		private readonly DescriptionContainer<T> shadow = null;
+
+		public DescriptionContainer(DescriptionContainer<T> shadow = null)
+		{
+			this.shadow = shadow;
+		}
+
 		public T this[string name]
 		{
-			get { return this.items.First(i => i.Name == name); }
+			get
+			{
+				var value = this.items.FirstOrDefault(i => i.Name == name);
+				if (value == null && this.shadow != null)
+					value = this.shadow[name];
+				if(value == null)
+					throw new IndexOutOfRangeException();
+				return value;
+			}
 		}
 
 		public int Count

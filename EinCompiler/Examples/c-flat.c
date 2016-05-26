@@ -125,8 +125,7 @@ fn test_call()
 
 export fn sum(a : int, b : int) -> int
 {
-// TODO: Implement correct parameter variables
-//	return a + b;
+	return a + b;
 }
 
 fn square(i : int) -> int

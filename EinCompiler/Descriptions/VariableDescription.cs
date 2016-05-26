@@ -2,7 +2,7 @@
 
 namespace EinCompiler
 {
-	public sealed class VariableDescription : IDescription
+	public class VariableDescription : IDescription
 	{
 		public VariableDescription(TypeDescription type, string name)
 		{
