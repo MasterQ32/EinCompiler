@@ -70,7 +70,7 @@ namespace EinCompiler.FrontEnds
 					var parameters = new List<RawParameterNode>();
 					var name = this.ReadToken("IDENTIFIER");
 					this.ReadToken("O_BRACKET");
-					while(this.PeekToken().Type.Name != "C_BRACKET")
+					while (this.PeekToken().Type.Name != "C_BRACKET")
 					{
 						var pname = this.ReadToken("IDENTIFIER");
 						this.ReadToken("COLON");
@@ -81,7 +81,7 @@ namespace EinCompiler.FrontEnds
 					}
 					this.ReadToken("C_BRACKET");
 					Token returnType = null;
-					if(this.PeekToken().Type.Name == "ARROW")
+					if (this.PeekToken().Type.Name == "ARROW")
 					{
 						this.ReadToken("ARROW");
 						returnType = this.ReadToken("IDENTIFIER");
@@ -125,34 +125,55 @@ namespace EinCompiler.FrontEnds
 		{
 			var tok = this.PeekToken();
 
-			if(tok.Type.Name == "KEYWORD")
+			if (tok.Type.Name == "KEYWORD")
 			{
-				throw new ParserException(tok, "Only expression instructions are allowed yet.");
+				switch (tok.Text)
+				{
+					case "return":
+					{
+						this.ReadToken("KEYWORD");
+						var items = ReadTokensUntil("DELIMITER");
+						return new RawReturnInstructionNode(
+							ConvertToExpression(items));
+					}
+					default: throw new ParserException(tok);
+				}
 			}
-			else if(tok.Type.Name == "DELIMITER")
+			else if (tok.Type.Name == "DELIMITER")
 			{
 				this.ReadToken("DELIMITER");
 				return new RawNopInstructionNode();
 			}
 			else
 			{
-				var items = new List<Token>();
-				while((tok = this.PeekToken()).Type.Name != "DELIMITER")
-				{
-					items.Add(this.ReadToken());
-				}
-				this.ReadToken("DELIMITER");
-
+				var items = ReadTokensUntil("DELIMITER");
 				return new RawExpressionInstructionNode(
-					this.ConvertToExpression(items.ToArray()));
+					this.ConvertToExpression(items));
 			}
+		}
+
+		private Token[] ReadTokensUntil(string delimiter) =>
+			ReadTokensUntil(t => t.Type.Name == delimiter);
+
+		private Token[] ReadTokensUntil(Predicate<Token> predicate)
+		{
+			Token tok;
+			var items = new List<Token>();
+			while (!predicate(tok = this.PeekToken()))
+			{
+				items.Add(this.ReadToken());
+			}
+			tok = this.ReadToken();
+			if (predicate(tok) == false)
+				throw new ParserException(tok);
+			return items.ToArray();
 		}
 
 		private RawExpressionNode ConvertToExpression(Token[] tokens)
 		{
 			if (tokens.Length == 0)
 				throw new InvalidOperationException("Something went terribly wrong. Expression parsing tried to parse empty expression.");
-			if(tokens.Length == 1)
+			if (tokens.Length == 1)
 			{ // trivial case: variable or literal
 				var tok = tokens[0];
 				if (tok.Type.Name == "IDENTIFIER")
@@ -176,9 +197,9 @@ namespace EinCompiler.FrontEnds
 			{
 				"+", "-", "*", "/", "%"
 			};
-			foreach(var op in operators)
+			foreach (var op in operators)
 			{
-				for(int i = 0; i < tokens.Length; i++)
+				for (int i = 0; i < tokens.Length; i++)
 				{
 					if (SkipOverBracket(tokens, ref i))
 						break;
@@ -207,7 +228,7 @@ namespace EinCompiler.FrontEnds
 				return ConvertToExpression(tokens.Skip(1).Take(tokens.Length - 2).ToArray());
 			}
 
-			throw new NotSupportedException();
+			throw new ParserException(tokens[0]);
 		}
 
 		/// <summary>
@@ -222,7 +243,7 @@ namespace EinCompiler.FrontEnds
 			if (tokens[initial].Type.Name != "O_BRACKET")
 				return false;
 			int stack = 1;
-			for(i = i + 1; i < tokens.Length; i++)
+			for (i = i + 1; i < tokens.Length; i++)
 			{
 				if (tokens[i].Type.Name == "O_BRACKET")
 					stack++;

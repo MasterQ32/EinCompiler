@@ -16,4 +16,16 @@
 
 		public override string ToString() => $"{Expression}";
 	}
+
+	public sealed class RawReturnInstructionNode : RawInstructionNode
+	{
+		public RawReturnInstructionNode(RawExpressionNode expression)
+		{
+			this.Expression = expression;
+		}
+
+		public RawExpressionNode Expression { get; private set; }
+
+		public override string ToString() => $"return {Expression}";
+	}
 }
