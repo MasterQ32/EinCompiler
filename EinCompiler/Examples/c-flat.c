@@ -80,6 +80,25 @@ fn test_return()
 	return i * i;
 }
 
+fn test_if()
+{
+	if(1 + 2)
+	{
+		block;
+		block;
+	}
+
+	if(1 + 2)
+	{
+		block;
+		block;
+	}
+	else
+	{
+		andererBlock;
+	}
+}
+
 fn test_while()
 {
 	while (i * i)

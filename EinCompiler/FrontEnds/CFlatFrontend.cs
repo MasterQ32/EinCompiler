@@ -136,6 +136,27 @@ namespace EinCompiler.FrontEnds
 						return new RawReturnInstructionNode(
 							ConvertToExpression(items));
 					}
+					case "if":
+					{
+						this.ReadToken("KEYWORD");
+						this.ReadToken("O_BRACKET");
+						var condition = ConvertToExpression(
+							this.ReadTokensUntil("C_BRACKET"));
+						var trueBlock = this.ReadBody();
+						RawBodyNode falseBlock = null;
+						if(
+							this.PeekToken().Type.Name == "KEYWORD" && 
+							this.PeekToken().Text == "else")
+						{
+							this.ReadToken("KEYWORD");
+							falseBlock = this.ReadBody();
+						}
+
+						return new RawIfInstructionNode(
+							condition,
+							trueBlock,
+							falseBlock);
+					}
 					default: throw new ParserException(tok);
 				}
 			}

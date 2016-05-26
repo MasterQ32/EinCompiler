@@ -16,5 +16,5 @@ ARROW               := \-\>
 ASSIGNMENT          := \=
 NUMBER              := (?<sign>-?)(?:(?<hex>0x[0-9A-Fa-f]+)|(?<bin>0b[01]+)|(?<float>\d+\.\d*)|(?<int>\d+))
 BINARY_OPERATOR     := \+|\-|\*|\/|\%
-KEYWORD             := \b(var|fn|const|static|private|global|shared|export|return)\b
+KEYWORD             := \b(var|fn|const|static|private|global|shared|export|return|if|else|while)\b
 IDENTIFIER          := \b[A-Za-z_]\w*\b
