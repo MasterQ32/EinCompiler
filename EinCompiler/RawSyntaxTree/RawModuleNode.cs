@@ -84,9 +84,26 @@ namespace EinCompiler.RawSyntaxTree
 				description.Variables.Add(vardesc);
 			}
 
-			
+			foreach(var func in this.functions)
+			{
+				var funcdesc = new FunctionDescription(
+					func.Name,
+					func.ReturnType != null ? types[func.ReturnType] : TypeDescription.Void,
+					func.Parameters.Select(p => new ParameterDescription(types[p.Type], p.Name)).ToArray(),
+					TranslateBody(func.Body, types));
+			}
 
 			return description;
+		}
+
+		private BodyDescription TranslateBody(RawBodyNode body, TypeContainer types)
+		{
+			var instructions = new List<InstructionDescription>();
+			foreach(var instr in body.Instructions)
+			{
+				instructions.Add(instr.Translate(types));
+			}
+			return new BodyDescription(instructions);
 		}
 
 		public ICollection<RawFunctionNode> Functions => this.functions;

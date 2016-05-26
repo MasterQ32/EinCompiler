@@ -49,6 +49,10 @@
     <Compile Include="FrontEnds\ParserException.cs" />
     <Compile Include="IDescription.cs" />
     <Compile Include="ModuleDescription.cs" />
+    <Compile Include="RawSyntaxTree\BodyDescription.cs" />
+    <Compile Include="RawSyntaxTree\FunctionDescription.cs" />
+    <Compile Include="RawSyntaxTree\InstructionDescription.cs" />
+    <Compile Include="RawSyntaxTree\ParameterDescription.cs" />
     <Compile Include="RawSyntaxTree\RawNopInstructionNode.cs" />
     <Compile Include="RawSyntaxTree\RawBodyNode.cs" />
     <Compile Include="RawSyntaxTree\RawExpressionNode.cs" />

@@ -5,6 +5,8 @@ namespace EinCompiler
 {
 	public sealed class TypeDescription : IDescription
 	{
+		public static readonly TypeDescription Void = new TypeDescription("void");
+
 		public TypeDescription(string name)
 		{
 			this.Name = name;

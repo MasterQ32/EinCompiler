@@ -21,6 +21,7 @@ namespace EinCompiler
 			var rawTree = Parser.Parse<CFlatParser>(tokens);
 
 			var types = new TypeContainer();
+			types.Add(TypeDescription.Void);
 			types.Add(new TypeDescription("int"));
 
 			var tree = rawTree.Translate(types);
