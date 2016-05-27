@@ -70,6 +70,7 @@ namespace EinCompiler.BackEnds
 			{
 				WriteCommand("; {0}", instr);
 				WriteInstruction(instr);
+				WriteLine();
 			}
 		}
 
@@ -157,18 +158,36 @@ namespace EinCompiler.BackEnds
 				
 				WriteExpression(ass.Source);
 				if (ass.Target is VariableExpression)
-					WriteCommand(
-						"store ??? [r:push] {0}; {1} ",
-						flagText,
-						((VariableExpression)ass.Target).Variable.Name);
+				{
+					var var = ((VariableExpression)ass.Target).Variable;
+					if (var is ParameterVariableDescription)
+					{
+						var offset = ((ParameterVariableDescription)var).Index;
+						var position = -(offset + 1);
+
+						WriteCommand(
+							"set {0} {1} [r:push] ; local {2}",
+							position,
+							flagText,
+							var.Name);
+					}
+					else
+					{
+						var location = globals[var];
+						WriteCommand(
+							"store {0} {1} [r:push] ; global {2}",
+							location,
+							flagText,
+							var.Name);
+					}
+				}
 				else
 					throw new NotSupportedException();
 			}
 			else if (expression is BinaryOperatorExpression)
 			{
 				var bin = (BinaryOperatorExpression)expression;
-
-				// TODO: Check order
+				
 				WriteExpression(bin.RightHandSide);
 				WriteExpression(bin.LeftHandSide);
 				Write("\t");
@@ -186,19 +205,29 @@ namespace EinCompiler.BackEnds
 			else if (expression is FunctionCallExpression)
 			{
 				var call = (FunctionCallExpression)expression;
+				var fn = call.Function;
+				
+				// If we have a return value, push a stub
+				if(fn.ReturnType != TypeDescription.Void)
+					WriteCommand("push 0");
 
-				// TODO: Implement function calls
-
-				Write("{0}(", call.Function.Name);
-
-				for (int i = 0; i < call.Arguments.Length; i++)
+				// TODO: Check correct argument pushing order
+				foreach (var arg in call.Arguments)
 				{
-					if (i > 0)
-						Write(", ");
-					WriteExpression(call.Arguments[i]);
+					WriteExpression(arg);
 				}
 
-				Write(")");
+				WriteCommand("cpget");
+				WriteCommand("jmp @{0}", fn.Name);
+
+				foreach (var param in fn.Parameters.Reverse())
+				{
+					WriteCommand("drop ; {0}", param.Name);
+				}
+
+				// If we don't have a return value, push a stub result
+				if (fn.ReturnType == TypeDescription.Void)
+					WriteCommand("push 0");
 			}
 			else if (expression is LiteralExpression)
 			{

@@ -155,3 +155,19 @@ print_str_end_loop:
 	bpset
 	jmpi  ; and jumping back.
 ]]
+
+export naked fn read_mem(ptr : int) -> int
+[[
+	bpget
+	spget
+	bpset
+
+	get -2 ; Get address
+	loadi
+	set -3 ; Set return value
+
+	bpget
+	spset
+	bpset
+	jmpi
+]]
