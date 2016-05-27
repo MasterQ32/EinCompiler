@@ -16,7 +16,7 @@ namespace EinCompiler
 
 	public class TypeContainer : DescriptionContainer<TypeDescription>
 	{
-
+		public TypeDescription Boolean { get; set; }
 	}
 
 	public class FunctionContainer : DescriptionContainer<FunctionDescription>

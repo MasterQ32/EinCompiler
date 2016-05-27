@@ -73,8 +73,10 @@ namespace EinCompiler.RawSyntaxTree
 			VariableContainer vars,
 			FunctionContainer funcs)
 		{
+			var condition = this.Condition.Translate(types, vars, funcs);
+			condition.DeduceAndCheckType(types.Boolean);
 			return new ConditionalInstruction(
-				this.Condition.Translate(types, vars, funcs),
+				condition,
 				this.TrueBody.Translate(types, vars, funcs),
 				this.FalseBody?.Translate(types, vars, funcs));
 		}
@@ -102,8 +104,10 @@ namespace EinCompiler.RawSyntaxTree
 			VariableContainer vars,
 			FunctionContainer funcs)
 		{
+			var condition = this.Condition.Translate(types, vars, funcs);
+			condition.DeduceAndCheckType(types.Boolean);
 			return new LoopInstruction(
-				this.Condition.Translate(types, vars, funcs),
+				condition,
 				this.Body.Translate(types, vars, funcs));
 		}
 

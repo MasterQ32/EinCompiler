@@ -51,7 +51,7 @@ namespace EinCompiler.BackEnds
 		{
 			foreach(var instr in body)
 			{
-				WriteLineComment(instr.ToString());
+				WriteLine("\t; {0}", instr);
 				WriteInstruction(instr);
 			}
 		}
@@ -61,7 +61,7 @@ namespace EinCompiler.BackEnds
 			if (instr is ExpressionInstruction)
 			{
 				WriteExpression(((ExpressionInstruction)instr).Expression);
-				WriteLine(";");
+				WriteLine("\tdrop");
 			}
 			else if (instr is ConditionalInstruction)
 			{
@@ -93,11 +93,13 @@ namespace EinCompiler.BackEnds
 				var expr = ((ReturnInstruction)instr).Expression;
 				Write("return ");
 				WriteExpression(((ReturnInstruction)instr).Expression);
-				WriteLine(";");
+
+				WriteLine("\tset ??? ; TODO: Insert return value position here.");
+				WriteFunctionLeave();
 			}
 			else if (instr is NopInstruction)
 			{
-				WriteLine(";");
+				WriteLine("\tnop");
 			}
 			else if (instr is BreakLoopInstruction)
 			{
@@ -148,11 +150,14 @@ namespace EinCompiler.BackEnds
 			}
 			else if (expression is LiteralExpression)
 			{
-				Write(((LiteralExpression)expression).Literal);
+				var expr = (LiteralExpression)expression;
+				WriteLine(
+					"\tpush {0}", 
+					expr.GetValue().GetString());
 			}
 			else if (expression is VariableExpression)
 			{
-				Write(((VariableExpression)expression).Variable.Name);
+				WriteLine("\tload ??? ; TODO: Insert variable address");
 			}
 		}
 
