@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackEnds\BackEnd.cs" />
+    <Compile Include="BackEnds\CCodeBackEnd.cs" />
+    <Compile Include="CodeWriter.cs" />
     <Compile Include="Descriptions\ConstantDescription.cs" />
     <Compile Include="FrontEnds\CFlatFrontend.cs" />
     <Compile Include="FrontEnds\Parser.cs" />

@@ -20,7 +20,13 @@ namespace EinCompiler
 				this.ParseValue(text));
 		}
 
-		protected abstract byte[] ParseValue(string text);
+
+
+		public abstract string GetString(object value);
+
+		public abstract byte[] GetBinary(object value);
+
+		protected abstract object ParseValue(string text);
 
 		public string Name { get; private set; }
 		
@@ -30,9 +36,19 @@ namespace EinCompiler
 		{
 			public VoidType() : base("void") { }
 
-			protected override byte[] ParseValue(string text)
+			protected override object ParseValue(string text)
 			{
 				throw new NotSupportedException("Not possible to create a void value.");
+			}
+
+			public override byte[] GetBinary(object value)
+			{
+				throw new NotSupportedException();
+			}
+
+			public override string GetString(object value)
+			{
+				throw new NotSupportedException();
 			}
 		}
 
@@ -40,9 +56,19 @@ namespace EinCompiler
 		{
 			public InvalidType() : base("<INVALID>") { }
 
-			protected override byte[] ParseValue(string text)
+			protected override object ParseValue(string text)
 			{
 				throw new NotSupportedException("The invalid type does not support value creation.");
+			}
+
+			public override byte[] GetBinary(object value)
+			{
+				throw new NotSupportedException();
+			}
+
+			public override string GetString(object value)
+			{
+				throw new NotSupportedException();
 			}
 		}
 	}

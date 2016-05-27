@@ -1,4 +1,5 @@
-﻿using EinCompiler.FrontEnds;
+﻿using EinCompiler.BackEnds;
+using EinCompiler.FrontEnds;
 using EinCompiler.RawSyntaxTree;
 using EinCompiler.Types;
 using System;
@@ -26,8 +27,10 @@ namespace EinCompiler
 			types.Add(new IntegerType("int", true, 4));
 			types.Add(new IntegerType("uint", true, 4));
 
-			var tree = rawTree.Translate(types);
-			
+			var module  = rawTree.Translate(types);
+
+			BackEnd.GenerateCode<CCodeBackEnd>(module, Console.Out);
+
 			Console.ReadLine();
 		}
 	}

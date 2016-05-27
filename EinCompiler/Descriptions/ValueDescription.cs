@@ -6,16 +6,26 @@ namespace EinCompiler
 	{
 		public ValueDescription(
 			TypeDescription type,
-			byte[] value)
+			object value)
 		{
 			this.Type = type;
 			this.Value = value;
 		}
 
+		public byte[] GetBinary()
+		{
+			return this.Type.GetBinary(this.Value);
+		}
+
+		public string GetString()
+		{
+			return this.Type.GetString(this.Value);
+		}
+
 		public TypeDescription Type { get; private set; }
 
-		public byte[] Value { get; private set; }
-
-		public override string ToString() => BitConverter.ToString(this.Value);
+		public object Value { get; private set; }
+		
+		public override string ToString() => this.Value.ToString();
 	}
 }

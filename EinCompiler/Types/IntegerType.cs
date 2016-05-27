@@ -25,21 +25,55 @@ namespace EinCompiler.Types
 			}
 		}
 
-		protected override byte[] ParseValue(string text)
+		public override byte[] GetBinary(object value)
 		{
-			Func<string, NumberStyles, byte[]> parse;
 			if (this.IsSigned)
 			{
 				switch (this.SizeInBytes)
 				{
 					case 1:
-						parse = (t, n) => BitConverter.GetBytes(SByte.Parse(t, n));
+						return BitConverter.GetBytes((SByte)value);
+					case 2:
+						return BitConverter.GetBytes((Int16)value);
+					case 4:
+						return BitConverter.GetBytes((Int32)value);
+					default:
+						throw new NotSupportedException();
+				}
+			}
+			else
+			{
+				switch (this.SizeInBytes)
+				{
+					case 1:
+						return BitConverter.GetBytes((Byte)value);
+					case 2:
+						return BitConverter.GetBytes((UInt16)value);
+					case 4:
+						return BitConverter.GetBytes((UInt32)value);
+					default:
+						throw new NotSupportedException();
+				}
+			}
+		}
+
+		public override string GetString(object value) => Convert.ToString(value, CultureInfo.InvariantCulture);
+
+		protected override object ParseValue(string text)
+		{
+			Func<string, NumberStyles, object> parse;
+			if (this.IsSigned)
+			{
+				switch (this.SizeInBytes)
+				{
+					case 1:
+						parse = (t, n) => SByte.Parse(t, n);
 						break;
 					case 2:
-						parse = (t, n) => BitConverter.GetBytes(Int16.Parse(t, n));
+						parse = (t, n) => Int16.Parse(t, n);
 						break;
 					case 4:
-						parse = (t, n) => BitConverter.GetBytes(Int32.Parse(t, n));
+						parse = (t, n) => Int32.Parse(t, n);
 						break;
 					default:
 						throw new NotSupportedException();
@@ -50,13 +84,13 @@ namespace EinCompiler.Types
 				switch (this.SizeInBytes)
 				{
 					case 1:
-						parse = (t, n) => BitConverter.GetBytes(Byte.Parse(t, n));
+						parse = (t, n) => Byte.Parse(t, n);
 						break;
 					case 2:
-						parse = (t, n) => BitConverter.GetBytes(UInt16.Parse(t, n));
+						parse = (t, n) => UInt16.Parse(t, n);
 						break;
 					case 4:
-						parse = (t, n) => BitConverter.GetBytes(UInt32.Parse(t, n));
+						parse = (t, n) => UInt32.Parse(t, n);
 						break;
 					default:
 						throw new NotSupportedException();
