@@ -10,7 +10,7 @@ namespace EinCompiler.BackEnds
 	{
 		private int labelCounter = 0;
 
-		private string GetUniqueLabelName() => $"__internal__label{labelCounter++}";
+		private string GenUniqueLabelName() => $"__internal__label{labelCounter++}";
 
 		protected override void Generate(ModuleDescription module)
 		{
@@ -34,24 +34,24 @@ namespace EinCompiler.BackEnds
 
 		private void WriteFunctionEnter()
 		{
-			WriteLine("\tbpget");
-			WriteLine("\tspget");
-			WriteLine("\tbpset");
+			WriteCommand("bpget");
+			WriteCommand("spget");
+			WriteCommand("bpset");
 		}
 
 		private void WriteFunctionLeave()
 		{
-			WriteLine("\tbpget");
-			WriteLine("\tspset");
-			WriteLine("\tbpset");
-			WriteLine("\tret");
+			WriteCommand("bpget");
+			WriteCommand("spset");
+			WriteCommand("bpset");
+			WriteCommand("ret");
 		}
 
 		private void WriteBlock(BodyDescription body)
 		{
 			foreach(var instr in body)
 			{
-				WriteLine("\t; {0}", instr);
+				WriteCommand("; {0}", instr);
 				WriteInstruction(instr);
 			}
 		}
@@ -61,7 +61,7 @@ namespace EinCompiler.BackEnds
 			if (instr is ExpressionInstruction)
 			{
 				WriteExpression(((ExpressionInstruction)instr).Expression);
-				WriteLine("\tdrop");
+				WriteCommand("drop");
 			}
 			else if (instr is ConditionalInstruction)
 			{
@@ -69,37 +69,59 @@ namespace EinCompiler.BackEnds
 				var trueBody = ((ConditionalInstruction)instr).TrueBody;
 				var falseBody = ((ConditionalInstruction)instr).FalseBody;
 
-				Write("if (");
-				WriteExpression(condition);
-				WriteLine(")");
+				var falseLabel = this.GenUniqueLabelName();
+				var endLabel = this.GenUniqueLabelName();
+
+				WriteCommand("; if condition");
+				WriteExpression(condition, true);
+
+				if(falseBody != null)
+					WriteCommand("[ex(z)=0] jmp @{0} ; Jump to false", falseLabel);
+				else
+					WriteCommand("[ex(z)=0] jmp @{0} ; Jump to end", endLabel);
+
 				WriteBlock(trueBody);
-				if (falseBody != null)
+				if(falseBody != null)
 				{
-					WriteLine("else");
+					WriteCommand("jmp @{0}; jump to end", endLabel);
+					WriteLabel(falseLabel);
 					WriteBlock(falseBody);
 				}
+				
+				WriteLabel(endLabel);
 			}
 			else if (instr is LoopInstruction)
 			{
 				var condition = ((LoopInstruction)instr).Condition;
 				var body = ((LoopInstruction)instr).Body;
-				Write("while(");
-				WriteExpression(condition);
-				WriteLine(")");
+
+				var loopStart = this.GenUniqueLabelName();
+				var loopEnd = this.GenUniqueLabelName();
+
+				WriteCommand("; begin while");
+				WriteLabel(loopStart);
+				
+				WriteExpression(condition, true);
+				
+				WriteCommand("[ex(z)=1] jmp @{0}", loopEnd);
+
 				WriteBlock(body);
+
+				WriteCommand("jmp @{0} ; end while", loopStart);
+
+				WriteLabel(loopEnd);
 			}
 			else if (instr is ReturnInstruction)
 			{
 				var expr = ((ReturnInstruction)instr).Expression;
-				Write("return ");
 				WriteExpression(((ReturnInstruction)instr).Expression);
 
-				WriteLine("\tset ??? ; TODO: Insert return value position here.");
+				WriteCommand("set ??? ; TODO: Insert return value position here.");
 				WriteFunctionLeave();
 			}
 			else if (instr is NopInstruction)
 			{
-				WriteLine("\tnop");
+				WriteCommand("nop");
 			}
 			else if (instr is BreakLoopInstruction)
 			{
@@ -107,35 +129,48 @@ namespace EinCompiler.BackEnds
 			}
 		}
 
-		private void WriteExpression(Expression expression)
+		private void WriteCommand(string v, params object[] args) => this.WriteLine("\t" + v, args);
+
+		private void WriteExpression(Expression expression, bool modifyFlags = false)
 		{
+			var flagText = modifyFlags ? " [f:yes] " : "";
 			if (expression is AssignmentExpression)
 			{
 				var ass = (AssignmentExpression)expression;
-
-				WriteExpression(ass.Target);
-				Write(" = ");
+				
 				WriteExpression(ass.Source);
+				if (ass.Target is VariableExpression)
+					WriteCommand(
+						"store ??? [r:push] {0}; {1} ",
+						flagText,
+						((VariableExpression)ass.Target).Variable.Name);
+				else
+					throw new NotSupportedException();
 			}
 			else if (expression is BinaryOperatorExpression)
 			{
 				var bin = (BinaryOperatorExpression)expression;
 
+				// TODO: Check order
+				WriteExpression(bin.RightHandSide);
 				WriteExpression(bin.LeftHandSide);
+				Write("\t");
 				switch (bin.Operator)
 				{
-					case BinaryOperator.Addition: Write(" + "); break;
-					case BinaryOperator.Subtraction: Write(" - "); break;
-					case BinaryOperator.Multiplication: Write(" * "); break;
-					case BinaryOperator.Division: Write(" / "); break;
-					case BinaryOperator.EuclideanDivision: Write(" % "); break;
+					case BinaryOperator.Addition: Write("add"); break;
+					case BinaryOperator.Subtraction: Write("sub"); break;
+					case BinaryOperator.Multiplication: Write("mul"); break;
+					case BinaryOperator.Division: Write("div"); break;
+					case BinaryOperator.EuclideanDivision: Write("mod"); break;
 					default: throw new NotSupportedException();
 				}
-				WriteExpression(bin.RightHandSide);
+				WriteLine(flagText);
 			}
 			else if (expression is FunctionCallExpression)
 			{
 				var call = (FunctionCallExpression)expression;
+
+				// TODO: Implement function calls
 
 				Write("{0}(", call.Function.Name);
 
@@ -151,13 +186,16 @@ namespace EinCompiler.BackEnds
 			else if (expression is LiteralExpression)
 			{
 				var expr = (LiteralExpression)expression;
-				WriteLine(
-					"\tpush {0}", 
-					expr.GetValue().GetString());
+				WriteCommand(
+					"push {0} {1}",
+					expr.GetValue().GetString(),
+					flagText);
 			}
 			else if (expression is VariableExpression)
 			{
-				WriteLine("\tload ??? ; TODO: Insert variable address");
+				WriteCommand(
+					"load ??? {0}; TODO: Insert variable address",
+					flagText);
 			}
 		}
 
