@@ -1,10 +1,12 @@
-﻿namespace EinCompiler
+﻿using System;
+
+namespace EinCompiler
 {
 	public sealed class ValueDescription
 	{
 		public ValueDescription(
 			TypeDescription type,
-			object value)
+			byte[] value)
 		{
 			this.Type = type;
 			this.Value = value;
@@ -12,8 +14,8 @@
 
 		public TypeDescription Type { get; private set; }
 
-		public object Value { get; private set; }
+		public byte[] Value { get; private set; }
 
-		public override string ToString() => this.Value?.ToString();
+		public override string ToString() => BitConverter.ToString(this.Value);
 	}
 }

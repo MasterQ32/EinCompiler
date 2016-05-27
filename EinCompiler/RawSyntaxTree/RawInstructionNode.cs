@@ -27,6 +27,8 @@ namespace EinCompiler.RawSyntaxTree
 			var expression = this.Expression.Translate(types, vars, funcs);
 			if (expression.IsTopLevelPossible == false)
 				throw new InvalidOperationException();
+			// Deduce and check all invalid types.
+			expression.DeduceAndCheckType(null);
 			return new ExpressionInstruction(expression);
 		}
 

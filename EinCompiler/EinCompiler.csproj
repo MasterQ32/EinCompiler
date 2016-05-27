@@ -53,14 +53,14 @@
     <Compile Include="IDescription.cs" />
     <Compile Include="Descriptions\ModuleDescription.cs" />
     <Compile Include="Descriptions\BodyDescription.cs" />
-    <Compile Include="Expression.cs" />
+    <Compile Include="Descriptions\Expression.cs" />
     <Compile Include="Descriptions\Instructions\ExpressionInstruction.cs" />
     <Compile Include="Descriptions\FunctionDescription.cs" />
     <Compile Include="Descriptions\InstructionDescription.cs" />
     <Compile Include="Descriptions\ParameterDescription.cs" />
     <Compile Include="Descriptions\Instructions\Expressions\AssignmentExpression.cs" />
     <Compile Include="Descriptions\Instructions\Expressions\BinaryOperatorExpression.cs" />
-    <Compile Include="Descriptions\Instructions\Expressions\ConditionalInstruction.cs" />
+    <Compile Include="Descriptions\Instructions\ConditionalInstruction.cs" />
     <Compile Include="Descriptions\Instructions\LoopInstruction.cs" />
     <Compile Include="Descriptions\Instructions\BreakLoopInstruction.cs" />
     <Compile Include="Descriptions\Instructions\NopInstruction.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawSyntaxNode.cs" />
-    <Compile Include="Descriptions\Instructions\Expressions\UntypedLiteralExpression.cs" />
+    <Compile Include="Descriptions\Instructions\Expressions\LiteralExpression.cs" />
     <Compile Include="Descriptions\Instructions\Expressions\VariableExpression.cs" />
     <Compile Include="Descriptions\Instructions\ReturnInstruction.cs" />
     <Compile Include="TokenType.cs" />
@@ -85,6 +85,7 @@
     <Compile Include="Descriptions\TypeDescription.cs" />
     <Compile Include="Descriptions\ValueDescription.cs" />
     <Compile Include="Descriptions\VariableDescription.cs" />
+    <Compile Include="Types\IntegerType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

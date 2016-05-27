@@ -8,5 +8,7 @@
 		}
 
 		public Expression Expression { get; private set; }
+
+		public override string ToString() => this.Expression.ToString();
 	}
 }

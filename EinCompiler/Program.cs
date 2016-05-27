@@ -1,5 +1,6 @@
 ﻿using EinCompiler.FrontEnds;
 using EinCompiler.RawSyntaxTree;
+using EinCompiler.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,10 +23,11 @@ namespace EinCompiler
 
 			var types = new TypeContainer();
 			types.Add(TypeDescription.Void);
-			types.Add(new TypeDescription("int"));
+			types.Add(new IntegerType("int", true, 4));
+			types.Add(new IntegerType("uint", true, 4));
 
 			var tree = rawTree.Translate(types);
-
+			
 			Console.ReadLine();
 		}
 	}

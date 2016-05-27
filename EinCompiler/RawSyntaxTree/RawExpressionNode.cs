@@ -33,7 +33,7 @@ namespace EinCompiler.RawSyntaxTree
 
 		public override Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs)
 		{
-			return new UntypedLiteralExpression(this.Literal);
+			return new LiteralExpression(this.Literal);
 		}
 
 		public string Literal { get; private set; }
