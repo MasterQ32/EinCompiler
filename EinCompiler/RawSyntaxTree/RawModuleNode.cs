@@ -7,6 +7,7 @@ namespace EinCompiler.RawSyntaxTree
 	public sealed class RawModuleNode : RawSyntaxNode
 	{
 		private List<RawFunctionNode> functions = new List<RawFunctionNode>();
+		private List<RawNakedFunctionNode> nakedFunctions = new List<RawNakedFunctionNode>();
 		private List<RawVariableNode> variables = new List<RawVariableNode>();
 		private List<RawConstantNode> constants = new List<RawConstantNode>();
 
@@ -20,6 +21,10 @@ namespace EinCompiler.RawSyntaxTree
 			if (node is RawFunctionNode)
 			{
 				functions.Add((RawFunctionNode)node);
+			}
+			else if (node is RawNakedFunctionNode)
+			{
+				nakedFunctions.Add((RawNakedFunctionNode)node);
 			}
 			else if (node is RawVariableNode)
 			{
@@ -94,6 +99,17 @@ namespace EinCompiler.RawSyntaxTree
 					func.Parameters.Select(p => new ParameterDescription(types[p.Type], p.Name)).ToArray()));
 			}
 
+			// Second, create all naked functions with their
+			// bodies already assigned.
+			foreach(var naked in this.nakedFunctions)
+			{
+				description.Functions.Add(new FunctionDescription(
+					naked.Name,
+					naked.ReturnType != null ? types[naked.ReturnType] : TypeDescription.Void,
+					naked.Parameters.Select(p => new ParameterDescription(types[p.Type], p.Name)).ToArray(),
+					naked.Body.Substring(2, naked.Body.Length - 4)));
+			}
+
 			// Then, translate all function bodies to
 			// have them without the need of forward
 			// declaration
@@ -121,6 +137,8 @@ namespace EinCompiler.RawSyntaxTree
 		}
 
 		public ICollection<RawFunctionNode> Functions => this.functions;
+
+		public ICollection<RawNakedFunctionNode> NakedFunctions => this.nakedFunctions;
 
 		public ICollection<RawVariableNode> Variables => this.variables;
 

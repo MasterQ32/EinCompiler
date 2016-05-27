@@ -12,8 +12,17 @@ namespace EinCompiler.BackEnds
 
 		private string GenUniqueLabelName() => $"__internal__label{labelCounter++}";
 
+		private Dictionary<VariableDescription, int> globals = new Dictionary<VariableDescription, int>();
+
 		protected override void Generate(ModuleDescription module)
 		{
+			int globalAllocator = 0;
+			foreach(var var in module.Variables)
+			{
+				globals[var] = globalAllocator;
+				globalAllocator += 4;
+			}
+
 			WriteLineComment("Variables are not supported yet.");
 			WriteLine();
 			WriteLineComment("Functions:");
@@ -21,14 +30,22 @@ namespace EinCompiler.BackEnds
 			foreach (var func in module.Functions)
 			{
 				WriteLabel(func.Name);
-				WriteFunctionEnter();
+				if (func.IsNaked)
+				{
+					// Yay, naked functions!
+					Write(func.NakedBody);
+				}
+				else
+				{
+					WriteFunctionEnter();
 
-				// TODO: Push local variables here....
+					// TODO: Push local variables here....
 
-				WriteBlock(func.Body);
+					WriteBlock(func.Body);
 
-				WriteFunctionLeave();
-				WriteLine();
+					WriteFunctionLeave();
+					WriteLine();
+				}
 			}
 		}
 
@@ -193,9 +210,27 @@ namespace EinCompiler.BackEnds
 			}
 			else if (expression is VariableExpression)
 			{
-				WriteCommand(
-					"load ??? {0}; TODO: Insert variable address",
-					flagText);
+				var var = ((VariableExpression)expression).Variable;
+				if (var is ParameterVariableDescription)
+				{
+					var offset = ((ParameterVariableDescription)var).Index;
+					var position = -(offset + 1);
+
+					WriteCommand(
+						"get {0} {1} ; local {2}",
+						position,
+						flagText,
+						var.Name);
+				}
+				else
+				{
+					var location = globals[var];
+					WriteCommand(
+						"load {0} {1} ; global {2}",
+						location,
+						flagText,
+						var.Name);
+				}
 			}
 		}
 

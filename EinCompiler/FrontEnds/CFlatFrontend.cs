@@ -57,14 +57,14 @@ namespace EinCompiler.FrontEnds
 						classes.ToArray());
 				}
 				case "export":
+				case "naked":
 				case "fn":
 				{
-					var isExported = @class.Text == "export";
-					if (isExported)
+					var modifiers = new List<string>();
+					while (@class.Text != "fn")
 					{
+						modifiers.Add(@class.Text);
 						@class = this.ReadToken("KEYWORD");
-						if (@class.Text != "fn")
-							throw new ParserException(@class);
 					}
 
 					var parameters = new List<RawParameterNode>();
@@ -87,16 +87,28 @@ namespace EinCompiler.FrontEnds
 						returnType = this.ReadToken("IDENTIFIER");
 					}
 
-					var body = this.ReadBody();
-
-					return new RawFunctionNode(
-						name.Text,
-						returnType?.Text,
-						parameters,
-						body)
+					if (modifiers.Contains("naked"))
 					{
-						IsExported = isExported,
-					};
+						var body = this.ReadToken("RAW_BLOCK");
+						return new RawNakedFunctionNode(
+							name.Text,
+							returnType?.Text,
+							parameters,
+							body.Text);
+					}
+					else
+					{
+						var body = this.ReadBody();
+
+						return new RawFunctionNode(
+							name.Text,
+							returnType?.Text,
+							parameters,
+							body)
+						{
+							IsExported = modifiers.Contains("export"),
+						};
+					}
 				}
 				default:
 				{

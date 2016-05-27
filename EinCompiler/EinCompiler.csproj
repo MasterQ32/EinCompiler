@@ -53,6 +53,7 @@
     <Compile Include="FrontEnds\ParserException.cs" />
     <Compile Include="Descriptions\Instructions\Expressions\FunctionCallExpression.cs" />
     <Compile Include="Descriptions\ParameterVariableDescription.cs" />
+    <Compile Include="RawSyntaxTree\RawNakedFunctionNode.cs" />
     <Compile Include="RawSyntaxTree\RawFunctionCallExpression.cs" />
     <Compile Include="IDescription.cs" />
     <Compile Include="Descriptions\ModuleDescription.cs" />

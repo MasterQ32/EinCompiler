@@ -132,3 +132,26 @@ fn square(i : int) -> int
 {
 	return i * i;
 }
+
+export naked fn print_str(str : int)
+[[
+	bpget
+	spget
+	bpset
+
+	get -2
+print_str_loop:
+	[i0:peek] loadi [f:yes] ; write flags, also load result, don't discard pointer
+	[ex(z)=1] jmp @print_str_end_loop ; when *ptr == 0, then goto print_str_end_loop
+	[i0:pop] syscall [ci:1] ; removes the loaded character and prints it
+	[i0:arg] add 1 ; adds 1 to the stack top
+	jmp @print_str_loop
+print_str_end_loop:
+	drop ; discard the result from loadi
+	drop ; discard our pointer
+	
+	bpget ; leave function
+	spset ; by restoring parent base pointer
+	bpset
+	jmpi  ; and jumping back.
+]]
