@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EinCompiler.RawSyntaxTree
+namespace EinCompiler
 {
 	public sealed class AssignmentExpression : Expression
 	{

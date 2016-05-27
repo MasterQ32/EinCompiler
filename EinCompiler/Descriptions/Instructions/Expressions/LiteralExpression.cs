@@ -18,7 +18,12 @@ namespace EinCompiler
 			if (typeHint == null)
 				throw new ArgumentNullException(nameof(typeHint), "Literals require a type hint to deduce types.");
 			this.type = typeHint;
+
+			// Check if the literal is convertible
+			this.type.CreateValueFromString(this.Literal);
 		}
+
+		public ValueDescription GetValue() => this.type.CreateValueFromString(this.Literal);
 
 		public override TypeDescription Type => this.type;
 	}

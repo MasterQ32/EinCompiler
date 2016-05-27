@@ -1,4 +1,4 @@
-﻿namespace EinCompiler.RawSyntaxTree
+﻿namespace EinCompiler
 {
 	public sealed class LoopInstruction : InstructionDescription
 	{
