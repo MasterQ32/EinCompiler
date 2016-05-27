@@ -15,11 +15,11 @@ namespace EinCompiler
 		static void Main(string[] args)
 		{
 			Tokenizer tok = Tokenizer.Load("./Grammars/c-flat.tok");
-			
+
 			var source = File.ReadAllText("./Examples/c-flat.c");
 
 			var tokens = tok.Tokenize(source);
-			
+
 			var rawTree = Parser.Parse<CFlatParser>(tokens);
 
 			var types = new TypeContainer();
@@ -27,9 +27,10 @@ namespace EinCompiler
 			types.Add(new IntegerType("int", true, 4));
 			types.Add(new IntegerType("uint", true, 4));
 
-			var module  = rawTree.Translate(types);
+			var module = rawTree.Translate(types);
 
-			BackEnd.GenerateCode<CCodeBackEnd>(module, Console.Out);
+			// BackEnd.GenerateCode<CCodeBackEnd>(module, Console.Out);
+			BackEnd.GenerateCode<SVMABackEnd>(module, Console.Out);
 
 			Console.ReadLine();
 		}

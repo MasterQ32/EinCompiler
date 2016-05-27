@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="BackEnds\BackEnd.cs" />
     <Compile Include="BackEnds\CCodeBackEnd.cs" />
+    <Compile Include="BackEnds\SVMABackEnd.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="Descriptions\ConstantDescription.cs" />
     <Compile Include="FrontEnds\CFlatFrontend.cs" />
