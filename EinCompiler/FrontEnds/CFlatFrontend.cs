@@ -144,6 +144,7 @@ namespace EinCompiler.FrontEnds
 					case "break":
 					{
 						this.ReadToken("KEYWORD");
+						this.ReadToken("DELIMITER");
 						return new RawBreakInstructionNode();
 					}
 					case "return":

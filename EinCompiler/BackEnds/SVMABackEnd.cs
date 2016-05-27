@@ -41,7 +41,7 @@ namespace EinCompiler.BackEnds
 
 					// TODO: Push local variables here....
 
-					WriteBlock(func.Body);
+					WriteBlock(func, null, func.Body);
 
 					WriteFunctionLeave();
 					WriteLine();
@@ -64,21 +64,27 @@ namespace EinCompiler.BackEnds
 			WriteCommand("ret");
 		}
 
-		private void WriteBlock(BodyDescription body)
+		private void WriteBlock(
+			FunctionDescription context, 
+			string breakTarget, 
+			BodyDescription body)
 		{
 			foreach(var instr in body)
 			{
 				WriteCommand("; {0}", instr);
-				WriteInstruction(instr);
+				WriteInstruction(context, breakTarget, instr);
 				WriteLine();
 			}
 		}
 
-		private void WriteInstruction(InstructionDescription instr)
+		private void WriteInstruction(
+			FunctionDescription context, 
+			string breakTarget,
+			InstructionDescription instr)
 		{
 			if (instr is ExpressionInstruction)
 			{
-				WriteExpression(((ExpressionInstruction)instr).Expression);
+				WriteExpression(context, ((ExpressionInstruction)instr).Expression);
 				WriteCommand("drop");
 			}
 			else if (instr is ConditionalInstruction)
@@ -91,19 +97,19 @@ namespace EinCompiler.BackEnds
 				var endLabel = this.GenUniqueLabelName();
 
 				WriteCommand("; if condition");
-				WriteExpression(condition, true);
+				WriteExpression(context, condition, true);
 
 				if(falseBody != null)
 					WriteCommand("[ex(z)=0] jmp @{0} ; Jump to false", falseLabel);
 				else
 					WriteCommand("[ex(z)=0] jmp @{0} ; Jump to end", endLabel);
 
-				WriteBlock(trueBody);
+				WriteBlock(context, breakTarget, trueBody);
 				if(falseBody != null)
 				{
 					WriteCommand("jmp @{0}; jump to end", endLabel);
 					WriteLabel(falseLabel);
-					WriteBlock(falseBody);
+					WriteBlock(context, breakTarget, falseBody);
 				}
 				
 				WriteLabel(endLabel);
@@ -119,11 +125,11 @@ namespace EinCompiler.BackEnds
 				WriteCommand("; begin while");
 				WriteLabel(loopStart);
 				
-				WriteExpression(condition, true);
+				WriteExpression(context, condition, true);
 				
 				WriteCommand("[ex(z)=1] jmp @{0}", loopEnd);
 
-				WriteBlock(body);
+				WriteBlock(context, loopEnd, body);
 
 				WriteCommand("jmp @{0} ; end while", loopStart);
 
@@ -132,9 +138,11 @@ namespace EinCompiler.BackEnds
 			else if (instr is ReturnInstruction)
 			{
 				var expr = ((ReturnInstruction)instr).Expression;
-				WriteExpression(((ReturnInstruction)instr).Expression);
+				WriteExpression(context, ((ReturnInstruction)instr).Expression);
 
-				WriteCommand("set ??? ; TODO: Insert return value position here.");
+				WriteCommand(
+					"set {0}",
+					-(2 + context.Parameters.Length));
 				WriteFunctionLeave();
 			}
 			else if (instr is NopInstruction)
@@ -143,20 +151,24 @@ namespace EinCompiler.BackEnds
 			}
 			else if (instr is BreakLoopInstruction)
 			{
-				WriteLine("break;");
+				if (breakTarget == null)
+					throw new InvalidOperationException("Invalid break detected.");
+				WriteCommand(
+					"jmp @{0}; break",
+					breakTarget);
 			}
 		}
 
 		private void WriteCommand(string v, params object[] args) => this.WriteLine("\t" + v, args);
 
-		private void WriteExpression(Expression expression, bool modifyFlags = false)
+		private void WriteExpression(FunctionDescription context, Expression expression, bool modifyFlags = false)
 		{
 			var flagText = modifyFlags ? " [f:yes] " : "";
 			if (expression is AssignmentExpression)
 			{
 				var ass = (AssignmentExpression)expression;
 				
-				WriteExpression(ass.Source);
+				WriteExpression(context, ass.Source);
 				if (ass.Target is VariableExpression)
 				{
 					var var = ((VariableExpression)ass.Target).Variable;
@@ -188,8 +200,8 @@ namespace EinCompiler.BackEnds
 			{
 				var bin = (BinaryOperatorExpression)expression;
 				
-				WriteExpression(bin.RightHandSide);
-				WriteExpression(bin.LeftHandSide);
+				WriteExpression(context, bin.RightHandSide);
+				WriteExpression(context, bin.LeftHandSide);
 				Write("\t");
 				switch (bin.Operator)
 				{
@@ -214,7 +226,7 @@ namespace EinCompiler.BackEnds
 				// TODO: Check correct argument pushing order
 				foreach (var arg in call.Arguments)
 				{
-					WriteExpression(arg);
+					WriteExpression(context, arg);
 				}
 
 				WriteCommand("cpget");
@@ -243,7 +255,7 @@ namespace EinCompiler.BackEnds
 				if (var is ParameterVariableDescription)
 				{
 					var offset = ((ParameterVariableDescription)var).Index;
-					var position = -(offset + 1);
+					var position = -(offset + 2);
 
 					WriteCommand(
 						"get {0} {1} ; local {2}",

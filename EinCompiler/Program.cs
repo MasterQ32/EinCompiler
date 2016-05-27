@@ -33,6 +33,11 @@ namespace EinCompiler
 			// BackEnd.GenerateCode<CCodeBackEnd>(module, Console.Out);
 			BackEnd.GenerateCode<SVMABackEnd>(module, Console.Out);
 
+			using (var sw = new StreamWriter("output.asm", false, Encoding.UTF8))
+			{
+				BackEnd.GenerateCode<SVMABackEnd>(module, sw);
+			}
+
 			Console.ReadLine();
 		}
 	}
