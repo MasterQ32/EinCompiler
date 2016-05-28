@@ -204,17 +204,31 @@ namespace EinCompiler.BackEnds
 				
 				WriteExpression(context, bin.RightHandSide);
 				WriteExpression(context, bin.LeftHandSide);
-				Write("\t");
 				switch (bin.Operator)
 				{
-					case BinaryOperator.Addition: Write("add"); break;
-					case BinaryOperator.Subtraction: Write("sub"); break;
-					case BinaryOperator.Multiplication: Write("mul"); break;
-					case BinaryOperator.Division: Write("div"); break;
-					case BinaryOperator.EuclideanDivision: Write("mod"); break;
+					case BinaryOperator.Addition: WriteCommand("add {0}", flagText); break;
+					case BinaryOperator.Subtraction: WriteCommand("sub {0}", flagText); break;
+					case BinaryOperator.Multiplication: WriteCommand("mul {0}", flagText); break;
+					case BinaryOperator.Division: WriteCommand("div {0}", flagText); break;
+					case BinaryOperator.EuclideanDivision: WriteCommand("mod {0}", flagText); break;
+
+					case BinaryOperator.Equals:
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] push 0 {0}", flagText);
+						WriteCommand("[ex(z)=1] push 1 {0}", flagText);
+						break;
+					}
+					case BinaryOperator.Differs:
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] push 1 {0}", flagText);
+						WriteCommand("[ex(z)=1] push 0 {0}", flagText);
+						break;
+					}
+
 					default: throw new NotSupportedException();
 				}
-				WriteLine(flagText);
 			}
 			else if (expression is FunctionCallExpression)
 			{

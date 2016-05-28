@@ -162,8 +162,8 @@ namespace EinCompiler.FrontEnds
 							this.ReadTokensUntil("C_BRACKET"));
 						var trueBlock = this.ReadBody();
 						RawBodyNode falseBlock = null;
-						if(
-							this.PeekToken().Type.Name == "KEYWORD" && 
+						if (
+							this.PeekToken().Type.Name == "KEYWORD" &&
 							this.PeekToken().Text == "else")
 						{
 							this.ReadToken("KEYWORD");
@@ -247,7 +247,9 @@ namespace EinCompiler.FrontEnds
 
 			var operators = new[]
 			{
-				":=", "+", "-", "*", "/", "%"
+				":=",
+				">", "<",">=", "<=", "=", "!=",
+				"+", "-", "*", "/", "%"
 			};
 			foreach (var op in operators)
 			{
@@ -280,9 +282,9 @@ namespace EinCompiler.FrontEnds
 				return ConvertToExpression(tokens.Skip(1).Take(tokens.Length - 2).ToArray());
 			}
 
-			if(tokens.Length >= 3)
+			if (tokens.Length >= 3)
 			{
-				if(tokens[0].Type.Name == "IDENTIFIER" && tokens[1].Type.Name == "O_BRACKET" && tokens[tokens.Length - 1].Type.Name == "C_BRACKET")
+				if (tokens[0].Type.Name == "IDENTIFIER" && tokens[1].Type.Name == "O_BRACKET" && tokens[tokens.Length - 1].Type.Name == "C_BRACKET")
 				{
 					// This is a function call
 					var args = SplitTokens(
@@ -311,13 +313,13 @@ namespace EinCompiler.FrontEnds
 				var t = tokens[i];
 				if (isSeparator(t) == false)
 					continue;
-				
+
 				var portion = tokens.Skip(start).Take(i - start).ToArray();
 				list.Add(portion);
 
 				start = i + 1;
 			}
-			if(start < tokens.Length)
+			if (start < tokens.Length)
 			{
 				var portion = tokens.Skip(start).ToArray();
 				list.Add(portion);

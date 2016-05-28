@@ -1,23 +1,27 @@
-﻿var x : int;
-var a : int;
+﻿var a : int;
+
+fn relation_test()
+{
+	a := 10;
+	if (a = 10) {
+		;
+	}
+	if (a != 10) {
+		;
+	}
+
+
+}
+
+/*
 var i : int;
+var x : int;
 
 fn main() -> int
 {
 	print_str(33);
 	putc('\n');
 	print_str_native(33);
-}
-
-fn relation_test()
-{
-	a := 'A';
-	a := '\A';
-	// if (a > 10) {
-	//	putc(65);
-	// }
-
-
 }
 
 fn print_str(str : int)
@@ -82,3 +86,4 @@ export naked fn putc(ptr : int)
 	bpset
 	jmpi
 ]]
+*/

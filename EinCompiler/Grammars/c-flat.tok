@@ -17,7 +17,6 @@ COLON                 := \:
 ARROW                 := \-\>
 NUMBER                := (?<sign>-?)(?:(?<hex>0x[0-9A-Fa-f]+)|(?<bin>0b[01]+)|(?<float>\d+\.\d*)|(?<int>\d+))
 CHARACTER             := '\\?.'
-BINARY_OPERATOR       := !=|>=|<=|>|<|=
-BINARY_OPERATOR       := \+|\-|\*|\/|\%
+BINARY_OPERATOR       := !=|>=|<=|>|<|=|\+|\-|\*|\/|\%
 KEYWORD               := \b(var|fn|const|static|private|global|shared|export|naked|return|if|else|while|break)\b
 IDENTIFIER            := \b[A-Za-z_]\w*\b
