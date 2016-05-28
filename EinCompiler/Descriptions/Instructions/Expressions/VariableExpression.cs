@@ -17,5 +17,10 @@
 		{
 			// Variables are correctly deduced by the variable itself.
 		}
+
+		public override string ToString()
+		{
+			return this.Variable.Name;
+		}
 	}
 }

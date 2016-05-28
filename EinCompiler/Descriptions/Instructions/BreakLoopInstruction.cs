@@ -6,5 +6,7 @@
 		{
 
 		}
+
+		public override string ToString() => "break";
 	}
 }

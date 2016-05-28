@@ -32,5 +32,10 @@ namespace EinCompiler
 		public Expression Source { get; private set; }
 
 		public Expression Target { get; private set; }
+
+		public override string ToString()
+		{
+			return this.Target + " := " + this.Source;
+		}
 	}
 }

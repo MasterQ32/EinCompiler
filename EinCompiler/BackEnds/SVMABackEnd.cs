@@ -17,7 +17,7 @@ namespace EinCompiler.BackEnds
 		protected override void Generate(ModuleDescription module)
 		{
 			int globalAllocator = 0;
-			foreach(var var in module.Variables)
+			foreach (var var in module.Variables)
 			{
 				globals[var] = globalAllocator;
 				globalAllocator += 4;
@@ -65,11 +65,11 @@ namespace EinCompiler.BackEnds
 		}
 
 		private void WriteBlock(
-			FunctionDescription context, 
-			string breakTarget, 
+			FunctionDescription context,
+			string breakTarget,
 			BodyDescription body)
 		{
-			foreach(var instr in body)
+			foreach (var instr in body)
 			{
 				WriteCommand("; {0}", instr);
 				WriteInstruction(context, breakTarget, instr);
@@ -78,7 +78,7 @@ namespace EinCompiler.BackEnds
 		}
 
 		private void WriteInstruction(
-			FunctionDescription context, 
+			FunctionDescription context,
 			string breakTarget,
 			InstructionDescription instr)
 		{
@@ -106,13 +106,13 @@ namespace EinCompiler.BackEnds
 					WriteCommand("[ex(z)=1] jmp @{0} ; Jump to end", endLabel);
 
 				WriteBlock(context, breakTarget, trueBody);
-				if(falseBody != null)
+				if (falseBody != null)
 				{
 					WriteCommand("jmp @{0}; jump to end", endLabel);
 					WriteLabel(falseLabel);
 					WriteBlock(context, breakTarget, falseBody);
 				}
-				
+
 				WriteLabel(endLabel);
 			}
 			else if (instr is LoopInstruction)
@@ -125,7 +125,7 @@ namespace EinCompiler.BackEnds
 
 				WriteCommand("; begin while");
 				WriteLabel(loopStart);
-				
+
 				WriteExpression(context, condition, true);
 
 				WriteCommand("drop [f:no]");
@@ -169,7 +169,7 @@ namespace EinCompiler.BackEnds
 			if (expression is AssignmentExpression)
 			{
 				var ass = (AssignmentExpression)expression;
-				
+
 				WriteExpression(context, ass.Source);
 				if (ass.Target is VariableExpression)
 				{
@@ -201,7 +201,7 @@ namespace EinCompiler.BackEnds
 			else if (expression is BinaryOperatorExpression)
 			{
 				var bin = (BinaryOperatorExpression)expression;
-				
+
 				WriteExpression(context, bin.RightHandSide);
 				WriteExpression(context, bin.LeftHandSide);
 				switch (bin.Operator)
@@ -215,15 +215,61 @@ namespace EinCompiler.BackEnds
 					case BinaryOperator.Equals:
 					{
 						WriteCommand("sub [f:yes] [r:discard]");
-						WriteCommand("[ex(z)=0] push 0 {0}", flagText);
-						WriteCommand("[ex(z)=1] push 1 {0}", flagText);
+						WriteCommand("[ex(z)=0] push 0");
+						WriteCommand("[ex(z)=1] push 1");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
 						break;
 					}
 					case BinaryOperator.Differs:
 					{
 						WriteCommand("sub [f:yes] [r:discard]");
-						WriteCommand("[ex(z)=0] push 1 {0}", flagText);
-						WriteCommand("[ex(z)=1] push 0 {0}", flagText);
+						WriteCommand("[ex(z)=0] push 1");
+						WriteCommand("[ex(z)=1] push 0");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
+						break;
+					}
+
+					case BinaryOperator.LessOrEqual:
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] [ex(n)=0] push 1");
+						WriteCommand("[ex(z)=0] [ex(n)=1] push 0");
+						WriteCommand("[ex(z)=1] push 1");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
+						break;
+					}
+					case BinaryOperator.GreaterOrEqual:
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] [ex(n)=0] push 0");
+						WriteCommand("[ex(z)=0] [ex(n)=1] push 1");
+						WriteCommand("[ex(z)=1] push 1");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
+						break;
+					}
+
+					case BinaryOperator.LessThan:
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] [ex(n)=0] push 1");
+						WriteCommand("[ex(z)=0] [ex(n)=1] push 0");
+						WriteCommand("[ex(z)=1] push 0");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
+						break;
+					}
+					case BinaryOperator.GreaterThan:
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] [ex(n)=0] push 0");
+						WriteCommand("[ex(z)=0] [ex(n)=1] push 1");
+						WriteCommand("[ex(z)=1] push 0");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
 						break;
 					}
 
@@ -234,9 +280,9 @@ namespace EinCompiler.BackEnds
 			{
 				var call = (FunctionCallExpression)expression;
 				var fn = call.Function;
-				
+
 				// If we have a return value, push a stub
-				if(fn.ReturnType != TypeDescription.Void)
+				if (fn.ReturnType != TypeDescription.Void)
 					WriteCommand("push 0");
 
 				// TODO: Check correct argument pushing order

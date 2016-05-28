@@ -11,5 +11,7 @@
 		public BodyDescription Body { get; private set; }
 
 		public Expression Condition { get; private set; }
+		
+		public override string ToString() => "while(" + Condition + ") { ... }";
 	}
 }

@@ -14,5 +14,13 @@
 		public BodyDescription FalseBody { get; private set; }
 
 		public BodyDescription TrueBody { get; private set; }
+
+		public override string ToString()
+		{
+			if(FalseBody != null)
+				return "if(" + this.Condition + ") { ... } else { ... }";
+			else
+			return "if(" + this.Condition + ") { ... }";
+		}
 	}
 }

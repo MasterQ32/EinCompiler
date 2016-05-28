@@ -1,16 +1,59 @@
 ﻿var a : int;
 
-fn relation_test()
+fn main()
 {
 	a := 10;
 	if (a = 10) {
-		;
+		putc('a');
 	}
 	if (a != 10) {
-		;
+		putc('b');
+	}
+
+	if (a >= 10) {
+		putc('c');
+	}
+	if (a <= 10) {
+		putc('d');
+	}
+
+	if (a >= 9) {
+		putc('e');
+	}
+	if (a <= 9) {
+		putc('f');
+	}
+
+	if (a >= 11) {
+		putc('g');
+	}
+	if (a <= 11) {
+		putc('h');
 	}
 
 
+
+
+	if (a > 10) {
+		putc('i');
+	}
+	if (a < 10) {
+		putc('j');
+	}
+
+	if (a > 9) {
+		putc('k');
+	}
+	if (a < 9) {
+		putc('l');
+	}
+
+	if (a > 11) {
+		putc('m');
+	}
+	if (a < 11) {
+		putc('n');
+	}
 }
 
 /*
@@ -74,6 +117,7 @@ export naked fn read_mem(ptr : int) -> int
 	bpset
 	jmpi
 ]]
+*/
 export naked fn putc(ptr : int)
 [[
 	bpget
@@ -86,4 +130,3 @@ export naked fn putc(ptr : int)
 	bpset
 	jmpi
 ]]
-*/

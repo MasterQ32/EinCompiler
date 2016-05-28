@@ -28,6 +28,11 @@ namespace EinCompiler
 		}
 
 		public override TypeDescription Type => this.LeftHandSide.Type;
+
+		public override string ToString()
+		{
+			return this.LeftHandSide + " [" + this.Operator + "] " + this.RightHandSide;
+		}
 	}
 
 	public enum BinaryOperator
@@ -43,6 +48,6 @@ namespace EinCompiler
 		LessOrEqual,
 		GreaterOrEqual,
 		LessThan,
-		MoreThan
+		GreaterThan
 	}
 }

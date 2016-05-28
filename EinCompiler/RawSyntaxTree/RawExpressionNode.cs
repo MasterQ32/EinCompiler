@@ -127,7 +127,7 @@ namespace EinCompiler.RawSyntaxTree
 				case ">=": return BinaryOperator.GreaterOrEqual;
 				case "<=": return BinaryOperator.LessOrEqual;
 				case "<": return BinaryOperator.LessThan;
-				case ">": return BinaryOperator.MoreThan;
+				case ">": return BinaryOperator.GreaterThan;
 				default: throw new NotSupportedException();
 			}
 		}

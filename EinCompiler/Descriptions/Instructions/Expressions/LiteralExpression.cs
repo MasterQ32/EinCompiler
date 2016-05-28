@@ -26,5 +26,10 @@ namespace EinCompiler
 		public ValueDescription GetValue() => this.type.CreateValueFromString(this.Literal);
 
 		public override TypeDescription Type => this.type;
+
+		public override string ToString()
+		{
+			return this.Type + "(" + this.Literal + ")";
+		}
 	}
 }

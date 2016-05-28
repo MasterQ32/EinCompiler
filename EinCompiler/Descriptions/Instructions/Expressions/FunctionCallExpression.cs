@@ -33,5 +33,12 @@ namespace EinCompiler
 		}
 
 		public override TypeDescription Type => this.Function.ReturnType;
+
+		public override string ToString()
+		{
+			return this.Function.Name + "(" +
+				string.Join<Expression>(", ", this.Arguments) +
+				")";
+		}
 	}
 }
