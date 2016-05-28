@@ -1,8 +1,8 @@
 ﻿namespace EinCompiler
 {
-	public sealed class ParameterVariableDescription : VariableDescription
+	public sealed class LocalDecription : VariableDescription
 	{
-		public ParameterVariableDescription(
+		public LocalDecription(
 			TypeDescription type,
 			string name,
 			int position) : 
@@ -16,7 +16,7 @@
 		public override string ToString()
 		{
 			return
-				"Parameter " +
+				"Local " +
 				this.Type.ToString() + " " +
 				this.Name;
 		}

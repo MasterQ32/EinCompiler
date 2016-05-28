@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace EinCompiler.FrontEnds
 {
-	public sealed class CFlatParser : Parser
+	public sealed class ELanguageParser : Parser
 	{
 		static Regex unescaper = new Regex(@"\\(.)", RegexOptions.Compiled);
 
@@ -24,7 +24,7 @@ namespace EinCompiler.FrontEnds
 					this.ReadToken("O_BRACKET");
 					var text = this.ReadToken("STRING");
 					this.ReadToken("C_BRACKET");
-					this.ReadToken("DELIMITER");
+					this.ReadDelimiter();
 
 					var fileName = Unescape(text.Text);
 					fileName = fileName.Substring(1, fileName.Length - 2);
@@ -37,7 +37,7 @@ namespace EinCompiler.FrontEnds
 					var type = this.ReadToken("IDENTIFIER");
 					this.ReadToken("ASSIGNMENT");
 					var value = this.ReadValue();
-					this.ReadToken("DELIMITER");
+					this.ReadDelimiter();
 					return new RawConstantNode(name.Text, type.Text, value.Text);
 				}
 				case "private":
@@ -62,7 +62,7 @@ namespace EinCompiler.FrontEnds
 						this.ReadToken("ASSIGNMENT");
 						value = this.ReadValue();
 					}
-					this.ReadToken("DELIMITER");
+					this.ReadDelimiter();
 
 					return new RawVariableNode(
 						name.Text,
@@ -116,12 +116,34 @@ namespace EinCompiler.FrontEnds
 					}
 					else
 					{
+						var locals = new List<RawLocal>();
+						while(this.PeekToken().Type.Name != "O_CBRACKET")
+						{
+							var tok = this.ReadToken("KEYWORD");
+
+							switch(tok.Text)
+							{
+								case "var": // local variable in this case
+								{
+									var locname = this.ReadToken("IDENTIFIER").Text;
+									this.ReadToken("COLON");
+									var loctype = this.ReadToken("IDENTIFIER").Text;
+									this.ReadDelimiter();
+									locals.Add(new RawLocal(locname, loctype));
+									break;
+								}
+								default: throw new ParserException(tok);
+							}
+						}
+
+
 						var body = this.ReadBody();
 
 						return new RawFunctionNode(
 							name.Text,
 							returnType?.Text,
 							parameters,
+							locals,
 							body)
 						{
 							IsExported = modifiers.Contains("export"),
@@ -135,6 +157,8 @@ namespace EinCompiler.FrontEnds
 			}
 
 		}
+
+		private void ReadDelimiter() => this.ReadToken("DELIMITER");
 
 		private string Unescape(string text) => 
 			unescaper.Replace(text, (m) =>
@@ -178,7 +202,7 @@ namespace EinCompiler.FrontEnds
 					case "break":
 					{
 						this.ReadToken("KEYWORD");
-						this.ReadToken("DELIMITER");
+						this.ReadDelimiter();
 						return new RawBreakInstructionNode();
 					}
 					case "return":
@@ -225,7 +249,7 @@ namespace EinCompiler.FrontEnds
 			}
 			else if (tok.Type.Name == "DELIMITER")
 			{
-				this.ReadToken("DELIMITER");
+				this.ReadDelimiter();
 				return new RawNopInstructionNode();
 			}
 			else

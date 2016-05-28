@@ -108,7 +108,8 @@ namespace EinCompiler.RawSyntaxTree
 				description.Functions.Add(new FunctionDescription(
 					func.Name,
 					func.ReturnType != null ? types[func.ReturnType] : TypeDescription.Void,
-					func.Parameters.Select(p => new ParameterDescription(types[p.Type], p.Name)).ToArray()));
+					func.Parameters.Select(p => new ParameterDescription(types[p.Type], p.Name)).ToArray(),
+					func.Locals.Select((l, i) => new LocalDecription(types[l.Type], l.Name, i)).ToArray()));
 			}
 
 			// Second, create all naked functions with their
@@ -140,6 +141,11 @@ namespace EinCompiler.RawSyntaxTree
 						i);
 					localVariables.Add(var);
 				}
+				foreach(var local in description.Functions[func.Name].Locals)
+				{
+					localVariables.Add(local);
+				}
+
 
 				description.Functions[func.Name].Body = 
 					func.Body.Translate(

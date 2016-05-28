@@ -27,24 +27,16 @@ fn main() -> int
 	print_str_native(33);
 }
 
-fn arg_order_test(a : int, b : int, c : int)
-{
-	putc(a);
-	putc(b);
-	putc(c);
-}
-
-
-
 fn print_str(str : int)
+	var c : int;
 {
 	while (1)
 	{
-		x := read8(str);
-		if (x = 0) {
+		c := read8(str);
+		if (c = 0) {
 			break;
 		}
-		putc(x);
+		putc(c);
 		str := str + 1;
 	}
 }

@@ -11,7 +11,7 @@ namespace EinCompiler
 			this.Function = function;
 			this.Arguments = arguments;
 
-			if (this.Arguments.Length != this.Function.Parameters.Length)
+			if (this.Arguments.Length != this.Function.Parameters.Count)
 				throw new InvalidOperationException();
 		}
 

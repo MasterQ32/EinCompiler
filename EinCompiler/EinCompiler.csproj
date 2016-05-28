@@ -48,11 +48,13 @@
     <Compile Include="BackEnds\SVMABackEnd.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="Descriptions\ConstantDescription.cs" />
-    <Compile Include="FrontEnds\CFlatFrontend.cs" />
+    <Compile Include="Descriptions\LocalDecription.cs" />
+    <Compile Include="FrontEnds\ELanguageParser.cs" />
     <Compile Include="FrontEnds\Parser.cs" />
     <Compile Include="FrontEnds\ParserException.cs" />
     <Compile Include="Descriptions\Instructions\Expressions\FunctionCallExpression.cs" />
     <Compile Include="Descriptions\ParameterVariableDescription.cs" />
+    <Compile Include="RawSyntaxTree\RawLocal.cs" />
     <Compile Include="RawSyntaxTree\RawIncludeNode.cs" />
     <Compile Include="RawSyntaxTree\RawNakedFunctionNode.cs" />
     <Compile Include="RawSyntaxTree\RawFunctionCallExpression.cs" />
@@ -109,7 +111,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Examples\c-flat.c">
+    <None Include="Examples\e-language.e">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="Examples\tokenizer-test.txt">

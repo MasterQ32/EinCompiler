@@ -10,6 +10,8 @@ using System.Text;
 
 namespace EinCompiler
 {
+	// TODO: Global TODO list:
+
 	class Program
 	{
 		static readonly Tokenizer tokenizer;
@@ -24,7 +26,7 @@ namespace EinCompiler
 
 			var tokens = tokenizer.Tokenize(source);
 
-			var rawTree = Parser.Parse<CFlatParser>(tokens);
+			var rawTree = Parser.Parse<ELanguageParser>(tokens);
 
 			return rawTree.Translate(
 				commonTypes, 

@@ -42,7 +42,12 @@ namespace EinCompiler.BackEnds
 					WriteLabel(func.Name);
 					WriteFunctionEnter();
 
-					// TODO: Push local variables here....
+					foreach(var local in func.Locals)
+					{
+						WriteCommand(
+							"push 0 ; allocate local {0}",
+							local.Name);
+					}
 
 					WriteBlock(func, null, func.Body);
 
@@ -147,7 +152,7 @@ namespace EinCompiler.BackEnds
 
 				WriteCommand(
 					"set {0}",
-					-(2 + context.Parameters.Length));
+					-(2 + context.Parameters.Count));
 				WriteFunctionLeave();
 			}
 			else if (instr is NopInstruction)
@@ -182,6 +187,16 @@ namespace EinCompiler.BackEnds
 						var offset = ((ParameterVariableDescription)var).Index;
 						var position = -(offset + 2);
 
+						WriteCommand(
+							"set {0} {1} [r:push] ; argument {2}",
+							position,
+							flagText,
+							var.Name);
+					}
+					else if (var is LocalDecription)
+					{
+						var offset = ((LocalDecription)var).Index;
+						var position = 1 + offset;
 						WriteCommand(
 							"set {0} {1} [r:push] ; local {2}",
 							position,
@@ -329,6 +344,17 @@ namespace EinCompiler.BackEnds
 				{
 					var offset = ((ParameterVariableDescription)var).Index;
 					var position = -(offset + 2);
+
+					WriteCommand(
+						"get {0} {1} ; argument {2}",
+						position,
+						flagText,
+						var.Name);
+				}
+				else if (var is LocalDecription)
+				{
+					var offset = ((LocalDecription)var).Index;
+					var position = 1 + offset;
 
 					WriteCommand(
 						"get {0} {1} ; local {2}",
