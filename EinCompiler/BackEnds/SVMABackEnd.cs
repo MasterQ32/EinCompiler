@@ -284,8 +284,10 @@ namespace EinCompiler.BackEnds
 				var call = (FunctionCallExpression)expression;
 				var fn = call.Function;
 
-				// If we have a return value, push a stub
-				if (fn.ReturnType != TypeDescription.Void)
+				// If we have a return value and no inline naked,
+				// push a stub
+				if (fn.IsInline == false &&
+					fn.ReturnType != TypeDescription.Void)
 					WriteCommand("push 0");
 				
 				foreach (var arg in call.Arguments.Reverse())
