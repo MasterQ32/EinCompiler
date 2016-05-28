@@ -16,7 +16,7 @@ namespace EinCompiler
 		{
 			Tokenizer tok = Tokenizer.Load("./Grammars/c-flat.tok");
 
-			var source = File.ReadAllText("./Examples/c-flat.c");
+			var source = File.ReadAllText("./Examples/work.c");
 
 			var tokens = tok.Tokenize(source);
 

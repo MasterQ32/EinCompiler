@@ -100,9 +100,9 @@ namespace EinCompiler.BackEnds
 				WriteExpression(context, condition, true);
 
 				if(falseBody != null)
-					WriteCommand("[ex(z)=0] jmp @{0} ; Jump to false", falseLabel);
+					WriteCommand("[ex(z)=1] jmp @{0} ; Jump to false", falseLabel);
 				else
-					WriteCommand("[ex(z)=0] jmp @{0} ; Jump to end", endLabel);
+					WriteCommand("[ex(z)=1] jmp @{0} ; Jump to end", endLabel);
 
 				WriteBlock(context, breakTarget, trueBody);
 				if(falseBody != null)
@@ -142,7 +142,7 @@ namespace EinCompiler.BackEnds
 
 				WriteCommand(
 					"set {0}",
-					-(2 + context.Parameters.Length));
+					-(3 + context.Parameters.Length));
 				WriteFunctionLeave();
 			}
 			else if (instr is NopInstruction)
@@ -255,7 +255,7 @@ namespace EinCompiler.BackEnds
 				if (var is ParameterVariableDescription)
 				{
 					var offset = ((ParameterVariableDescription)var).Index;
-					var position = -(offset + 2);
+					var position = -(offset + 3);
 
 					WriteCommand(
 						"get {0} {1} ; local {2}",

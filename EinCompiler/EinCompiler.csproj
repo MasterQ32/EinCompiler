@@ -94,6 +94,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Examples\work.c">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Grammars\c-flat.tok">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
