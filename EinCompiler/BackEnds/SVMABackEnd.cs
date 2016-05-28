@@ -98,8 +98,9 @@ namespace EinCompiler.BackEnds
 
 				WriteCommand("; if condition");
 				WriteExpression(context, condition, true);
+				WriteCommand("drop [f:no]");
 
-				if(falseBody != null)
+				if (falseBody != null)
 					WriteCommand("[ex(z)=1] jmp @{0} ; Jump to false", falseLabel);
 				else
 					WriteCommand("[ex(z)=1] jmp @{0} ; Jump to end", endLabel);
@@ -126,7 +127,8 @@ namespace EinCompiler.BackEnds
 				WriteLabel(loopStart);
 				
 				WriteExpression(context, condition, true);
-				
+
+				WriteCommand("drop [f:no]");
 				WriteCommand("[ex(z)=1] jmp @{0}", loopEnd);
 
 				WriteBlock(context, loopEnd, body);
