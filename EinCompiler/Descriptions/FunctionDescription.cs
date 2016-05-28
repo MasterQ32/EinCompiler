@@ -38,6 +38,8 @@
 
 		public bool IsNaked => (this.NakedBody != null);
 
+		public bool IsInline { get; set; }
+
 		public ParameterDescription[] Parameters { get; private set; }
 
 		public TypeDescription ReturnType { get; private set; }

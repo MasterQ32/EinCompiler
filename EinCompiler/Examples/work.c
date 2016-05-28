@@ -1,6 +1,9 @@
 ﻿fn main() -> int
 {
 	arg_order_test('a', 'b', 'c');
+	putc('d');
+	putc('e');
+	putc('f');
 }
 
 fn arg_order_test(a : int, b : int, c : int)
@@ -9,6 +12,11 @@ fn arg_order_test(a : int, b : int, c : int)
 	putc(b);
 	putc(c);
 }
+
+inline fn putc(chr : int)
+[[
+	[i0:pop] syscall[ci:1]
+]]
 
 /*
 var i : int;
@@ -72,18 +80,6 @@ export naked fn read_mem(ptr : int) -> int
 	jmpi
 ]]
 */
-export naked fn putc(ptr : int)
-[[
-	bpget
-	spget
-	bpset
-	get -2
-	[i0:pop] syscall[ci:1]
-	bpget
-	spset
-	bpset
-	jmpi
-]]
 
 
 /**

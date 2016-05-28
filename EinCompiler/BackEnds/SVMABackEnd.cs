@@ -29,14 +29,17 @@ namespace EinCompiler.BackEnds
 
 			foreach (var func in module.Functions)
 			{
-				WriteLabel(func.Name);
 				if (func.IsNaked)
 				{
+					if (func.IsInline)
+						continue;
 					// Yay, naked functions!
+					WriteLabel(func.Name);
 					Write(func.NakedBody);
 				}
 				else
 				{
+					WriteLabel(func.Name);
 					WriteFunctionEnter();
 
 					// TODO: Push local variables here....
@@ -290,12 +293,19 @@ namespace EinCompiler.BackEnds
 					WriteExpression(context, arg);
 				}
 
-				WriteCommand("cpget");
-				WriteCommand("jmp @{0}", fn.Name);
-
-				foreach (var param in fn.Parameters)
+				if (fn.IsNaked && fn.IsInline)
 				{
-					WriteCommand("drop ; {0}", param.Name);
+					Write(fn.NakedBody);
+				}
+				else
+				{
+					WriteCommand("cpget");
+					WriteCommand("jmp @{0}", fn.Name);
+
+					foreach (var param in fn.Parameters)
+					{
+						WriteCommand("drop ; {0}", param.Name);
+					}
 				}
 
 				// If we don't have a return value, push a stub result

@@ -58,6 +58,7 @@ namespace EinCompiler.FrontEnds
 				}
 				case "export":
 				case "naked":
+				case "inline":
 				case "fn":
 				{
 					var modifiers = new List<string>();
@@ -87,14 +88,17 @@ namespace EinCompiler.FrontEnds
 						returnType = this.ReadToken("IDENTIFIER");
 					}
 
-					if (modifiers.Contains("naked"))
+					if (modifiers.Contains("naked") || modifiers.Contains("inline"))
 					{
 						var body = this.ReadToken("RAW_BLOCK");
 						return new RawNakedFunctionNode(
 							name.Text,
 							returnType?.Text,
 							parameters,
-							body.Text);
+							body.Text)
+						{
+							IsInline = modifiers.Contains("inline"),
+						};
 					}
 					else
 					{

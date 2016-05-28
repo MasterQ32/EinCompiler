@@ -25,7 +25,7 @@ namespace EinCompiler.RawSyntaxTree
 
 		public IReadOnlyList<RawParameterNode> Parameters => this.parameters;
 
-		public bool IsExported { get; set; }
+		public bool IsInline { get; set; }
 
 		public string Body { get; private set; }
 

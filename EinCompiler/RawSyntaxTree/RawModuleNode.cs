@@ -107,7 +107,10 @@ namespace EinCompiler.RawSyntaxTree
 					naked.Name,
 					naked.ReturnType != null ? types[naked.ReturnType] : TypeDescription.Void,
 					naked.Parameters.Select(p => new ParameterDescription(types[p.Type], p.Name)).ToArray(),
-					naked.Body.Substring(2, naked.Body.Length - 4)));
+					naked.Body.Substring(2, naked.Body.Length - 4))
+				{
+					IsInline = naked.IsInline
+				});
 			}
 
 			// Then, translate all function bodies to
