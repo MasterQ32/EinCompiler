@@ -284,9 +284,8 @@ namespace EinCompiler.BackEnds
 				// If we have a return value, push a stub
 				if (fn.ReturnType != TypeDescription.Void)
 					WriteCommand("push 0");
-
-				// TODO: Check correct argument pushing order
-				foreach (var arg in call.Arguments)
+				
+				foreach (var arg in call.Arguments.Reverse())
 				{
 					WriteExpression(context, arg);
 				}
@@ -294,7 +293,7 @@ namespace EinCompiler.BackEnds
 				WriteCommand("cpget");
 				WriteCommand("jmp @{0}", fn.Name);
 
-				foreach (var param in fn.Parameters.Reverse())
+				foreach (var param in fn.Parameters)
 				{
 					WriteCommand("drop ; {0}", param.Name);
 				}

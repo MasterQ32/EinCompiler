@@ -1,7 +1,7 @@
 ﻿
 
-COMMENT(noemit)       := \/\/[^\n]*
 COMMENT(noemit,singleline) := \/\*.*?\*\/
+COMMENT(noemit)       := \/\/[^\n]*
 RAW_BLOCK(singleline) := \[\[.*?\]\]
 WHITESPACE(noemit)    := \s+
 O_BRACKET             := \(
