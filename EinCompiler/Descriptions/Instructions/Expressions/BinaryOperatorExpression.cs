@@ -36,6 +36,13 @@ namespace EinCompiler
 		Subtraction,
 		Multiplication,
 		Division,
-		EuclideanDivision
+		EuclideanDivision,
+
+		Equals,
+		Differs,
+		LessOrEqual,
+		GreaterOrEqual,
+		LessThan,
+		MoreThan
 	}
 }

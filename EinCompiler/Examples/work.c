@@ -5,22 +5,33 @@ var i : int;
 fn main() -> int
 {
 	print_str(33);
-	putc(9);
+	putc('\n');
 	print_str_native(33);
+}
+
+fn relation_test()
+{
+	a := 'A';
+	a := '\A';
+	// if (a > 10) {
+	//	putc(65);
+	// }
+
+
 }
 
 fn print_str(str : int)
 {
-	i = str;
+	i := str;
 	while (1)
 	{
-		x = read_mem(i);
+		x := read_mem(i);
 		if (x) {}
 		else {
 			break;
 		}
 		putc(x);
-		i = i + 1;
+		i := i + 1;
 	}
 }
 

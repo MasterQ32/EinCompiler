@@ -33,7 +33,27 @@ namespace EinCompiler.RawSyntaxTree
 
 		public override Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs)
 		{
-			return new LiteralExpression(this.Literal);
+			var text = this.Literal;
+			if(text.StartsWith("'"))
+			{
+				if(text.Length == 4)
+				{
+					switch(text[2])
+					{
+						case 't': text = ((int)'\t').ToString(); break;
+						case 'n': text = ((int)'\n').ToString(); break;
+						case 'r': text = ((int)'\r').ToString(); break;
+						case 'b': text = ((int)'\b').ToString(); break;
+						default: throw new InvalidOperationException("Unrecognized escape code.");
+					}
+				}
+				else
+				{
+					text = ((int)text[1]).ToString();
+				}
+			}
+
+			return new LiteralExpression(text);
 		}
 
 		public string Literal { get; private set; }
@@ -75,7 +95,7 @@ namespace EinCompiler.RawSyntaxTree
 
 		public override Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs)
 		{
-			if(this.Operator == "=")
+			if(this.Operator == ":=")
 			{
 				return new AssignmentExpression(
 					this.LeftHandSide.Translate(types, vars, funcs),
@@ -94,11 +114,20 @@ namespace EinCompiler.RawSyntaxTree
 		{
 			switch(text)
 			{
+				// Arithmetic
 				case "+": return BinaryOperator.Addition;
 				case "-": return BinaryOperator.Subtraction;
 				case "*": return BinaryOperator.Multiplication;
 				case "/": return BinaryOperator.Division;
 				case "%": return BinaryOperator.EuclideanDivision;
+
+				// Relational
+				case "=": return BinaryOperator.Equals;
+				case "!=": return BinaryOperator.Differs;
+				case ">=": return BinaryOperator.GreaterOrEqual;
+				case "<=": return BinaryOperator.LessOrEqual;
+				case "<": return BinaryOperator.LessThan;
+				case ">": return BinaryOperator.MoreThan;
 				default: throw new NotSupportedException();
 			}
 		}

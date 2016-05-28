@@ -232,6 +232,8 @@ namespace EinCompiler.FrontEnds
 					return new RawLiteralExpressionNode(tok.Text);
 				else if (tok.Type.Name == "NUMBER")
 					return new RawLiteralExpressionNode(tok.Text);
+				else if (tok.Type.Name == "CHARACTER")
+					return new RawLiteralExpressionNode(tok.Text);
 				else
 					throw new ParserException(tok, "Expected string, variable, constant or number.");
 			}
@@ -245,7 +247,7 @@ namespace EinCompiler.FrontEnds
 
 			var operators = new[]
 			{
-				"=", "+", "-", "*", "/", "%"
+				":=", "+", "-", "*", "/", "%"
 			};
 			foreach (var op in operators)
 			{
