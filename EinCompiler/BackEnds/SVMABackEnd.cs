@@ -144,7 +144,7 @@ namespace EinCompiler.BackEnds
 
 				WriteCommand(
 					"set {0}",
-					-(3 + context.Parameters.Length));
+					-(2 + context.Parameters.Length));
 				WriteFunctionLeave();
 			}
 			else if (instr is NopInstruction)
@@ -257,7 +257,7 @@ namespace EinCompiler.BackEnds
 				if (var is ParameterVariableDescription)
 				{
 					var offset = ((ParameterVariableDescription)var).Index;
-					var position = -(offset + 3);
+					var position = -(offset + 2);
 
 					WriteCommand(
 						"get {0} {1} ; local {2}",
