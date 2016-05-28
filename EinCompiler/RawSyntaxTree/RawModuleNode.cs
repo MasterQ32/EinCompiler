@@ -10,6 +10,7 @@ namespace EinCompiler.RawSyntaxTree
 		private List<RawNakedFunctionNode> nakedFunctions = new List<RawNakedFunctionNode>();
 		private List<RawVariableNode> variables = new List<RawVariableNode>();
 		private List<RawConstantNode> constants = new List<RawConstantNode>();
+		private List<string> includes = new List<string>();
 
 		public RawModuleNode()
 		{
@@ -34,15 +35,26 @@ namespace EinCompiler.RawSyntaxTree
 			{
 				constants.Add((RawConstantNode)node);
 			}
+			else if(node is RawIncludeNode)
+			{
+				includes.Add(((RawIncludeNode)node).FileName);
+			}
 			else
 			{
 				throw new NotSupportedException($"{node} is not a supported node type.");
 			}
 		}
 
-		public ModuleDescription Translate(TypeContainer types)
+		public ModuleDescription Translate(TypeContainer types, Func<string, ModuleDescription> fileLoader )
 		{
 			var description = new ModuleDescription();
+
+			foreach(var include in this.includes)
+			{
+				var module = fileLoader(include);
+
+				description.Merge(module);
+			}
 
 			foreach (var con in this.constants)
 			{
@@ -146,5 +158,7 @@ namespace EinCompiler.RawSyntaxTree
 		public ICollection<RawVariableNode> Variables => this.variables;
 
 		public ICollection<RawConstantNode> Constants => this.constants;
+
+		public ICollection<string> Includes => this.includes;
 	}
 }

@@ -180,7 +180,7 @@ namespace EinCompiler.BackEnds
 					if (var is ParameterVariableDescription)
 					{
 						var offset = ((ParameterVariableDescription)var).Index;
-						var position = -(offset + 1);
+						var position = -(offset + 2);
 
 						WriteCommand(
 							"set {0} {1} [r:push] ; local {2}",

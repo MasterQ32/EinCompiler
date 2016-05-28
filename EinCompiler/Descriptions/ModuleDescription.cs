@@ -12,6 +12,18 @@ namespace EinCompiler
 		public ConstantContainer Constants { get; } = new ConstantContainer();
 
 		public FunctionContainer Functions { get; } = new FunctionContainer();
+
+		public void Merge(ModuleDescription module)
+		{
+			foreach (var c in module.Constants)
+				this.Constants.Add(c);
+
+			foreach (var var in module.Variables)
+				this.Variables.Add(var);
+
+			foreach (var fn in module.Functions)
+				this.Functions.Add(fn);
+		}
 	}
 
 	public class TypeContainer : DescriptionContainer<TypeDescription>

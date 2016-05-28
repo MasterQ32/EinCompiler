@@ -1,24 +1,22 @@
-﻿fn main() -> int
+﻿
+// Module Support planned:
+// import "";
+// import "" as name;
+
+include("das-os.e");
+
+/*
+fn main() -> int
 {
 	arg_order_test('a', 'b', 'c');
 	putc('d');
 	putc('e');
 	putc('f');
+
+	exit(0);
 }
+*/
 
-fn arg_order_test(a : int, b : int, c : int)
-{
-	putc(a);
-	putc(b);
-	putc(c);
-}
-
-inline fn putc(chr : int)
-[[
-	[i0:pop] syscall[ci:1]
-]]
-
-/*
 var i : int;
 var x : int;
 
@@ -29,18 +27,25 @@ fn main() -> int
 	print_str_native(33);
 }
 
+fn arg_order_test(a : int, b : int, c : int)
+{
+	putc(a);
+	putc(b);
+	putc(c);
+}
+
+
+
 fn print_str(str : int)
 {
-	i := str;
 	while (1)
 	{
-		x := read_mem(i);
-		if (x) {}
-		else {
+		x := read8(str);
+		if (x = 0) {
 			break;
 		}
 		putc(x);
-		i := i + 1;
+		str := str + 1;
 	}
 }
 
@@ -66,6 +71,8 @@ print_str_end_loop:
 	bpset
 	jmpi
 ]]
+
+/*
 export naked fn read_mem(ptr : int) -> int
 [[
 	bpget

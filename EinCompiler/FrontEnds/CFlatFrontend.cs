@@ -3,11 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace EinCompiler.FrontEnds
 {
 	public sealed class CFlatParser : Parser
 	{
+		static Regex unescaper = new Regex(@"\\(.)", RegexOptions.Compiled);
+
 		Token ReadValue() => this.ReadToken("NUMBER", "STRING");
 
 		protected override RawSyntaxNode ReadNext()
@@ -16,6 +19,17 @@ namespace EinCompiler.FrontEnds
 
 			switch (@class.Text)
 			{
+				case "include":
+				{
+					this.ReadToken("O_BRACKET");
+					var text = this.ReadToken("STRING");
+					this.ReadToken("C_BRACKET");
+					this.ReadToken("DELIMITER");
+
+					var fileName = Unescape(text.Text);
+					fileName = fileName.Substring(1, fileName.Length - 2);
+					return new RawIncludeNode(fileName);
+				}
 				case "const":
 				{
 					var name = this.ReadToken("IDENTIFIER");
@@ -121,6 +135,22 @@ namespace EinCompiler.FrontEnds
 			}
 
 		}
+
+		private string Unescape(string text) => 
+			unescaper.Replace(text, (m) =>
+			{
+				switch(m.Groups[1].Value)
+				{
+					case "n": return "\n";
+					case "r": return "\r";
+					case "t": return "\t";
+					case "b": return "\b";
+					case "\\": return "\\";
+					case "\"": return "\"";
+					case "\'": return "\'";
+					default: return m.Value;
+				}
+			});
 
 		private RawBodyNode ReadBody()
 		{

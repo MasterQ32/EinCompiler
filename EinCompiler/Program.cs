@@ -12,24 +12,46 @@ namespace EinCompiler
 {
 	class Program
 	{
-		static void Main(string[] args)
+		static readonly Tokenizer tokenizer;
+		static readonly TypeContainer commonTypes;
+
+		static ModuleDescription Compile(string fileName)
 		{
-			Tokenizer tok = Tokenizer.Load("./Grammars/c-flat.tok");
+			var file = Path.GetFullPath(fileName);
+			var path = Path.GetDirectoryName(file);
+			var root = new Uri(file);
+			var source = File.ReadAllText(file);
 
-			var source = File.ReadAllText("./Examples/work.c");
-
-			var tokens = tok.Tokenize(source);
+			var tokens = tokenizer.Tokenize(source);
 
 			var rawTree = Parser.Parse<CFlatParser>(tokens);
 
-			var types = new TypeContainer();
-			types.Add(TypeDescription.Void);
-			types.Add(new IntegerType("ptr", true, 4));
-			types.Add(new IntegerType("int", true, 4));
-			types.Add(new IntegerType("uint", true, 4));
-			types.Boolean = types["int"];
+			return rawTree.Translate(
+				commonTypes, 
+				(f) =>
+				{
+					var uri = new Uri(f, UriKind.RelativeOrAbsolute);
+					if (uri.IsAbsoluteUri == false)
+						uri = new Uri(root, uri);
+					return Compile(uri.AbsolutePath);
+				});
+		}
 
-			var module = rawTree.Translate(types);
+		static Program()
+		{
+			tokenizer = Tokenizer.Load("./Grammars/c-flat.tok");
+
+			commonTypes = new TypeContainer();
+			commonTypes.Add(TypeDescription.Void);
+			commonTypes.Add(new IntegerType("ptr", true, 4));
+			commonTypes.Add(new IntegerType("int", true, 4));
+			commonTypes.Add(new IntegerType("uint", true, 4));
+			commonTypes.Boolean = commonTypes["int"];
+		}
+
+		static void Main(string[] args)
+		{
+			var module = Compile("./Examples/work.e");
 
 			// BackEnd.GenerateCode<CCodeBackEnd>(module, Console.Out);
 			BackEnd.GenerateCode<SVMABackEnd>(module, Console.Out);
