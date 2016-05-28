@@ -24,6 +24,7 @@ namespace EinCompiler
 
 			var types = new TypeContainer();
 			types.Add(TypeDescription.Void);
+			types.Add(new IntegerType("ptr", true, 4));
 			types.Add(new IntegerType("int", true, 4));
 			types.Add(new IntegerType("uint", true, 4));
 			types.Boolean = types["int"];
