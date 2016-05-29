@@ -4,7 +4,11 @@ namespace EinCompiler.RawSyntaxTree
 {
 	public sealed class RawVariableNode : RawSyntaxNode
 	{
-		public RawVariableNode(string name, string type, string value, string[] modifiers) 
+		public RawVariableNode(
+			Token name,
+			RawTypeNode type,
+			Token value,
+			Token[] modifiers) 
 		{
 			this.Name = name;
 			this.Type = type;
@@ -12,14 +16,14 @@ namespace EinCompiler.RawSyntaxTree
 			this.Modifiers = modifiers.ToArray();
 		}
 
-		public string Name { get; private set; }
+		public Token Name { get; private set; }
 
-		public string Type { get; private set; }
+		public RawTypeNode Type { get; private set; }
 
-		public string Value { get; private set; }
+		public Token Value { get; private set; }
 
-		public string[] Modifiers { get; private set; }
+		public Token[] Modifiers { get; private set; }
 
-		public override string ToString() => $"{Type} {Name} = {Value}";
+		public override string ToString() => $"{Type} {Name.Text} = {Value.Text}";
 	}
 }

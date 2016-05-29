@@ -34,11 +34,11 @@ namespace EinCompiler.FrontEnds
 				{
 					var name = this.ReadToken("IDENTIFIER");
 					this.ReadToken("COLON");
-					var type = this.ReadToken("IDENTIFIER");
+					var type = this.ReadType();
 					this.ReadToken("ASSIGNMENT");
 					var value = this.ReadValue();
 					this.ReadDelimiter();
-					return new RawConstantNode(name.Text, type.Text, value.Text);
+					return new RawConstantNode(name, type, value);
 				}
 				case "private":
 				case "static":
@@ -46,17 +46,19 @@ namespace EinCompiler.FrontEnds
 				case "global":
 				case "var":
 				{
-					var classes = new List<string>();
+					var classes = new List<Token>();
 					while (@class.Text != "var")
 					{
-						classes.Add(@class.Text);
+						classes.Add(@class);
 						@class = this.ReadToken("KEYWORD");
 					}
 					var name = this.ReadToken("IDENTIFIER");
 					this.ReadToken("COLON");
-					var type = this.ReadToken("IDENTIFIER");
-					var option = this.PeekToken("DELIMITER", "ASSIGNMENT");
+					var type = this.ReadType();
+					
 					Token value = null;
+
+					var option = this.PeekToken("DELIMITER", "ASSIGNMENT");
 					if (option.Type.Name == "ASSIGNMENT")
 					{
 						this.ReadToken("ASSIGNMENT");
@@ -65,9 +67,9 @@ namespace EinCompiler.FrontEnds
 					this.ReadDelimiter();
 
 					return new RawVariableNode(
-						name.Text,
-						type.Text,
-						value?.Text,
+						name,
+						type,
+						value,
 						classes.ToArray());
 				}
 				case "export":
@@ -156,6 +158,22 @@ namespace EinCompiler.FrontEnds
 				}
 			}
 
+		}
+
+		private RawTypeNode ReadType()
+		{
+			var name = this.ReadToken("IDENTIFIER");
+			var option = this.PeekToken();
+
+			Token arraySize = null;
+			if (option.Type.Name == "O_SBRACKET")
+			{
+				this.ReadToken("O_SBRACKET");
+				arraySize = this.ReadToken("NUMBER");
+				this.ReadToken("C_SBRACKET");
+			}
+
+			return new RawTypeNode(name, arraySize);
 		}
 
 		private void ReadDelimiter() => this.ReadToken("DELIMITER");

@@ -171,3 +171,22 @@ export naked fn read_mem(ptr : int) -> int
 	bpset
 	jmpi
 ]]
+
+
+
+/**
+ * Unoptimized string printing
+ */
+fn print_str(str : int)
+	var c : int;
+{
+	while (1)
+	{
+		c := read8(str);
+		if (c = 0) {
+			break;
+		}
+		putc(c);
+		str := str + 1;
+	}
+}

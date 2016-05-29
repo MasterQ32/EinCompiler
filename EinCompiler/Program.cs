@@ -28,8 +28,8 @@ namespace EinCompiler
 
 			var rawTree = Parser.Parse<ELanguageParser>(tokens);
 
-			return rawTree.Translate(
-				commonTypes, 
+			var instancer = new ModuleInstancer(
+				commonTypes,
 				(f) =>
 				{
 					var uri = new Uri(f, UriKind.RelativeOrAbsolute);
@@ -37,6 +37,8 @@ namespace EinCompiler
 						uri = new Uri(root, uri);
 					return Compile(uri.AbsolutePath);
 				});
+
+			return instancer.CreateInstance(rawTree);
 		}
 
 		static Program()

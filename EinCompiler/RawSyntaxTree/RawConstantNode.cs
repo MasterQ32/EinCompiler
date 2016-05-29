@@ -2,17 +2,20 @@
 {
 	public sealed class RawConstantNode : RawSyntaxNode
 	{
-		public RawConstantNode(string name, string type, string value) 
+		public RawConstantNode(
+			Token name, 
+			RawTypeNode type, 
+			Token value) 
 		{
 			this.Name = name;
 			this.Type = type;
 			this.Value = value;
 		}
 
-		public string Name { get; private set; }
+		public Token Name { get; private set; }
 
-		public string Type { get; private set; }
+		public RawTypeNode Type { get; private set; }
 
-		public string Value { get; private set; }
+		public Token Value { get; private set; }
 	}
 }
