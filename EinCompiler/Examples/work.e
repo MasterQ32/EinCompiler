@@ -8,9 +8,11 @@ fn main() -> int
 {
 	scalar := 'A';
 	putc(scalar);
-	putc(array);
+	putc(arrayToInt(array));
 	putc('B');
 }
+
+naked inline fn arrayToInt(a : int[10]) -> int [[ ]]
 
 // Module Support planned:
 // import "";
