@@ -16,14 +16,8 @@ namespace EinCompiler.BackEnds
 
 		protected override void Generate(ModuleDescription module)
 		{
-			int globalAllocator = 0;
-			foreach (var var in module.Variables)
-			{
-				globals[var] = globalAllocator;
-				globalAllocator += 4;
-			}
+			AllocateGlobalVariables(module);
 
-			WriteLineComment("Variables are not supported yet.");
 			WriteLine();
 			WriteLineComment("Functions:");
 
@@ -42,7 +36,7 @@ namespace EinCompiler.BackEnds
 					WriteLabel(func.Name);
 					WriteFunctionEnter();
 
-					foreach(var local in func.Locals)
+					foreach (var local in func.Locals)
 					{
 						WriteCommand(
 							"push 0 ; allocate local {0}",
@@ -54,6 +48,49 @@ namespace EinCompiler.BackEnds
 					WriteFunctionLeave();
 					WriteLine();
 				}
+			}
+		}
+
+		private void AllocateGlobalVariables(ModuleDescription module)
+		{
+			if (module.Variables.Count == 0)
+				return;
+			int globalAllocator = 0;
+			var maxWidth = Math.Max(
+				module.Variables.Max(v => v.Name.Length),
+				8);
+			var maxTypeWidth = Math.Max(
+				module.Variables.Max(v => v.Type.Name.Length),
+				4);
+
+			var header = string.Format(
+				"| {0} | {1} | {2} | {3} |",
+				"Variable".PadRight(maxWidth),
+				"Type".PadRight(maxTypeWidth),
+				"Address",
+				"Size");
+			var separator = string.Format(
+				"|-{0}-|-{1}-|-{2}-|-{3}-|",
+				"--------".PadRight(maxWidth, '-'),
+				"----".PadRight(maxTypeWidth, '-'),
+				"-------",
+				"----");
+			WriteLineComment(header);
+			WriteLineComment(separator);
+			foreach (var var in module.Variables)
+			{
+				// Allocate storage for each variable given by the types size.
+				globals[var] = globalAllocator;
+
+				var desc = string.Format(
+					"| {0} | {1} | {2} | {3} |",
+					var.Name.PadRight(maxWidth),
+					var.Type.Name.PadRight(maxTypeWidth),
+					globalAllocator.ToString().PadLeft(7),
+					var.Type.Size.ToString().PadLeft(4));
+				WriteLineComment(desc);
+
+				globalAllocator += var.Type.Size;
 			}
 		}
 
