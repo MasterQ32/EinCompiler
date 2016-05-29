@@ -20,8 +20,6 @@ namespace EinCompiler
 				this.ParseValue(text));
 		}
 
-
-
 		public abstract string GetString(object value);
 
 		public abstract byte[] GetBinary(object value);
@@ -30,7 +28,11 @@ namespace EinCompiler
 
 		public string Name { get; private set; }
 		
+		public abstract int Size { get; }
+
 		public override string ToString() => this.Name;
+
+
 
 		private sealed class VoidType : TypeDescription
 		{
@@ -50,6 +52,8 @@ namespace EinCompiler
 			{
 				throw new NotSupportedException();
 			}
+
+			public override int Size => 0;
 		}
 
 		private sealed class InvalidType : TypeDescription
@@ -70,6 +74,8 @@ namespace EinCompiler
 			{
 				throw new NotSupportedException();
 			}
+
+			public override int Size => 0;
 		}
 	}
 }

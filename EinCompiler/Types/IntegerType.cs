@@ -9,10 +9,12 @@ namespace EinCompiler.Types
 {
 	public sealed class IntegerType : TypeDescription
 	{
+		private readonly int size;
+
 		public IntegerType(string name, bool isSigned, int sizeInBytes) :
 			base(name)
 		{
-			this.SizeInBytes = sizeInBytes;
+			this.size = sizeInBytes;
 			this.IsSigned = isSigned;
 			switch (sizeInBytes)
 			{
@@ -25,11 +27,13 @@ namespace EinCompiler.Types
 			}
 		}
 
+		public override int Size => this.size;
+
 		public override byte[] GetBinary(object value)
 		{
 			if (this.IsSigned)
 			{
-				switch (this.SizeInBytes)
+				switch (this.Size)
 				{
 					case 1:
 						return BitConverter.GetBytes((SByte)value);
@@ -43,7 +47,7 @@ namespace EinCompiler.Types
 			}
 			else
 			{
-				switch (this.SizeInBytes)
+				switch (this.Size)
 				{
 					case 1:
 						return BitConverter.GetBytes((Byte)value);
@@ -64,7 +68,7 @@ namespace EinCompiler.Types
 			Func<string, NumberStyles, object> parse;
 			if (this.IsSigned)
 			{
-				switch (this.SizeInBytes)
+				switch (this.Size)
 				{
 					case 1:
 						parse = (t, n) => SByte.Parse(t, n);
@@ -81,7 +85,7 @@ namespace EinCompiler.Types
 			}
 			else
 			{
-				switch (this.SizeInBytes)
+				switch (this.Size)
 				{
 					case 1:
 						parse = (t, n) => Byte.Parse(t, n);
@@ -102,8 +106,7 @@ namespace EinCompiler.Types
 			else
 				return parse(text, NumberStyles.Number);
 		}
-
-		public int SizeInBytes { get; private set; }
+		
 		public bool IsSigned { get; private set; }
 	}
 }

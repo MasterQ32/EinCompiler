@@ -29,6 +29,18 @@ namespace EinCompiler
 	public class TypeContainer : DescriptionContainer<TypeDescription>
 	{
 		public TypeDescription Boolean { get; set; }
+
+		public TypeDescription GetArrayType(TypeDescription elementType, int length)
+		{
+			var name = elementType.Name + "[" + length + "]";
+			var type = this[name];
+			if (type == null)
+			{
+				type = new ArrayType(elementType, length);
+				this.Add(type);
+			}
+			return type;
+		}
 	}
 
 	public class FunctionContainer : DescriptionContainer<FunctionDescription>
@@ -69,8 +81,6 @@ namespace EinCompiler
 				var value = this.items.FirstOrDefault(i => i.Name == name);
 				if (value == null && this.shadow != null)
 					value = this.shadow[name];
-				if(value == null)
-					throw new IndexOutOfRangeException();
 				return value;
 			}
 		}

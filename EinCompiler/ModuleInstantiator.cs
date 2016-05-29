@@ -101,9 +101,16 @@ namespace EinCompiler
 				else
 					throw new ArgumentNullException(nameof(node));
 			}
+			var type = types[node.Name.Text];
 			if (node.ArraySize != null)
-				throw new InvalidOperationException("Arrays not supported.");
-			return types[node.Name.Text];
+			{
+				int size = int.Parse(node.ArraySize.Text);
+				if (size <= 0)
+					throw new SemanticException(node.ArraySize, "Array size must be greater than zero.");
+
+				type = types.GetArrayType(type, size);
+			}
+			return type;
 		}
 
 		private ConstantDescription CreateConstant(RawConstantNode con)
@@ -143,14 +150,14 @@ namespace EinCompiler
 
 			var validMods = new[]
 			{
-					StorageModifier.Global,
-					StorageModifier.Static,
-					StorageModifier.Private,
-					StorageModifier.Shared,
-					StorageModifier.Private | StorageModifier.Static,
-				};
+				StorageModifier.Global,
+				StorageModifier.Static,
+				StorageModifier.Private,
+				StorageModifier.Shared,
+				StorageModifier.Private | StorageModifier.Static,
+			};
 			if (validMods.Contains(vardesc.Storage) == false)
-				throw new InvalidOperationException("Invalid variable storage.");
+				throw new SemanticException(var.Name, "Invalid variable storage.");
 			return vardesc;
 		}
 	}

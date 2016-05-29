@@ -47,6 +47,7 @@
     <Compile Include="BackEnds\CCodeBackEnd.cs" />
     <Compile Include="BackEnds\SVMABackEnd.cs" />
     <Compile Include="CodeWriter.cs" />
+    <Compile Include="Types\ArrayType.cs" />
     <Compile Include="Descriptions\ConstantDescription.cs" />
     <Compile Include="Descriptions\LocalDecription.cs" />
     <Compile Include="FrontEnds\ELanguageParser.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Descriptions\Instructions\Expressions\LiteralExpression.cs" />
     <Compile Include="Descriptions\Instructions\Expressions\VariableExpression.cs" />
     <Compile Include="Descriptions\Instructions\ReturnInstruction.cs" />
+    <Compile Include="SemanticException.cs" />
     <Compile Include="TokenType.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="Tokenizer.cs" />
