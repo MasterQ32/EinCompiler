@@ -43,10 +43,10 @@ namespace EinCompiler
 			foreach (var func in node.Functions)
 			{
 				description.Functions.Add(new FunctionDescription(
-					func.Name,
-					func.ReturnType != null ? types[func.ReturnType] : TypeDescription.Void,
-					func.Parameters.Select(p => new ParameterDescription(types[p.Type], p.Name)).ToArray(),
-					func.Locals.Select((l, i) => new LocalDecription(types[l.Type], l.Name, i)).ToArray()));
+					func.Name.Text,
+					CreateType(func.ReturnType, true),
+					func.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray(),
+					func.Locals.Select((l, i) => new LocalDecription(CreateType(l.Type), l.Name.Text, i)).ToArray()));
 			}
 
 			// Second, create all naked functions with their
@@ -54,9 +54,9 @@ namespace EinCompiler
 			foreach (var naked in node.NakedFunctions)
 			{
 				description.Functions.Add(new FunctionDescription(
-					naked.Name,
-					naked.ReturnType != null ? types[naked.ReturnType] : TypeDescription.Void,
-					naked.Parameters.Select(p => new ParameterDescription(types[p.Type], p.Name)).ToArray(),
+					naked.Name.Text,
+					CreateType(naked.ReturnType, true),
+					naked.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray(),
 					naked.Body.Substring(2, naked.Body.Length - 4))
 				{
 					IsInline = naked.IsInline
@@ -68,23 +68,19 @@ namespace EinCompiler
 			// declaration
 			foreach (var func in node.Functions)
 			{
+				var fn = description.Functions[func.Name.Text];
 				var localVariables = new VariableContainer(description.Variables);
 
-				for (int i = 0; i < func.Parameters.Count; i++)
+				foreach(var param in fn.Parameters)
 				{
-					var var = new ParameterVariableDescription(
-						types[func.Parameters[i].Type],
-						func.Parameters[i].Name,
-						i);
-					localVariables.Add(var);
+					localVariables.Add(param);
 				}
-				foreach (var local in description.Functions[func.Name].Locals)
+				foreach (var local in fn.Locals)
 				{
 					localVariables.Add(local);
 				}
-
-
-				description.Functions[func.Name].Body =
+				
+				fn.Body =
 					func.Body.Translate(
 						types,
 						localVariables,
@@ -96,8 +92,15 @@ namespace EinCompiler
 
 		private ModuleDescription LoadSubModule(string include) => fileLoader(include);
 
-		private TypeDescription CreateType(RawTypeNode node)
+		private TypeDescription CreateType(RawTypeNode node, bool defaultNullToVoid = false)
 		{
+			if(node == null)
+			{
+				if (defaultNullToVoid)
+					return TypeDescription.Void;
+				else
+					throw new ArgumentNullException(nameof(node));
+			}
 			if (node.ArraySize != null)
 				throw new InvalidOperationException("Arrays not supported.");
 			return types[node.Name.Text];

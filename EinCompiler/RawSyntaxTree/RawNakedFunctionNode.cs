@@ -3,27 +3,17 @@ using System.Linq;
 
 namespace EinCompiler.RawSyntaxTree
 {
-	public sealed class RawNakedFunctionNode : RawSyntaxNode
+	public sealed class RawNakedFunctionNode : RawBasicFunctionNode
 	{
-		private List<RawParameterNode> parameters;
-
 		public RawNakedFunctionNode(
-			string name,
-			string returnType,
+			Token name,
+			RawTypeNode returnType,
 			List<RawParameterNode> parameters,
-			string body)
+			string body) : 
+			base(name, returnType, parameters)
 		{
-			this.Name = name;
-			this.ReturnType = returnType;
-			this.parameters = new List<RawParameterNode>(parameters);
 			this.Body = body;
 		}
-
-		public string Name { get; private set; }
-
-		public string ReturnType { get; private set; }
-
-		public IReadOnlyList<RawParameterNode> Parameters => this.parameters;
 
 		public bool IsInline { get; set; }
 

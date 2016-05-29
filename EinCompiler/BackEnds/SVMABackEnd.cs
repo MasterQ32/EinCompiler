@@ -182,9 +182,9 @@ namespace EinCompiler.BackEnds
 				if (ass.Target is VariableExpression)
 				{
 					var var = ((VariableExpression)ass.Target).Variable;
-					if (var is ParameterVariableDescription)
+					if (var is ParameterDescription)
 					{
-						var offset = ((ParameterVariableDescription)var).Index;
+						var offset = ((ParameterDescription)var).Index;
 						var position = -(offset + 2);
 
 						WriteCommand(
@@ -340,9 +340,9 @@ namespace EinCompiler.BackEnds
 			else if (expression is VariableExpression)
 			{
 				var var = ((VariableExpression)expression).Variable;
-				if (var is ParameterVariableDescription)
+				if (var is ParameterDescription)
 				{
-					var offset = ((ParameterVariableDescription)var).Index;
+					var offset = ((ParameterDescription)var).Index;
 					var position = -(offset + 2);
 
 					WriteCommand(

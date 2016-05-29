@@ -2,14 +2,14 @@
 {
 	public sealed class RawLocal : RawSyntaxNode
 	{
-		public RawLocal(string name, string type)
+		public RawLocal(Token name, RawTypeNode type)
 		{
 			this.Name = name;
 			this.Type = type;
 		}
 
-		public string Name { get; private set; }
+		public Token Name { get; private set; }
 
-		public string Type { get; private set; }
+		public RawTypeNode Type { get; private set; }
 	}
 }

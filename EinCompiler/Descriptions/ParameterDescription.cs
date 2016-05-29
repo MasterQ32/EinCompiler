@@ -1,17 +1,24 @@
 ﻿namespace EinCompiler
 {
-	public sealed class ParameterDescription
+	public sealed class ParameterDescription : VariableDescription
 	{
-		public ParameterDescription(TypeDescription typeDescription, string name)
+		public ParameterDescription(
+			TypeDescription type,
+			string name,
+			int position) : 
+			base(type, name)
 		{
-			this.Type = typeDescription;
-			this.Name = name;
+			this.Index = position;
 		}
 
-		public TypeDescription Type { get; private set; }
+		public int Index { get; private set; }
 
-		public string Name { get; private set; }
-
-		public override string ToString() => $"{Type} {Name}";
+		public override string ToString()
+		{
+			return
+				"Parameter " +
+				this.Type.ToString() + " " +
+				this.Name;
+		}
 	}
 }

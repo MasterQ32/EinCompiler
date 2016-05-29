@@ -91,25 +91,25 @@ namespace EinCompiler.FrontEnds
 					{
 						var pname = this.ReadToken("IDENTIFIER");
 						this.ReadToken("COLON");
-						var ptype = this.ReadToken("IDENTIFIER");
-						parameters.Add(new RawParameterNode(pname.Text, ptype.Text));
+						var ptype = this.ReadType();
+						parameters.Add(new RawParameterNode(pname, ptype));
 						if (this.PeekToken().Type.Name != "C_BRACKET")
 							this.ReadToken("SEPARATOR");
 					}
 					this.ReadToken("C_BRACKET");
-					Token returnType = null;
+					RawTypeNode returnType = null;
 					if (this.PeekToken().Type.Name == "ARROW")
 					{
 						this.ReadToken("ARROW");
-						returnType = this.ReadToken("IDENTIFIER");
+						returnType = this.ReadType();
 					}
 
 					if (modifiers.Contains("naked") || modifiers.Contains("inline"))
 					{
 						var body = this.ReadToken("RAW_BLOCK");
 						return new RawNakedFunctionNode(
-							name.Text,
-							returnType?.Text,
+							name,
+							returnType,
 							parameters,
 							body.Text)
 						{
@@ -127,9 +127,9 @@ namespace EinCompiler.FrontEnds
 							{
 								case "var": // local variable in this case
 								{
-									var locname = this.ReadToken("IDENTIFIER").Text;
+									var locname = this.ReadToken("IDENTIFIER");
 									this.ReadToken("COLON");
-									var loctype = this.ReadToken("IDENTIFIER").Text;
+									var loctype = this.ReadType();
 									this.ReadDelimiter();
 									locals.Add(new RawLocal(locname, loctype));
 									break;
@@ -142,8 +142,8 @@ namespace EinCompiler.FrontEnds
 						var body = this.ReadBody();
 
 						return new RawFunctionNode(
-							name.Text,
-							returnType?.Text,
+							name,
+							returnType,
 							parameters,
 							locals,
 							body)
