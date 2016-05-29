@@ -7,7 +7,7 @@ namespace EinCompiler.RawSyntaxTree
 	public sealed class RawFunctionCallExpression : RawExpressionNode
 	{
 		public RawFunctionCallExpression(
-			string name, 
+			Token name, 
 			RawExpressionNode[] arguments)
 		{
 			this.Name = name;
@@ -19,13 +19,16 @@ namespace EinCompiler.RawSyntaxTree
 			VariableContainer vars,
 			FunctionContainer funcs)
 		{
+			var func = funcs[this.Name.Text];
+			if (func == null)
+				throw new SemanticException(this.Name, "Use of undeclared function.");
 			return new FunctionCallExpression(
-				funcs[this.Name],
+				func,
 				this.Arguments.Select(a => a.Translate(types, vars, funcs)).ToArray());
 		}
 
 		public IReadOnlyList<RawExpressionNode> Arguments { get; private set; }
 
-		public string Name { get; private set; }
+		public Token Name { get; private set; }
 	}
 }

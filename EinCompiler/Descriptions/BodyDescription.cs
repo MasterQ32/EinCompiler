@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace EinCompiler
@@ -9,6 +10,7 @@ namespace EinCompiler
 
 		public BodyDescription(List<InstructionDescription> instructions)
 		{
+			if (instructions == null) throw new ArgumentNullException(nameof(instructions));
 			this.instructions = new List<InstructionDescription>(instructions);
 		}
 

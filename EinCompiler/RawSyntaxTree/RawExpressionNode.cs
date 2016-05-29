@@ -9,31 +9,34 @@ namespace EinCompiler.RawSyntaxTree
 
 	public sealed class RawVariableExpressionNode : RawExpressionNode
 	{
-		public RawVariableExpressionNode(string variableName)
+		public RawVariableExpressionNode(Token variableName)
 		{
 			this.Variable = variableName;
 		}
 
 		public override Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs)
 		{
-			return new VariableExpression(vars[this.Variable]);
+			var var = vars[this.Variable.Text];
+			if (var == null)
+				throw new SemanticException(this.Variable, "Variable not declared in this scope.");
+			return new VariableExpression(var);
 		}
 
-		public string Variable { get; private set; }
+		public Token Variable { get; private set; }
 
 		public override string ToString() => $"({Variable})";
 	}
 
 	public sealed class RawLiteralExpressionNode : RawExpressionNode
 	{
-		public RawLiteralExpressionNode(string literal)
+		public RawLiteralExpressionNode(Token literal)
 		{
 			this.Literal = literal;
 		}
 
 		public override Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs)
 		{
-			var text = this.Literal;
+			var text = this.Literal.Text;
 			if(text.StartsWith("'"))
 			{
 				if(text.Length == 4)
@@ -44,7 +47,7 @@ namespace EinCompiler.RawSyntaxTree
 						case 'n': text = ((int)'\n').ToString(); break;
 						case 'r': text = ((int)'\r').ToString(); break;
 						case 'b': text = ((int)'\b').ToString(); break;
-						default: throw new InvalidOperationException("Unrecognized escape code.");
+						default: throw new SemanticException(this.Literal, "Unrecognized escape code.");
 					}
 				}
 				else
@@ -56,14 +59,14 @@ namespace EinCompiler.RawSyntaxTree
 			return new LiteralExpression(text);
 		}
 
-		public string Literal { get; private set; }
+		public Token Literal { get; private set; }
 
 		public override string ToString() => $"({Literal})";
 	}
 
 	public sealed class RawUnaryOperatorExpressionNode : RawExpressionNode
 	{
-		public RawUnaryOperatorExpressionNode(string op, RawExpressionNode expression)
+		public RawUnaryOperatorExpressionNode(Token op, RawExpressionNode expression)
 		{
 			this.Operator = op;
 			this.Expression = expression;
@@ -76,7 +79,7 @@ namespace EinCompiler.RawSyntaxTree
 
 		public RawExpressionNode Expression { get; private set; }
 
-		public string Operator { get; private set; }
+		public Token Operator { get; private set; }
 
 		public override string ToString() => $"({Operator} {Expression})";
 	}
@@ -84,7 +87,7 @@ namespace EinCompiler.RawSyntaxTree
 	public sealed class RawBinaryOperatorExpressionNode : RawExpressionNode
 	{
 		public RawBinaryOperatorExpressionNode(
-			string op, 
+			Token op, 
 			RawExpressionNode lhs,
 			RawExpressionNode rhs)
 		{
@@ -95,7 +98,8 @@ namespace EinCompiler.RawSyntaxTree
 
 		public override Expression Translate(TypeContainer types, VariableContainer vars, FunctionContainer funcs)
 		{
-			if(this.Operator == ":=")
+			var op = this.Operator.Text;
+			if(op == ":=")
 			{
 				return new AssignmentExpression(
 					this.LeftHandSide.Translate(types, vars, funcs),
@@ -110,9 +114,9 @@ namespace EinCompiler.RawSyntaxTree
 			}
 		}
 
-		private BinaryOperator GetOperator(string text)
+		private BinaryOperator GetOperator(Token token)
 		{
-			switch(text)
+			switch(token.Text)
 			{
 				// Arithmetic
 				case "+": return BinaryOperator.Addition;
@@ -128,13 +132,13 @@ namespace EinCompiler.RawSyntaxTree
 				case "<=": return BinaryOperator.LessOrEqual;
 				case "<": return BinaryOperator.LessThan;
 				case ">": return BinaryOperator.GreaterThan;
-				default: throw new NotSupportedException();
+				default: throw new SemanticException(token, "Unrecognized binary operator.");
 			}
 		}
 
 		public RawExpressionNode LeftHandSide { get; private set; }
 
-		public string Operator { get; private set; }
+		public Token Operator { get; private set; }
 
 		public RawExpressionNode RightHandSide { get; private set; }
 

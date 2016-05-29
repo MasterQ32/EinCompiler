@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace EinCompiler
 {
@@ -8,6 +9,11 @@ namespace EinCompiler
 			FunctionDescription function,
 			Expression[] arguments)
 		{
+			if (function == null) throw new ArgumentNullException(nameof(function));
+			if (arguments == null) throw new ArgumentNullException(nameof(arguments));
+			if (arguments.Any(a => a == null))
+				throw new ArgumentOutOfRangeException(nameof(arguments), "Null parameter is not allowed.");
+
 			this.Function = function;
 			this.Arguments = arguments;
 

@@ -8,6 +8,8 @@ namespace EinCompiler
 			TypeDescription type,
 			object value)
 		{
+			if (type == null) throw new ArgumentNullException(nameof(type));
+			if (value == null) throw new ArgumentNullException(nameof(value));
 			this.Type = type;
 			this.Value = value;
 		}

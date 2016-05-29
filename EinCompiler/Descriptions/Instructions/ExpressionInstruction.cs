@@ -1,9 +1,12 @@
-﻿namespace EinCompiler
+﻿using System;
+
+namespace EinCompiler
 {
 	public sealed class ExpressionInstruction : InstructionDescription
 	{
 		public ExpressionInstruction(Expression expression)
 		{
+			if (expression == null) throw new ArgumentNullException(nameof(expression));
 			this.Expression = expression;
 		}
 

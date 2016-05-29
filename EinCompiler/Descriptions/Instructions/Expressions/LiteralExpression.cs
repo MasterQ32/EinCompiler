@@ -8,6 +8,7 @@ namespace EinCompiler
 
 		public LiteralExpression(string literal)
 		{
+			if (literal == null) throw new ArgumentNullException(nameof(literal));
 			this.Literal = literal;
 		}
 

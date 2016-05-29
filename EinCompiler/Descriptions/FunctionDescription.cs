@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EinCompiler
 {
@@ -10,6 +11,10 @@ namespace EinCompiler
 			ParameterDescription[] parameters,
 			LocalDecription[] locals)
 		{
+			if (name == null) throw new ArgumentNullException(nameof(name));
+			if (returnType == null) throw new ArgumentNullException(nameof(returnType));
+			if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+			if (locals == null) throw new ArgumentNullException(nameof(locals));
 			this.Name = name;
 			this.ReturnType = returnType;
 			this.Parameters = parameters;
@@ -18,12 +23,13 @@ namespace EinCompiler
 
 		public FunctionDescription(
 			string name,
-			TypeDescription returnType, 
+			TypeDescription returnType,
 			ParameterDescription[] parameters,
 			LocalDecription[] locals,
-			BodyDescription body) : 
+			BodyDescription body) :
 			this(name, returnType, parameters, locals)
 		{
+			if (body == null) throw new ArgumentNullException(nameof(body));
 			this.Body = body;
 		}
 
@@ -34,6 +40,7 @@ namespace EinCompiler
 			string body) :
 			this(name, returnType, parameters, new LocalDecription[0])
 		{
+			if (body == null) throw new ArgumentNullException(nameof(body));
 			this.NakedBody = body;
 		}
 

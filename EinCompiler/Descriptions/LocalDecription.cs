@@ -1,4 +1,6 @@
-﻿namespace EinCompiler
+﻿using System;
+
+namespace EinCompiler
 {
 	public sealed class LocalDecription : VariableDescription
 	{
@@ -8,6 +10,7 @@
 			int position) : 
 			base(type, name)
 		{
+			if (position < 0) throw new ArgumentOutOfRangeException(nameof(position));
 			this.Index = position;
 		}
 

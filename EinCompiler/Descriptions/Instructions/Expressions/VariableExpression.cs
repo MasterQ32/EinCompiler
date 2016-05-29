@@ -1,9 +1,12 @@
-﻿namespace EinCompiler
+﻿using System;
+
+namespace EinCompiler
 {
 	public sealed class VariableExpression : Expression
 	{
 		public VariableExpression(VariableDescription variableDescription)
 		{
+			if (variableDescription == null) throw new ArgumentNullException(nameof(variableDescription));
 			this.Variable = variableDescription;
 		}
 		

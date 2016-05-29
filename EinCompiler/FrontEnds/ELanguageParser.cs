@@ -303,13 +303,13 @@ namespace EinCompiler.FrontEnds
 			{ // trivial case: variable or literal
 				var tok = tokens[0];
 				if (tok.Type.Name == "IDENTIFIER")
-					return new RawVariableExpressionNode(tok.Text);
+					return new RawVariableExpressionNode(tok);
 				else if (tok.Type.Name == "STRING")
-					return new RawLiteralExpressionNode(tok.Text);
+					return new RawLiteralExpressionNode(tok);
 				else if (tok.Type.Name == "NUMBER")
-					return new RawLiteralExpressionNode(tok.Text);
+					return new RawLiteralExpressionNode(tok);
 				else if (tok.Type.Name == "CHARACTER")
-					return new RawLiteralExpressionNode(tok.Text);
+					return new RawLiteralExpressionNode(tok);
 				else
 					throw new ParserException(tok, "Expected string, variable, constant or number.");
 			}
@@ -317,7 +317,7 @@ namespace EinCompiler.FrontEnds
 			if (tokens[0].Type.Name == "UNARY_OPERATOR")
 			{
 				return new RawUnaryOperatorExpressionNode(
-					tokens[0].Text,
+					tokens[0],
 					ConvertToExpression(tokens.Skip(1).ToArray()));
 			}
 
@@ -345,7 +345,7 @@ namespace EinCompiler.FrontEnds
 					var rhs = ConvertToExpression(postfix);
 
 					return new RawBinaryOperatorExpressionNode(
-						op,
+						tokens[i],
 						lhs,
 						rhs);
 				}
@@ -369,7 +369,7 @@ namespace EinCompiler.FrontEnds
 
 
 					return new RawFunctionCallExpression(
-						tokens[0].Text,
+						tokens[0],
 						args.Select(p => ConvertToExpression(p)).ToArray());
 				}
 			}

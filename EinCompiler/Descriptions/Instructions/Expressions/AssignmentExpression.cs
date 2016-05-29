@@ -6,6 +6,8 @@ namespace EinCompiler
 	{
 		public AssignmentExpression(Expression target, Expression source)
 		{
+			if (target == null) throw new ArgumentNullException(nameof(target));
+			if (source == null) throw new ArgumentNullException(nameof(source));
 			if (target.IsAssignable == false)
 				throw new ArgumentException("Target must be an assignable expression.", nameof(target));
 

@@ -10,11 +10,13 @@ namespace EinCompiler
 
 		protected TypeDescription(string name)
 		{
+			if (name == null) throw new ArgumentNullException(nameof(name));
 			this.Name = name;
 		}
 
 		public ValueDescription CreateValueFromString(string text)
 		{
+			if (text == null) throw new ArgumentNullException(nameof(text));
 			return new ValueDescription(
 				this,
 				this.ParseValue(text));

@@ -9,6 +9,8 @@ namespace EinCompiler
 			BinaryOperator op,
 			Expression rhs)
 		{
+			if (lhs == null) throw new ArgumentNullException(nameof(lhs));
+			if (rhs == null) throw new ArgumentNullException(nameof(rhs));
 			this.LeftHandSide = lhs;
 			this.Operator = op;
 			this.RightHandSide = rhs;

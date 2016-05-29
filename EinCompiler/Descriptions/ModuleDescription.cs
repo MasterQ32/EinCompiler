@@ -15,6 +15,8 @@ namespace EinCompiler
 
 		public void Merge(ModuleDescription module)
 		{
+			if (module == null) throw new ArgumentNullException(nameof(module));
+
 			foreach (var c in module.Constants)
 				this.Constants.Add(c);
 

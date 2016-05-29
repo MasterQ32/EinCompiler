@@ -6,6 +6,8 @@ namespace EinCompiler
 	{
 		public VariableDescription(TypeDescription type, string name)
 		{
+			if (type == null) throw new ArgumentNullException(nameof(type));
+			if (name == null) throw new ArgumentNullException(nameof(name));
 			this.Type = type;
 			this.Name = name;
 		}

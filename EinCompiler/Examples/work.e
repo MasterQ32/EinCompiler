@@ -6,7 +6,10 @@ var array  : int[10];
 fn main() -> int
 	var i : int;
 {
-	
+	scalar := 'A';
+	putc(scalar);
+	putc(array);
+	putc('B');
 }
 
 // Module Support planned:

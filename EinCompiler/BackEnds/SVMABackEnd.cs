@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EinCompiler.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -243,11 +244,18 @@ namespace EinCompiler.BackEnds
 					else
 					{
 						var location = globals[var];
-						WriteCommand(
-							"store {0} {1} [r:push] ; global {2}",
-							location,
-							flagText,
-							var.Name);
+						if (var.Type is IntegerType)
+						{
+							WriteCommand(
+								"store {0} {1} [r:push] ; global {2}",
+								location,
+								flagText,
+								var.Name);
+						}
+						else
+						{
+							throw new NotSupportedException();
+						}
 					}
 				}
 				else
@@ -402,11 +410,26 @@ namespace EinCompiler.BackEnds
 				else
 				{
 					var location = globals[var];
-					WriteCommand(
-						"load {0} {1} ; global {2}",
-						location,
-						flagText,
-						var.Name);
+					if (var.Type is IntegerType)
+					{
+						WriteCommand(
+							"load {0} {1} ; global {2}",
+							location,
+							flagText,
+							var.Name);
+					}
+					else if(var.Type is ArrayType)
+					{
+						WriteCommand(
+							"push {0} {1} ; global ptr {2}",
+							location,
+							flagText,
+							var.Name);
+					}
+					else
+					{
+						throw new NotSupportedException();
+					}
 				}
 			}
 		}
