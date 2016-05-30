@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EinCompiler.Types
+namespace EinCompiler.BuiltInTypes
 {
 	public sealed class IntegerType : TypeDescription
 	{

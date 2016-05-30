@@ -97,7 +97,7 @@ namespace EinCompiler
 			if(node == null)
 			{
 				if (defaultNullToVoid)
-					return TypeDescription.Void;
+					return Types.Void;
 				else
 					throw new ArgumentNullException(nameof(node));
 			}

@@ -47,10 +47,13 @@
     <Compile Include="BackEnds\CCodeBackEnd.cs" />
     <Compile Include="BackEnds\SVMABackEnd.cs" />
     <Compile Include="CodeWriter.cs" />
-    <Compile Include="Types\ArrayType.cs" />
+    <Compile Include="Descriptions\Instructions\Expressions\IndexerExpression.cs" />
+    <Compile Include="RawSyntaxTree\RawIndexerExpression.cs" />
+    <Compile Include="Types.cs" />
+    <Compile Include="BuiltInTypes\ArrayType.cs" />
     <Compile Include="Descriptions\ConstantDescription.cs" />
     <Compile Include="Descriptions\LocalDecription.cs" />
-    <Compile Include="FrontEnds\ELanguageParser.cs" />
+    <Compile Include="FrontEnds\PsiParser.cs" />
     <Compile Include="FrontEnds\Parser.cs" />
     <Compile Include="FrontEnds\ParserException.cs" />
     <Compile Include="Descriptions\Instructions\Expressions\FunctionCallExpression.cs" />
@@ -97,17 +100,17 @@
     <Compile Include="Descriptions\TypeDescription.cs" />
     <Compile Include="Descriptions\ValueDescription.cs" />
     <Compile Include="Descriptions\VariableDescription.cs" />
-    <Compile Include="Types\IntegerType.cs" />
+    <Compile Include="BuiltInTypes\IntegerType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Examples\das-os.e">
+    <None Include="Examples\das-os.psi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Examples\work.e">
+    <None Include="Examples\work.psi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Grammars\c-flat.tok">
+    <None Include="Grammars\psi.tok">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Grammars\tokens.tok">
@@ -115,7 +118,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Examples\e-language.e">
+    <None Include="Examples\psi-language.psi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="Examples\tokenizer-test.txt">

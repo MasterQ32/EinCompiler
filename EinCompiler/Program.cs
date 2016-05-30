@@ -1,7 +1,7 @@
 ﻿using EinCompiler.BackEnds;
 using EinCompiler.FrontEnds;
 using EinCompiler.RawSyntaxTree;
-using EinCompiler.Types;
+using EinCompiler.BuiltInTypes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,8 +10,6 @@ using System.Text;
 
 namespace EinCompiler
 {
-	// TODO: Global TODO list:
-
 	class Program
 	{
 		static readonly Tokenizer tokenizer;
@@ -26,7 +24,7 @@ namespace EinCompiler
 
 			var tokens = tokenizer.Tokenize(source);
 
-			var rawTree = Parser.Parse<ELanguageParser>(tokens);
+			var rawTree = Parser.Parse<PsiParser>(tokens);
 
 			var instancer = new ModuleInstancer(
 				commonTypes,
@@ -43,19 +41,26 @@ namespace EinCompiler
 
 		static Program()
 		{
-			tokenizer = Tokenizer.Load("./Grammars/c-flat.tok");
+			tokenizer = Tokenizer.Load("./Grammars/psi.tok");
 
 			commonTypes = new TypeContainer();
-			commonTypes.Add(TypeDescription.Void);
+			commonTypes.Add(Types.Void);
 			commonTypes.Add(new IntegerType("ptr", true, 4));
-			commonTypes.Add(new IntegerType("int", true, 4));
-			commonTypes.Add(new IntegerType("uint", true, 4));
+			commonTypes.Add("int", Types.Int32);
+			commonTypes.Add("uint", Types.UInt32);
+			commonTypes.Add("i8", Types.Int8);
+			commonTypes.Add("i16", Types.Int16);
+			commonTypes.Add("i32", Types.Int32);
+			commonTypes.Add("u8", Types.UInt8);
+			commonTypes.Add("u16", Types.UInt16);
+			commonTypes.Add("u32", Types.UInt32);
+
 			commonTypes.Boolean = commonTypes["int"];
 		}
 
 		static void Main(string[] args)
 		{
-			var module = Compile("./Examples/work.e");
+			var module = Compile("./Examples/work.psi");
 
 			// BackEnd.GenerateCode<CCodeBackEnd>(module, Console.Out);
 			BackEnd.GenerateCode<SVMABackEnd>(module, Console.Out);

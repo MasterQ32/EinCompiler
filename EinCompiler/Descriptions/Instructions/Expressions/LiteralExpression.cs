@@ -4,7 +4,7 @@ namespace EinCompiler
 {
 	public sealed class LiteralExpression : Expression
 	{
-		private TypeDescription type = TypeDescription.Invalid;
+		private TypeDescription type = Types.Invalid;
 
 		public LiteralExpression(string literal)
 		{

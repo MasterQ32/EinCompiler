@@ -1,4 +1,4 @@
-﻿include("das-os.e");
+﻿include("das-os.psi");
 
 var scalar : int;
 var array  : int[10];
@@ -8,7 +8,16 @@ fn main() -> int
 {
 	scalar := 'A';
 	putc(scalar);
-	putc(arrayToInt(array));
+	puti(scalar);
+
+	scalar := 1;
+
+	array[0]      := 10;
+	array[scalar] := 20;
+
+	puti(arrayToInt(array));
+	puti(array[0]);
+	puti(array[scalar]);
 	putc('B');
 }
 

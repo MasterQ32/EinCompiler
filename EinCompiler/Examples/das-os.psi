@@ -4,6 +4,11 @@ inline fn putc(chr : int)
 	[i0:pop] syscall[ci:1]
 ]]
 
+inline fn puti(chr : int)
+[[
+	[i0:pop] syscall[ci:2]
+]]
+
 inline fn read8(address : ptr) -> int
 [[
 	loadi [ci:0]

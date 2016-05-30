@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EinCompiler.BuiltInTypes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,9 +29,30 @@ namespace EinCompiler
 		}
 	}
 
-	public class TypeContainer : DescriptionContainer<TypeDescription>
+	public class TypeContainer : IReadOnlyDictionary<string, TypeDescription>
 	{
+		private readonly Dictionary<string, TypeDescription> contents = new Dictionary<string, TypeDescription>();
+
+		public TypeContainer()
+		{
+
+		}
+
+		public void Add(TypeDescription type) => Add(type.Name, type);
+
+		public void Add(string alias, TypeDescription type) => contents.Add(alias, type);
+
+		public TypeDescription this[string key] => ContainsKey(key) ? contents[key] : null;
+
 		public TypeDescription Boolean { get; set; }
+
+		public int Count => contents.Count;
+
+		public IEnumerable<string> Keys => contents.Keys;
+
+		public IEnumerable<TypeDescription> Values => contents.Values;
+
+		public bool ContainsKey(string key) => contents.ContainsKey(key);
 
 		public TypeDescription GetArrayType(TypeDescription elementType, int length)
 		{
@@ -43,6 +65,15 @@ namespace EinCompiler
 			}
 			return type;
 		}
+
+		public IEnumerator<KeyValuePair<string, TypeDescription>> GetEnumerator() => contents.GetEnumerator();
+
+		public bool TryGetValue(string key, out TypeDescription value)
+		{
+			return contents.TryGetValue(key, out value);
+		}
+
+		IEnumerator IEnumerable.GetEnumerator() => contents.GetEnumerator();
 	}
 
 	public class FunctionContainer : DescriptionContainer<FunctionDescription>

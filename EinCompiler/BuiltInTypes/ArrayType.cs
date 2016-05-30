@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EinCompiler
+namespace EinCompiler.BuiltInTypes
 {
 	public sealed class ArrayType : TypeDescription
 	{

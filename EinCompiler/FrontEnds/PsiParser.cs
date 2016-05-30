@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace EinCompiler.FrontEnds
 {
-	public sealed class ELanguageParser : Parser
+	public sealed class PsiParser : Parser
 	{
 		static Regex unescaper = new Regex(@"\\(.)", RegexOptions.Compiled);
 
@@ -371,6 +371,13 @@ namespace EinCompiler.FrontEnds
 					return new RawFunctionCallExpression(
 						tokens[0],
 						args.Select(p => ConvertToExpression(p)).ToArray());
+				}
+				if (tokens[0].Type.Name == "IDENTIFIER" && tokens[1].Type.Name == "O_SBRACKET" && tokens[tokens.Length - 1].Type.Name == "C_SBRACKET")
+				{
+					return new RawIndexerExpression(
+						tokens[0],
+						ConvertToExpression(tokens.Skip(2).Take(tokens.Length - 3).ToArray()));
+
 				}
 			}
 

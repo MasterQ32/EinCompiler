@@ -8,7 +8,7 @@ namespace EinCompiler
 
 		public virtual bool IsTopLevelPossible => false;
 
-		public virtual TypeDescription Type => TypeDescription.Invalid;
+		public virtual TypeDescription Type => Types.Invalid;
 
 		public abstract void DeduceAndCheckType(TypeDescription typeHint);
 
