@@ -238,16 +238,16 @@ namespace EinCompiler.BackEnds
 			if (expression is AssignmentExpression)
 			{
 				WriteAssignmentExpression(
-					context, 
-					flagText, 
+					context,
+					flagText,
 					(AssignmentExpression)expression);
 			}
 			else if (expression is BinaryOperatorExpression)
 			{
 				WriteBinaryOperatorExpression(
-					context, 
-					modifyFlags, 
-					flagText, 
+					context,
+					modifyFlags,
+					flagText,
 					(BinaryOperatorExpression)expression);
 			}
 			else if (expression is FunctionCallExpression)
@@ -261,10 +261,10 @@ namespace EinCompiler.BackEnds
 			else if (expression is VariableExpression)
 			{
 				WriteVariableExpression(
-					(VariableExpression)expression, 
+					(VariableExpression)expression,
 					flagText);
 			}
-			else if(expression is IndexerExpression)
+			else if (expression is IndexerExpression)
 			{
 				var idx = (IndexerExpression)expression;
 				WriteIndexerExpression(context, flagText, idx, false);
@@ -276,8 +276,8 @@ namespace EinCompiler.BackEnds
 		}
 
 		private void WriteIndexerExpression(
-			FunctionDescription context, 
-			string flagText, 
+			FunctionDescription context,
+			string flagText,
 			IndexerExpression idx,
 			bool isWriting)
 		{
@@ -294,7 +294,7 @@ namespace EinCompiler.BackEnds
 				globals[idx.Array]);
 			WriteCommand( // now load/store from global memory.
 				"{0} {1} ; global {2}[]",
-				isWriting ? "storei" : "loadi",
+				isWriting ? "storei [r:push]" : "loadi",
 				flagText,
 				idx.Array.Name);
 		}
@@ -358,9 +358,9 @@ namespace EinCompiler.BackEnds
 		private void WriteLiteralExpression(string flagText, LiteralExpression expr)
 		{
 			WriteCommand(
-								"push {0} {1}",
-								expr.GetValue().GetString(),
-								flagText);
+				"push {0} {1}",
+				expr.GetValue().GetString(),
+				flagText);
 		}
 
 		private void WriteFunctionCallExpression(FunctionDescription context, Expression expression)
@@ -521,7 +521,7 @@ namespace EinCompiler.BackEnds
 					}
 				}
 			}
-			else if(ass.Target is IndexerExpression)
+			else if (ass.Target is IndexerExpression)
 			{
 				var idx = (IndexerExpression)ass.Target;
 
