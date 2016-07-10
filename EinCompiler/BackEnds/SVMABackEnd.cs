@@ -294,7 +294,7 @@ namespace EinCompiler.BackEnds
 				globals[idx.Array]);
 			WriteCommand( // now load/store from global memory.
 				"{0} {1} ; global {2}[]",
-				isWriting ? "storei [r:push]" : "loadi",
+				isWriting ? "store32i [r:push]" : "load32i",
 				flagText,
 				idx.Array.Name);
 		}
@@ -334,7 +334,7 @@ namespace EinCompiler.BackEnds
 				if (var.Type is IntegerType)
 				{
 					WriteCommand(
-						"load {0} {1} ; global {2}",
+						"load32 {0} {1} ; global {2}",
 						location,
 						flagText,
 						var.Name);

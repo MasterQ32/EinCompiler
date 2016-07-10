@@ -235,7 +235,7 @@ namespace EinCompiler.FrontEnds
 						this.ReadToken("KEYWORD");
 						this.ReadToken("O_BRACKET");
 						var condition = ConvertToExpression(
-							this.ReadTokensUntil("C_BRACKET"));
+							this.ReadTokensUntil("O_BRACKET", "C_BRACKET"));
 						var trueBlock = this.ReadBody();
 						RawBodyNode falseBlock = null;
 						if (
@@ -256,7 +256,7 @@ namespace EinCompiler.FrontEnds
 						this.ReadToken("KEYWORD");
 						this.ReadToken("O_BRACKET");
 						var condition = ConvertToExpression(
-							this.ReadTokensUntil("C_BRACKET"));
+							this.ReadTokensUntil("O_BRACKET", "C_BRACKET"));
 						var block = this.ReadBody();
 						return new RawWhileInstructionNode(
 							condition,
@@ -280,6 +280,24 @@ namespace EinCompiler.FrontEnds
 
 		private Token[] ReadTokensUntil(string delimiter) =>
 			ReadTokensUntil(t => t.Type.Name == delimiter);
+
+		private Token[] ReadTokensUntil(string begin, string end)
+		{
+			int depth = 0;
+
+			return ReadTokensUntil(t => {
+				if(t.Type.Name == begin) {
+					depth++;
+				} 
+				else if(t.Type.Name == end) {
+					if(depth == 0) {
+						return true;
+					}
+					depth -= 1;
+				}
+				return false;
+			});
+		}
 
 		private Token[] ReadTokensUntil(Predicate<Token> predicate)
 		{

@@ -18,7 +18,7 @@ namespace EinCompiler
 		static ModuleDescription Compile(string fileName)
 		{
 			var file = Path.GetFullPath(fileName);
-			var path = Path.GetDirectoryName(file);
+			// var path = Path.GetDirectoryName(file);
 			var root = new Uri(file);
 			var source = File.ReadAllText(file);
 
@@ -41,7 +41,8 @@ namespace EinCompiler
 
 		static Program()
 		{
-			tokenizer = Tokenizer.Load("./Grammars/psi.tok");
+			// tokenizer = Tokenizer.Load("./Grammars/psi.tok");
+			tokenizer = Tokenizer.Load(PsiTokens.Tokens);
 
 			commonTypes = new TypeContainer();
 			commonTypes.Add(Types.Void);
@@ -60,17 +61,17 @@ namespace EinCompiler
 
 		static void Main(string[] args)
 		{
-			var module = Compile("./Examples/work.psi");
+			var fileName = args.FirstOrDefault () ?? "./Examples/work.psi";
+			var module = Compile(fileName);
 
 			// BackEnd.GenerateCode<CCodeBackEnd>(module, Console.Out);
 			BackEnd.GenerateCode<SVMABackEnd>(module, Console.Out);
-
+			/*
 			using (var sw = new StreamWriter("output.asm", false, Encoding.UTF8))
 			{
 				BackEnd.GenerateCode<SVMABackEnd>(module, sw);
 			}
-
-			Console.ReadLine();
+			*/
 		}
 	}
 }
