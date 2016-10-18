@@ -1,6 +1,0 @@
-﻿
-WHITESPACE         := \s+
-O_BRACKET          := \(
-C_BRACKET          := \)
-NUMBER             := -?\d+(\.\d+)?
-OPERATOR           := \+|\-|\*|\/

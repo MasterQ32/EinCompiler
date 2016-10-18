@@ -8,25 +8,79 @@ namespace EinCompiler.FrontEnds
 		{
 			this.Add(PsiTokens.COMMENT, new Regex(@"\/\*.*?\*\/", RegexOptions.Singleline));
 			this.Add(PsiTokens.COMMENT, new Regex(@"\/\/[^\n]*", RegexOptions.None));
-			this.Add(PsiTokens.RAW_BLOCK, new Regex(@"\[\[.*?\]\]", RegexOptions.Singleline));
-			this.Add(PsiTokens.STRING, new Regex(@""".*?(?<!\\)""", RegexOptions.None));
+			this.Add(new TokenType(PsiTokens.RAW_BLOCK, new Regex(@"\[\[.*?\]\]", RegexOptions.Singleline))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.STRING, new Regex(@""".*?(?<!\\)""", RegexOptions.None))
+			{
+				Emitted = true,
+			});
 			this.Add(PsiTokens.WHITESPACE, new Regex(@"\s+", RegexOptions.None));
-			this.Add(PsiTokens.O_BRACKET, new Regex(@"\(", RegexOptions.None));
-			this.Add(PsiTokens.C_BRACKET, new Regex(@"\)", RegexOptions.None));
-			this.Add(PsiTokens.O_CBRACKET, new Regex(@"\{", RegexOptions.None));
-			this.Add(PsiTokens.C_CBRACKET, new Regex(@"\}", RegexOptions.None));
-			this.Add(PsiTokens.O_SBRACKET, new Regex(@"\[", RegexOptions.None));
-			this.Add(PsiTokens.C_SBRACKET, new Regex(@"\]", RegexOptions.None));
-			this.Add(PsiTokens.SEPARATOR, new Regex(@"\,", RegexOptions.None));
-			this.Add(PsiTokens.DELIMITER, new Regex(@"\;", RegexOptions.None));
-			this.Add(PsiTokens.ASSIGNMENT, new Regex(@"\:\=", RegexOptions.None));
-			this.Add(PsiTokens.COLON, new Regex(@"\:", RegexOptions.None));
-			this.Add(PsiTokens.ARROW, new Regex(@"\-\>", RegexOptions.None));
-			this.Add(PsiTokens.NUMBER, new Regex(@"(?<sign>-?)(?:(?<hex>0x[0-9A-Fa-f]+)|(?<bin>0b[01]+)|(?<float>\d+\.\d*)|(?<int>\d+))", RegexOptions.None));
-			this.Add(PsiTokens.CHARACTER, new Regex(@"'\\?.'", RegexOptions.None));
-			this.Add(PsiTokens.BINARY_OPERATOR, new Regex(@"!=|>=|<=|>|<|=|\+|\-|\*|\/|\%", RegexOptions.None));
-			this.Add(PsiTokens.KEYWORD, new Regex(@"\b(include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b", RegexOptions.None));
-			this.Add(PsiTokens.IDENTIFIER, new Regex(@"\b[A-Za-z_]\w*\b", RegexOptions.None));
+			this.Add(new TokenType(PsiTokens.O_BRACKET, new Regex(@"\(", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.C_BRACKET, new Regex(@"\)", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.O_CBRACKET, new Regex(@"\{", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.C_CBRACKET, new Regex(@"\}", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.O_SBRACKET, new Regex(@"\[", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.C_SBRACKET, new Regex(@"\]", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.SEPARATOR, new Regex(@"\,", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.DELIMITER, new Regex(@"\;", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.ASSIGNMENT, new Regex(@"\:\=", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.COLON, new Regex(@"\:", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.ARROW, new Regex(@"\-\>", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.NUMBER, new Regex(@"(?<sign>-?)(?:(?<hex>0x[0-9A-Fa-f]+)|(?<bin>0b[01]+)|(?<float>\d+\.\d*)|(?<int>\d+))", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.CHARACTER, new Regex(@"'\\?.'", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.BINARY_OPERATOR, new Regex(@"!=|>=|<=|>|<|=|\+|\-|\*|\/|\%", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.KEYWORD, new Regex(@"\b(include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b", RegexOptions.None))
+			{
+				Emitted = true,
+			});
+			this.Add(new TokenType(PsiTokens.IDENTIFIER, new Regex(@"\b[A-Za-z_]\w*\b", RegexOptions.None))
+			{
+				Emitted = true,
+			});
 		}
 	}
 

@@ -22,9 +22,12 @@ namespace EinCompiler.FrontEnds
 	var tokenNames = new HashSet<string>();
 	for (int i = 0; i < definitions.Length; i++)
 	{
-		var match = tokenizerFormat.Match(definitions[i]);
-		if (match.Success == false)
+		var line = definitions[i].Trim();
+		if(line.Length == 0 || line.StartsWith("#"))
 			continue;
+		var match = tokenizerFormat.Match(line);
+		if (match.Success == false)
+			throw new InvalidOperationException("Invalid definition in line " + (i+1));
 		var name = match.Groups["key"].Value.ToUpper();
 		var options = match.Groups["options"].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 		var regextext = match.Groups["value"].Value;
@@ -50,18 +53,19 @@ namespace EinCompiler.FrontEnds
 
 		if(optionlist.Count == 0)
 			optionlist.Add("None");
-
+		#>
+			// <#= definitions[i] #>
+<#+
+		if(emitted) {
+		#>
+			this.Add(new TokenType(<#= language #>Tokens.<#= name #>, new Regex(@"<#= regextext.Replace("\"", "\"\"") #>", <#= string.Join(" | ", optionlist.Select(o => "RegexOptions." + o)) #>))
+			{
+				Emitted = true,
+			});
+<#+		} else {
 		#>
 			this.Add(<#= language #>Tokens.<#= name #>, new Regex(@"<#= regextext.Replace("\"", "\"\"") #>", <#= string.Join(" | ", optionlist.Select(o => "RegexOptions." + o)) #>));
-<#+
-
-		/*
-		var token = new TokenType(name, regex)
-		{
-			Emitted = emitted,
-		};
-		tokenizer.Add(token);
-		*/
+<#+		}
 	}
 #>
 		}

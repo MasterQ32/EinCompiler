@@ -1,0 +1,14 @@
+﻿WHITESPACE(noemit)          := \s+
+COMMENT(noemit,singleline)  := #!.*?!#
+COMMENT(noemit,multiline)   := #.*$
+
+NUMBER                      := (?:0x[0-9A-Fa-f]+|-?\d*\.?\d+)
+IDENTIFIER                  := [A-Za-z_]\w*
+SUBSCRIPT                   := \.
+DELIMITER                   := \;
+COMMA                       := \,
+RETVAL                      := \?
+OPERATOR                    := (?:>=|<=|<>|==|[><=+\-*\/@~])
+STRING                      := ".*?(?<!\\)"
+O_BRACKET                   := [\{(\[]
+C_BRACKET                   := [\})\]]

@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace EinCompiler
 {
-	public abstract class Tokenizer : IList<TokenType>
+	public abstract class Tokenizer : IReadOnlyList<TokenType>
 	{
 		private static readonly Regex tokenizerFormat = new Regex(@"^(?<key>\w+)(?:\((?<options>\w+(?:,\w+)*)\))?\s*:=\s*(?<value>.*?)\s*$", RegexOptions.Compiled);
 		private readonly List<TokenType> tokenTypes;
@@ -79,9 +79,14 @@ namespace EinCompiler
 			return Load(File.ReadAllLines(fileName));
 		}
 
+		private sealed class RuntimeTokenizer : Tokenizer
+		{
+			public RuntimeTokenizer() { }
+		}
+
 		public static Tokenizer Load(params string[] definitions)
 		{
-			var tokenizer = new Tokenizer();
+			var tokenizer = new RuntimeTokenizer();
 			for (int i = 0; i < definitions.Length; i++)
 			{
 				var match = tokenizerFormat.Match(definitions[i]);

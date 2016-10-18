@@ -100,7 +100,6 @@
     <Compile Include="Descriptions\ValueDescription.cs" />
     <Compile Include="Descriptions\VariableDescription.cs" />
     <Compile Include="BuiltInTypes\IntegerType.cs" />
-    <Compile Include="Grammars\PsiTokens.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="FrontEnds\Psi\PsiParser.cs" />
     <Compile Include="FrontEnds\Psi\PsiTokenizer.cs">
@@ -109,6 +108,9 @@
     <Compile Include="FrontEnds\TokenizerGen.cs">
       <DependentUpon>TokenizerGen.tt</DependentUpon>
     </Compile>
+    <Compile Include="FrontEnds\MiBasic\MiBasicTokenizer.cs">
+      <DependentUpon>MiBasicTokenizer.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -116,9 +118,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Examples\work.psi">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Grammars\tokens.tok">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="FrontEnds\Psi\psi.tok">
@@ -132,6 +131,11 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TokenizerGen.cs</LastGenOutput>
     </None>
+    <None Include="FrontEnds\MiBasic\MiBasicTokenizer.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MiBasicTokenizer.cs</LastGenOutput>
+    </None>
+    <None Include="FrontEnds\MiBasic\mibasic.tok" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Examples\psi-language.psi">
@@ -151,5 +155,6 @@
   -->
   <ItemGroup>
     <Folder Include="FrontEnds\Psi\" />
+    <Folder Include="FrontEnds\MiBasic\" />
   </ItemGroup>
 </Project>

@@ -7,23 +7,25 @@ using System.Text.RegularExpressions;
 
 namespace EinCompiler.FrontEnds
 {
+	using static PsiTokens;
+
 	public sealed class PsiParser : Parser
 	{
 		static Regex unescaper = new Regex(@"\\(.)", RegexOptions.Compiled);
 
-		Token ReadValue() => this.ReadToken("NUMBER", "STRING");
+		Token ReadValue() => this.ReadToken(NUMBER, STRING);
 
 		protected override RawSyntaxNode ReadNext()
 		{
-			var @class = this.ReadToken("KEYWORD");
+			var @class = this.ReadToken(KEYWORD);
 
 			switch (@class.Text)
 			{
 				case "include":
 				{
-					this.ReadToken("O_BRACKET");
-					var text = this.ReadToken("STRING");
-					this.ReadToken("C_BRACKET");
+					this.ReadToken(O_BRACKET);
+					var text = this.ReadToken(STRING);
+					this.ReadToken(C_BRACKET);
 					this.ReadDelimiter();
 
 					var fileName = Unescape(text.Text);
@@ -32,10 +34,10 @@ namespace EinCompiler.FrontEnds
 				}
 				case "const":
 				{
-					var name = this.ReadToken("IDENTIFIER");
-					this.ReadToken("COLON");
+					var name = this.ReadToken(IDENTIFIER);
+					this.ReadToken(COLON);
 					var type = this.ReadType();
-					this.ReadToken("ASSIGNMENT");
+					this.ReadToken(ASSIGNMENT);
 					var value = this.ReadValue();
 					this.ReadDelimiter();
 					return new RawConstantNode(name, type, value);
@@ -50,18 +52,18 @@ namespace EinCompiler.FrontEnds
 					while (@class.Text != "var")
 					{
 						classes.Add(@class);
-						@class = this.ReadToken("KEYWORD");
+						@class = this.ReadToken(KEYWORD);
 					}
-					var name = this.ReadToken("IDENTIFIER");
-					this.ReadToken("COLON");
+					var name = this.ReadToken(IDENTIFIER);
+					this.ReadToken(COLON);
 					var type = this.ReadType();
 					
 					Token value = null;
 
-					var option = this.PeekToken("DELIMITER", "ASSIGNMENT");
-					if (option.Type.Name == "ASSIGNMENT")
+					var option = this.PeekToken(DELIMITER, ASSIGNMENT);
+					if (option.Type.Name == ASSIGNMENT)
 					{
-						this.ReadToken("ASSIGNMENT");
+						this.ReadToken(ASSIGNMENT);
 						value = this.ReadValue();
 					}
 					this.ReadDelimiter();
@@ -81,32 +83,32 @@ namespace EinCompiler.FrontEnds
 					while (@class.Text != "fn")
 					{
 						modifiers.Add(@class.Text);
-						@class = this.ReadToken("KEYWORD");
+						@class = this.ReadToken(KEYWORD);
 					}
 
 					var parameters = new List<RawParameterNode>();
-					var name = this.ReadToken("IDENTIFIER");
-					this.ReadToken("O_BRACKET");
-					while (this.PeekToken().Type.Name != "C_BRACKET")
+					var name = this.ReadToken(IDENTIFIER);
+					this.ReadToken(O_BRACKET);
+					while (this.PeekToken().Type.Name != C_BRACKET)
 					{
-						var pname = this.ReadToken("IDENTIFIER");
-						this.ReadToken("COLON");
+						var pname = this.ReadToken(IDENTIFIER);
+						this.ReadToken(COLON);
 						var ptype = this.ReadType();
 						parameters.Add(new RawParameterNode(pname, ptype));
-						if (this.PeekToken().Type.Name != "C_BRACKET")
-							this.ReadToken("SEPARATOR");
+						if (this.PeekToken().Type.Name != C_BRACKET)
+							this.ReadToken(SEPARATOR);
 					}
-					this.ReadToken("C_BRACKET");
+					this.ReadToken(C_BRACKET);
 					RawTypeNode returnType = null;
-					if (this.PeekToken().Type.Name == "ARROW")
+					if (this.PeekToken().Type.Name == ARROW)
 					{
-						this.ReadToken("ARROW");
+						this.ReadToken(ARROW);
 						returnType = this.ReadType();
 					}
 
 					if (modifiers.Contains("naked") || modifiers.Contains("inline"))
 					{
-						var body = this.ReadToken("RAW_BLOCK");
+						var body = this.ReadToken(RAW_BLOCK);
 						return new RawNakedFunctionNode(
 							name,
 							returnType,

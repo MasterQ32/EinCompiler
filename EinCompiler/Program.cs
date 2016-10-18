@@ -71,7 +71,7 @@ namespace EinCompiler
 				Name = "Psi",
 				Extensions = new [] { ".psi" },
 				Types = commonTypes,
-				Tokenizer = () => Tokenizer.Load (PsiTokens.Tokens),
+				Tokenizer = () => new PsiTokenizer(),
 				Parser = () => new PsiParser (),
 			});
 
