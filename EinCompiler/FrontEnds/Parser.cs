@@ -16,8 +16,12 @@ namespace EinCompiler.FrontEnds
 		public static RawModuleNode Parse<T>(Token[] tokens)
 			where T : Parser, new()
 		{
+			return Parse(new T(), tokens);
+		}
+
+		public static RawModuleNode Parse(Parser parser, Token[] tokens)
+		{
 			var tree = new RawModuleNode();
-			var parser = new T();
 			parser.tokens = tokens;
 
 			while (parser.cursor < parser.tokens.Length)

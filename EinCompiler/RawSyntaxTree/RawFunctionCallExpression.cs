@@ -21,7 +21,7 @@ namespace EinCompiler.RawSyntaxTree
 		{
 			var func = funcs[this.Name.Text];
 			if (func == null)
-				throw new SemanticException(this.Name, "Use of undeclared function.");
+				throw new SemanticException(this.Name, $"Use of undeclared function {this.Name.Text}");
 			return new FunctionCallExpression(
 				func,
 				this.Arguments.Select(a => a.Translate(types, vars, funcs)).ToArray());

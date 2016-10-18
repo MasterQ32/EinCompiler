@@ -44,9 +44,15 @@ namespace EinCompiler.BackEnds
 			foreach (var func in module.Functions)
 			{
 				WriteFunctionHeader(func);
-				WriteLine();
-				WriteBlock(func.Body);
-				WriteLine();
+				if (func.NakedBody != null) {
+					WriteLine ("{");
+					WriteLine (func.NakedBody);
+					WriteLine ("}");
+				} else { 
+					WriteLine ();
+					WriteBlock (func.Body);
+					WriteLine ();
+				}
 			}
 		}
 

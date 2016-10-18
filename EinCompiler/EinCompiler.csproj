@@ -102,6 +102,7 @@
     <Compile Include="Descriptions\VariableDescription.cs" />
     <Compile Include="BuiltInTypes\IntegerType.cs" />
     <Compile Include="Grammars\PsiTokens.cs" />
+    <Compile Include="Language.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

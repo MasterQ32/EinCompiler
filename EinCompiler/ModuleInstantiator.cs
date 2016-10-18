@@ -22,7 +22,6 @@ namespace EinCompiler
 			foreach (var include in node.Includes)
 			{
 				var module = LoadSubModule(include);
-
 				description.Merge(module);
 			}
 
@@ -53,6 +52,7 @@ namespace EinCompiler
 			// bodies already assigned.
 			foreach (var naked in node.NakedFunctions)
 			{
+				Console.WriteLine ("Naked: {0}", naked.Name);
 				description.Functions.Add(new FunctionDescription(
 					naked.Name.Text,
 					CreateType(naked.ReturnType, true),
