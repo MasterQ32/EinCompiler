@@ -8,27 +8,27 @@ using System.Text.RegularExpressions;
 
 namespace EinCompiler
 {
-	public sealed class Tokenizer : IList<TokenType>
+	public abstract class Tokenizer : IList<TokenType>
 	{
 		private static readonly Regex tokenizerFormat = new Regex(@"^(?<key>\w+)(?:\((?<options>\w+(?:,\w+)*)\))?\s*:=\s*(?<value>.*?)\s*$", RegexOptions.Compiled);
 		private readonly List<TokenType> tokenTypes;
 
-		public Tokenizer()
+		protected Tokenizer()
 		{
 			this.tokenTypes = new List<TokenType>();
 		}
 
-		public void Add(TokenType token)
+		protected void Add(TokenType token)
 		{
 			this.tokenTypes.Add(token);
 		}
 
-		public void Add(string name, Regex regex)
+		protected void Add(string name, Regex regex)
 		{
 			this.Add(new TokenType(name, regex));
 		}
 
-		public void Add(string name, string regex)
+		protected void Add(string name, string regex)
 		{
 			this.Add(new TokenType(name, regex));
 		}

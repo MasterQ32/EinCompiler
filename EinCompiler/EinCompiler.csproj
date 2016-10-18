@@ -53,7 +53,6 @@
     <Compile Include="BuiltInTypes\ArrayType.cs" />
     <Compile Include="Descriptions\ConstantDescription.cs" />
     <Compile Include="Descriptions\LocalDecription.cs" />
-    <Compile Include="FrontEnds\PsiParser.cs" />
     <Compile Include="FrontEnds\Parser.cs" />
     <Compile Include="FrontEnds\ParserException.cs" />
     <Compile Include="Descriptions\Instructions\Expressions\FunctionCallExpression.cs" />
@@ -103,6 +102,13 @@
     <Compile Include="BuiltInTypes\IntegerType.cs" />
     <Compile Include="Grammars\PsiTokens.cs" />
     <Compile Include="Language.cs" />
+    <Compile Include="FrontEnds\Psi\PsiParser.cs" />
+    <Compile Include="FrontEnds\Psi\PsiTokenizer.cs">
+      <DependentUpon>PsiTokenizer.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FrontEnds\TokenizerGen.cs">
+      <DependentUpon>TokenizerGen.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -112,11 +118,19 @@
     <None Include="Examples\work.psi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Grammars\psi.tok">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Grammars\tokens.tok">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="FrontEnds\Psi\psi.tok">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="FrontEnds\Psi\PsiTokenizer.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PsiTokenizer.cs</LastGenOutput>
+    </None>
+    <None Include="FrontEnds\TokenizerGen.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TokenizerGen.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -135,4 +149,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="FrontEnds\Psi\" />
+  </ItemGroup>
 </Project>
