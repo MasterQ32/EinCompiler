@@ -1,15 +1,12 @@
 ﻿
 naked fn putc(chr : int)
 [[
-	fprintf("%c", chr);
+	printf("%c", chr);
 ]]
 
 naked fn puti(val : int)
 [[
-	fprintf("%d", val);
+	printf("%d", val);
 ]]
 
-naked fn exit(exitCode : int)
-[[
-	exit(exitCode);
-]]
+extern fn exit(exitCode : int);

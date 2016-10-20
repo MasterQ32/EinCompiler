@@ -8,6 +8,7 @@ namespace EinCompiler.RawSyntaxTree
 	{
 		private List<RawFunctionNode> functions = new List<RawFunctionNode>();
 		private List<RawNakedFunctionNode> nakedFunctions = new List<RawNakedFunctionNode>();
+		private List<RawExternFunctionNode> externFunctions = new List<RawExternFunctionNode>();
 		private List<RawVariableNode> variables = new List<RawVariableNode>();
 		private List<RawConstantNode> constants = new List<RawConstantNode>();
 		private List<string> includes = new List<string>();
@@ -26,6 +27,10 @@ namespace EinCompiler.RawSyntaxTree
 			else if (node is RawNakedFunctionNode)
 			{
 				nakedFunctions.Add((RawNakedFunctionNode)node);
+			}
+			else if (node is RawExternFunctionNode)
+			{
+				externFunctions.Add((RawExternFunctionNode)node);
 			}
 			else if (node is RawVariableNode)
 			{
@@ -48,6 +53,8 @@ namespace EinCompiler.RawSyntaxTree
 		public ICollection<RawFunctionNode> Functions => this.functions;
 
 		public ICollection<RawNakedFunctionNode> NakedFunctions => this.nakedFunctions;
+
+		public ICollection<RawExternFunctionNode> ExternFunctions => this.externFunctions;
 
 		public ICollection<RawVariableNode> Variables => this.variables;
 

@@ -17,5 +17,5 @@ ARROW                 := \-\>
 NUMBER                := (?<sign>-?)(?:(?<hex>0x[0-9A-Fa-f]+)|(?<bin>0b[01]+)|(?<float>\d+\.\d*)|(?<int>\d+))
 CHARACTER             := '\\?.'
 OPERATOR              := !=|>=|<=|>|<|=|\+|\-|\*|\/|\%
-KEYWORD               := \b(include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b
+KEYWORD               := \b(extern|include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b
 IDENTIFIER            := \b[A-Za-z_]\w*\b

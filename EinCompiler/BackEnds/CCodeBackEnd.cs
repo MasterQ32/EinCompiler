@@ -48,15 +48,31 @@ namespace EinCompiler.BackEnds
 
 		private string GetTypeName(TypeDescription type)
 		{
+			if (type == Types.Void)
+				return "void";
+			else if (type == Types.Int8)
+				return "int8_t";
+			else if (type == Types.Int16)
+				return "int16_t";
+			else if (type == Types.Int32)
+				return "int32_t";
+			else if (type == Types.UInt8)
+				return "uint8_t";
+			else if (type == Types.UInt16)
+				return "uint16_t";
+			else if (type == Types.UInt32)
+				return "uint32_t";
 			return "int";
 		}
 
 		protected override void Generate(ModuleDescription module)
 		{
+			WriteLine ("#define putc _putc // DIRTY HACKS");
 			WriteLine ("#include <stdio.h>");
 			WriteLine ("#include <stdlib.h>");
 			WriteLine ("#include <stdint.h>");
 			WriteLine ("#include <stddef.h>");
+			WriteLine ("#undef putc");
 
 			foreach (var c in module.Constants) {
 
@@ -93,8 +109,12 @@ namespace EinCompiler.BackEnds
 
 			foreach (var func in module.Functions) {
 
+				if (func.IsExtern)
+					continue;
+
 				WriteHeader (func);
 				WriteLine ();
+
 				if (func.NakedBody != null) {
 					WriteLine ("{");
 					IncreaseIndentation ();

@@ -1,5 +1,5 @@
 ﻿var scalar : int;
-var array  : int[10];
+// var array  : int[10];
 
 static var staticInt : int := 10;
 
@@ -14,13 +14,14 @@ fn main() -> int
 
 	scalar := 1;
 
-	array[0]      := 10;
-	array[scalar] := 20;
+	// array[0]      := 10;
+	// array[scalar] := 20;
 
 	// puti(arrayToInt(array));
-	puti(array[0]);
-	puti(array[scalar]);
+	// puti(array[0]);
+	// puti(array[scalar]);
 	putc('B');
+	putc('\n');
 }
 
 fn test_expressions()
@@ -49,7 +50,7 @@ fn test_expressions()
 	x := 1 < 2;
 }
 
-fn test_return()
+fn test_return() -> int
 	var i : int;
 {
 	return i * i;

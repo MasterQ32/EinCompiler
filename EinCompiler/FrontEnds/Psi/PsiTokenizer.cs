@@ -101,8 +101,8 @@ namespace EinCompiler.FrontEnds
 			{
 				Emitted = true,
 			});
-			// KEYWORD               := \b(include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b
-			this.Add(new TokenCode(PsiTokens.KEYWORD, new Regex(@"\b(include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b", RegexOptions.None))
+			// KEYWORD               := \b(extern|include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b
+			this.Add(new TokenCode(PsiTokens.KEYWORD, new Regex(@"\b(extern|include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b", RegexOptions.None))
 			{
 				Emitted = true,
 			});

@@ -77,6 +77,7 @@ namespace EinCompiler.FrontEnds
 				case "export":
 				case "naked":
 				case "inline":
+				case "extern":
 				case "fn":
 				{
 					var modifiers = new List<string>();
@@ -106,52 +107,54 @@ namespace EinCompiler.FrontEnds
 						returnType = this.ReadType();
 					}
 
-					if (modifiers.Contains("naked") || modifiers.Contains("inline"))
-					{
-						var body = this.ReadToken(RAW_BLOCK);
-						return new RawNakedFunctionNode(
+					if (modifiers.Contains ("extern")) {
+						this.ReadToken (DELIMITER);
+						return new RawExternFunctionNode (
 							name,
 							returnType,
-							parameters,
-							body.Text)
-						{
-							IsInline = modifiers.Contains("inline"),
-						};
-					}
-					else
-					{
-						var locals = new List<RawLocal>();
-						while(this.PeekToken().Type != O_CBRACKET)
-						{
-							var tok = this.ReadToken(KEYWORD);
+							parameters);
+					} else {
+						if (modifiers.Contains ("naked") || modifiers.Contains ("inline")) {
+							var body = this.ReadToken (RAW_BLOCK);
+							return new RawNakedFunctionNode (
+								name,
+								returnType,
+								parameters,
+								body.Text) {
+								IsInline = modifiers.Contains ("inline"),
+							};
+						} else {
+							var locals = new List<RawLocal> ();
+							while (this.PeekToken ().Type != O_CBRACKET) {
+								var tok = this.ReadToken (KEYWORD);
 
-							switch(tok.Text)
-							{
+								switch (tok.Text) {
 								case "var": // local variable in this case
-								{
-									var locname = this.ReadToken(IDENTIFIER);
-									this.ReadToken(COLON);
-									var loctype = this.ReadType();
-									this.ReadDelimiter();
-									locals.Add(new RawLocal(locname, loctype));
-									break;
+									{
+										var locname = this.ReadToken (IDENTIFIER);
+										this.ReadToken (COLON);
+										var loctype = this.ReadType ();
+										this.ReadDelimiter ();
+										locals.Add (new RawLocal (locname, loctype));
+										break;
+									}
+								default:
+									throw new ParserException (tok);
 								}
-								default: throw new ParserException(tok);
 							}
+
+
+							var body = this.ReadBody ();
+
+							return new RawFunctionNode (
+								name,
+								returnType,
+								parameters,
+								locals,
+								body) {
+								IsExported = modifiers.Contains ("export"),
+							};
 						}
-
-
-						var body = this.ReadBody();
-
-						return new RawFunctionNode(
-							name,
-							returnType,
-							parameters,
-							locals,
-							body)
-						{
-							IsExported = modifiers.Contains("export"),
-						};
 					}
 				}
 				default:

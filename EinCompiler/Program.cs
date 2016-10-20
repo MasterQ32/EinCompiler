@@ -142,7 +142,6 @@ namespace EinCompiler
 			};
 
 			foreach (var builtin in codegen.BuiltIns) {
-				Console.WriteLine ("Builtin: {0}", string.Join (", ", builtin.Functions.Select (f => f.Name)));
 				result.Merge (builtin);
 			}
 

@@ -55,6 +55,14 @@ namespace EinCompiler
 					func.Locals.Select((l, i) => new LocalDecription(CreateType(l.Type), l.Name.Text, i)).ToArray()));
 			}
 
+			foreach (var @extern in node.ExternFunctions)
+			{
+				description.Functions.Add(new FunctionDescription(
+					@extern.Name.Text,
+					CreateType(@extern.ReturnType, true),
+					@extern.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray()));
+			}
+
 			// Second, create all naked functions with their
 			// bodies already assigned.
 			foreach (var naked in node.NakedFunctions)

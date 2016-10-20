@@ -8,16 +8,24 @@ namespace EinCompiler
 		public FunctionDescription(
 			string name,
 			TypeDescription returnType,
-			ParameterDescription[] parameters,
-			LocalDecription[] locals)
+			ParameterDescription[] parameters)
 		{
 			if (name == null) throw new ArgumentNullException(nameof(name));
 			if (returnType == null) throw new ArgumentNullException(nameof(returnType));
 			if (parameters == null) throw new ArgumentNullException(nameof(parameters));
-			if (locals == null) throw new ArgumentNullException(nameof(locals));
 			this.Name = name;
 			this.ReturnType = returnType;
 			this.Parameters = parameters;
+		}
+
+		public FunctionDescription(
+			string name,
+			TypeDescription returnType,
+			ParameterDescription[] parameters,
+			LocalDecription[] locals) :
+			this(name, returnType, parameters)
+		{
+			if (locals == null) throw new ArgumentNullException(nameof(locals));
 			this.Locals = locals;
 		}
 
@@ -49,6 +57,8 @@ namespace EinCompiler
 		public string Name { get; private set; }
 
 		public bool IsNaked => (this.NakedBody != null);
+
+		public bool IsExtern => (!this.IsNaked && this.Body == null);
 
 		public bool IsInline { get; set; }
 
