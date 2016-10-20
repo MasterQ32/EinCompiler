@@ -1,6 +1,10 @@
 ﻿var scalar : int;
 var array  : int[10];
 
+static var staticInt : int := 10;
+
+const PI : int := 3141;
+
 fn main() -> int
 	var i : int;
 {
@@ -17,6 +21,93 @@ fn main() -> int
 	puti(array[0]);
 	puti(array[scalar]);
 	putc('B');
+}
+
+fn test_expressions()
+	var x : int;
+	var a : int;
+{
+	x := 1; 
+	x := a; 
+	x := 1 + 2;
+	x := a + 1;
+	x := 1 + a;
+	x := a + a;
+	x := 1 + 2 + 3;
+	x := 1 * 2 + 3;
+	x := 1 + 2 * 3;
+	x := (1);
+	x := (a);
+	x := (1 + 2);
+	x := (1 * (2 + 3));
+	x := (1 * (2 - (3 + 4)));
+	x := 1 = 2;
+	x := 1 != 2;
+	x := 1 >= 2;
+	x := 1 > 2;
+	x := 1 <= 2;
+	x := 1 < 2;
+}
+
+fn test_return()
+	var i : int;
+{
+	return i * i;
+}
+
+fn test_if()
+	var i : int;
+	var x : int;
+{
+	if(1 + 2)
+	{
+		i := x;
+		i := x;
+	}
+
+	if(1 + 2)
+	{
+		i := x;
+		i := x;
+	}
+	else
+	{
+		i := x;
+	}
+}
+
+fn test_while()
+	var i : int;
+	var x : int;
+{
+	while (i * i)
+	{
+		i := x;
+		i := 10 * 10;
+	}
+
+	while(i * i)
+	{
+		break;
+	}
+}
+
+
+fn test_call()
+	var i : int;
+{
+	sum(10, 5 + 5);
+	i := sum(10, 5 + 5);
+}
+
+export fn sum(a : int, b : int) -> int
+{
+	return a + b;
+}
+
+fn square(i : int) -> int
+{
+	return i * i;
 }
 
 // Module Support planned:

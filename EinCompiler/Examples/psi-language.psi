@@ -63,20 +63,20 @@ fn main() -> int
 
 fn test_expressions()
 {
-	x = 1; 
-	x = variable1; 
-	x = 1 + 2;
-	x = a + 1;
-	x = 1 + a;
-	x = a + a;
-	x = 1 + 2 + 3;
-	x = 1 * 2 + 3;
-	x = 1 + 2 * 3;
-	x = (1);
-	x = (a);
-	x = (1 + 2);
-	x = (1 * (2 + 3));
-	x = (1 * (2 - (3 + 4)));
+	x := 1; 
+	x := variable1; 
+	x := 1 + 2;
+	x := a + 1;
+	x := 1 + a;
+	x := a + a;
+	x := 1 + 2 + 3;
+	x := 1 * 2 + 3;
+	x := 1 + 2 * 3;
+	x := (1);
+	x := (a);
+	x := (1 + 2);
+	x := (1 * (2 + 3));
+	x := (1 * (2 - (3 + 4)));
 }
 
 fn test_return()
@@ -88,18 +88,18 @@ fn test_if()
 {
 	if(1 + 2)
 	{
-		i = x;
-		i = x;
+		i := x;
+		i := x;
 	}
 
 	if(1 + 2)
 	{
-		i = x;
-		i = x;
+		i := x;
+		i := x;
 	}
 	else
 	{
-		i = x;
+		i := x;
 	}
 }
 
@@ -107,8 +107,8 @@ fn test_while()
 {
 	while (i * i)
 	{
-		i = x;
-		i = 10 * 10;
+		i := x;
+		i := 10 * 10;
 	}
 
 	while(i * i)
@@ -120,7 +120,7 @@ fn test_while()
 fn test_call()
 {
 	sum(10, 5 + 5);
-	i = sum(10, 5 + 5);
+	i := sum(10, 5 + 5);
 }
 
 export fn sum(a : int, b : int) -> int

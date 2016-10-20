@@ -1,7 +1,7 @@
 ﻿
 naked fn putc(chr : int)
 [[
-	putc(chr);
+	fprintf("%c", chr);
 ]]
 
 naked fn puti(val : int)
