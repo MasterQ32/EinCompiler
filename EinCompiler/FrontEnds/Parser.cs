@@ -51,11 +51,11 @@ namespace EinCompiler.FrontEnds
 		/// </summary>
 		/// <param name="validType"></param>
 		/// <returns></returns>
-		protected Token PeekToken(params string[] validType)
+		protected Token PeekToken(params TokenType[] validType)
 		{
 			var tok = this.PeekToken();
-			if (validType.Contains(tok.Type.Name) == false)
-				throw new ParserException(tok, $"Expected {string.Join(",", validType)}.");
+			if (validType.Contains(tok.Type) == false)
+				throw new ParserException(tok, $"Expected {string.Join<TokenType>(",", validType)}.");
 			return tok;
 		}
 
@@ -64,11 +64,11 @@ namespace EinCompiler.FrontEnds
 		/// </summary>
 		/// <param name="validType"></param>
 		/// <returns></returns>
-		protected Token ReadToken(params string[] validType)
+		protected Token ReadToken(params TokenType[] validType)
 		{
 			var tok = this.ReadToken();
-			if (validType.Contains(tok.Type.Name) == false)
-				throw new ParserException(tok, $"Expected {string.Join(",", validType)}.");
+			if (validType.Contains(tok.Type) == false)
+				throw new ParserException(tok, $"Expected {string.Join<TokenType>(",", validType)}.");
 			return tok;
 		}
 

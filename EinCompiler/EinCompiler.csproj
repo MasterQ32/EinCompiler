@@ -93,9 +93,6 @@
     <Compile Include="Descriptions\Instructions\Expressions\VariableExpression.cs" />
     <Compile Include="Descriptions\Instructions\ReturnInstruction.cs" />
     <Compile Include="SemanticException.cs" />
-    <Compile Include="TokenType.cs" />
-    <Compile Include="Token.cs" />
-    <Compile Include="Tokenizer.cs" />
     <Compile Include="Descriptions\TypeDescription.cs" />
     <Compile Include="Descriptions\ValueDescription.cs" />
     <Compile Include="Descriptions\VariableDescription.cs" />
@@ -111,6 +108,10 @@
     <Compile Include="FrontEnds\MiBasic\MiBasicTokenizer.cs">
       <DependentUpon>MiBasicTokenizer.tt</DependentUpon>
     </Compile>
+    <Compile Include="FrontEnds\Token.cs" />
+    <Compile Include="FrontEnds\TokenCode.cs" />
+    <Compile Include="FrontEnds\Tokenizer.cs" />
+    <Compile Include="FrontEnds\TokenType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -118,9 +119,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Examples\work.psi">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="FrontEnds\Psi\psi.tok">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="FrontEnds\Psi\PsiTokenizer.tt">
@@ -136,6 +134,12 @@
       <LastGenOutput>MiBasicTokenizer.cs</LastGenOutput>
     </None>
     <None Include="FrontEnds\MiBasic\mibasic.tok" />
+    <None Include="FrontEnds\Psi\psi.tok">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\c-backend.psi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Examples\psi-language.psi">

@@ -17,7 +17,7 @@ namespace EinCompiler
 		static List<Language> languages = new List<Language> ();
 		static Dictionary<string, BackEnd> codegens = new Dictionary<string, BackEnd>();
 
-		static ModuleDescription Compile (Language lang, string fileName)
+		static ModuleDescription Compile (ModuleDescription module, Language lang, string fileName)
 		{
 			var file = Path.GetFullPath (fileName);
 			// var path = Path.GetDirectoryName(file);
@@ -35,16 +35,15 @@ namespace EinCompiler
 						var uri = new Uri (f, UriKind.RelativeOrAbsolute);
 						if (uri.IsAbsoluteUri == false)
 							uri = new Uri (root, uri);
-						return Compile (lang, uri.AbsolutePath);
+						return Compile (module, lang, uri.AbsolutePath);
 					});
 
-				var result = instancer.CreateInstance (rawTree);
-				return result;
+				return instancer.CreateInto (module, rawTree);
 			}
 			catch (SemanticException ex) {
 				Console.Error.WriteLine ("{0}:{1}: {2}",
 					Path.GetFileName (fileName),
-					ex.Token.Start,
+					ex.Token.LineNumber,
 					ex.Message);
 				throw;
 			}
@@ -75,8 +74,18 @@ namespace EinCompiler
 				Parser = () => new PsiParser (),
 			});
 
-			codegens.Add ("c", new CCodeBackEnd ());
-			codegens.Add ("svma", new SVMABackEnd ());
+			{
+				var stdlib = Compile (null, languages [0], "Examples/c-backend.psi");
+				codegens.Add ("c", new CCodeBackEnd () {
+					BuiltIns = { stdlib }
+				});
+			}
+			{
+				var stdlib = Compile (null, languages [0], "Examples/das-os.psi");
+				codegens.Add ("svma", new SVMABackEnd () {
+					BuiltIns =  {stdlib }
+				});
+			}
 		}
 
 		static int Main (string[] args)
@@ -97,7 +106,7 @@ namespace EinCompiler
 						output = args [++i];
 						break;
 					case "-f":
-					case "-format":
+					case "--format":
 						if (codegens.TryGetValue (args [++i], out codegen) == false) {
 							Console.Error.WriteLine ("Unrecognized format: {0}", args [i]);
 							errors = true;
@@ -128,11 +137,18 @@ namespace EinCompiler
 				return 1;
 			}
 
-			var result = new ModuleDescription (); 
+			var result = new ModuleDescription {
+				Types = commonTypes,
+			};
+
+			foreach (var builtin in codegen.BuiltIns) {
+				Console.WriteLine ("Builtin: {0}", string.Join (", ", builtin.Functions.Select (f => f.Name)));
+				result.Merge (builtin);
+			}
+
 			try {
 				foreach (var input in files) {
-					var module = Compile (input.Item2, input.Item1);
-					result.Merge (module);
+					Compile (result, input.Item2, input.Item1);
 				}
 			} catch (SemanticException) {
 				return 1;

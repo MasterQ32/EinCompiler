@@ -1,0 +1,15 @@
+﻿
+naked fn putc(chr : int)
+[[
+	putc(chr);
+]]
+
+naked fn puti(val : int)
+[[
+	fprintf("%d", val);
+]]
+
+naked fn exit(exitCode : int)
+[[
+	exit(exitCode);
+]]

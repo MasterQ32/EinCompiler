@@ -14,10 +14,17 @@ namespace EinCompiler
 			this.types = types;
 			this.fileLoader = fileLoader;
 		}
-		
+
 		public ModuleDescription CreateInstance(RawModuleNode node)
 		{
 			var description = new ModuleDescription();
+			CreateInto (description, node);
+			return description;
+		}
+
+		public ModuleDescription CreateInto(ModuleDescription description, RawModuleNode node)
+		{
+			description = description ?? new ModuleDescription ();
 
 			foreach (var include in node.Includes)
 			{
@@ -52,7 +59,6 @@ namespace EinCompiler
 			// bodies already assigned.
 			foreach (var naked in node.NakedFunctions)
 			{
-				Console.WriteLine ("Naked: {0}", naked.Name);
 				description.Functions.Add(new FunctionDescription(
 					naked.Name.Text,
 					CreateType(naked.ReturnType, true),

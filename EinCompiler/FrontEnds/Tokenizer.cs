@@ -8,48 +8,51 @@ using System.Text.RegularExpressions;
 
 namespace EinCompiler
 {
-	public abstract class Tokenizer : IReadOnlyList<TokenType>
+	public abstract class Tokenizer : IReadOnlyList<TokenCode>
 	{
-		private static readonly Regex tokenizerFormat = new Regex(@"^(?<key>\w+)(?:\((?<options>\w+(?:,\w+)*)\))?\s*:=\s*(?<value>.*?)\s*$", RegexOptions.Compiled);
-		private readonly List<TokenType> tokenTypes;
+		// private static readonly Regex tokenizerFormat = new Regex(@"^(?<key>\w+)(?:\((?<options>\w+(?:,\w+)*)\))?\s*:=\s*(?<value>.*?)\s*$", RegexOptions.Compiled);
+		private readonly List<TokenCode> tokenCodes = new List<TokenCode> ();
 
 		protected Tokenizer()
 		{
-			this.tokenTypes = new List<TokenType>();
+			this.tokenCodes = new List<TokenCode>();
 		}
 
-		protected void Add(TokenType token)
+		protected void Add(TokenCode token)
 		{
-			this.tokenTypes.Add(token);
+			this.tokenCodes.Add(token);
 		}
 
-		protected void Add(string name, Regex regex)
+		protected void Add(TokenType type, Regex regex)
 		{
-			this.Add(new TokenType(name, regex));
+			this.Add(new TokenCode(type, regex));
 		}
 
-		protected void Add(string name, string regex)
+		protected void Add(TokenType type, string regex)
 		{
-			this.Add(new TokenType(name, regex));
+			this.Add(new TokenCode(type, regex));
 		}
 
 		public Token[] Tokenize(string text)
 		{
 			var tokens = new List<Token>();
 			int cursor = 0;
+			int lineno = 1;
 			while (cursor < text.Length)
 			{
 				var hadMatch = false;
-				for (int i = 0; i < this.tokenTypes.Count; i++)
+				for (int i = 0; i < this.tokenCodes.Count; i++)
 				{
-					var match = this.tokenTypes[i].Regex.Match(text, cursor);
+					var match = this.tokenCodes[i].Regex.Match(text, cursor);
 					if (match.Success == false)
 						continue;
 					if (match.Index != cursor)
 						continue;
 
-					if(this.tokenTypes[i].Emitted)
-						tokens.Add(new Token(this.tokenTypes[i], match));
+					if(this.tokenCodes[i].Emitted)
+						tokens.Add(new Token(this.tokenCodes[i].Type, match, lineno));
+
+					lineno += match.Value.Count (c => c == '\n');
 
 					cursor += match.Length;
 					hadMatch = true;
@@ -74,19 +77,23 @@ namespace EinCompiler
 			}
 		}
 
+		/*
 		public static Tokenizer Load(string fileName)
 		{
 			return Load(File.ReadAllLines(fileName));
 		}
+		*/
 
 		private sealed class RuntimeTokenizer : Tokenizer
 		{
 			public RuntimeTokenizer() { }
 		}
 
+		/*
 		public static Tokenizer Load(params string[] definitions)
 		{
 			var tokenizer = new RuntimeTokenizer();
+			var types = new Dictionary<string, TokenType> ();
 			for (int i = 0; i < definitions.Length; i++)
 			{
 				var match = tokenizerFormat.Match(definitions[i]);
@@ -111,7 +118,7 @@ namespace EinCompiler
 
 				var regex = new Regex(regextext, regexoptions);
 
-				var token = new TokenType(name, regex)
+				var token = new TokenCode(name, regex)
 				{
 					Emitted = emitted,
 				};
@@ -120,60 +127,43 @@ namespace EinCompiler
 			}
 			return tokenizer;
 		}
+		*/
 
-		public int IndexOf(TokenType item)
+		public int IndexOf(TokenCode item)
 		{
-			return tokenTypes.IndexOf(item);
+			return tokenCodes.IndexOf(item);
 		}
 
-		public void Insert(int index, TokenType item)
+		public bool Contains(TokenCode item)
 		{
-			tokenTypes.Insert(index, item);
+			return tokenCodes.Contains(item);
 		}
 
-		public void RemoveAt(int index)
+		public void CopyTo(TokenCode[] array, int arrayIndex)
 		{
-			tokenTypes.RemoveAt(index);
+			tokenCodes.CopyTo(array, arrayIndex);
 		}
 
-		public void Clear()
+		public bool Remove(TokenCode item)
 		{
-			tokenTypes.Clear();
+			return tokenCodes.Remove(item);
 		}
 
-		public bool Contains(TokenType item)
+		public IEnumerator<TokenCode> GetEnumerator()
 		{
-			return tokenTypes.Contains(item);
-		}
-
-		public void CopyTo(TokenType[] array, int arrayIndex)
-		{
-			tokenTypes.CopyTo(array, arrayIndex);
-		}
-
-		public bool Remove(TokenType item)
-		{
-			return tokenTypes.Remove(item);
-		}
-
-		public IEnumerator<TokenType> GetEnumerator()
-		{
-			return ((IList<TokenType>)tokenTypes).GetEnumerator();
+			return ((IList<TokenCode>)tokenCodes).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IList<TokenType>)tokenTypes).GetEnumerator();
+			return ((IList<TokenCode>)tokenCodes).GetEnumerator();
 		}
 
-		public int Count => tokenTypes.Count;
+		public int Count => tokenCodes.Count;
 
-		public bool IsReadOnly => ((IList<TokenType>)tokenTypes).IsReadOnly;
-
-		public TokenType this[int index]
+		public TokenCode this[int index]
 		{
-			get { return tokenTypes[index]; }
-			set { tokenTypes[index] = value; }
+			get { return tokenCodes[index]; }
 		}
 	}
 }

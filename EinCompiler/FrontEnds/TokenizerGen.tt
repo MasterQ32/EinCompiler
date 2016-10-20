@@ -55,17 +55,11 @@ namespace EinCompiler.FrontEnds
 			optionlist.Add("None");
 		#>
 			// <#= definitions[i] #>
-<#+
-		if(emitted) {
-		#>
-			this.Add(new TokenType(<#= language #>Tokens.<#= name #>, new Regex(@"<#= regextext.Replace("\"", "\"\"") #>", <#= string.Join(" | ", optionlist.Select(o => "RegexOptions." + o)) #>))
+			this.Add(new TokenCode(<#= language #>Tokens.<#= name #>, new Regex(@"<#= regextext.Replace("\"", "\"\"") #>", <#= string.Join(" | ", optionlist.Select(o => "RegexOptions." + o)) #>))
 			{
-				Emitted = true,
+				Emitted = <#= emitted ? "true" : "false" #>,
 			});
-<#+		} else {
-		#>
-			this.Add(<#= language #>Tokens.<#= name #>, new Regex(@"<#= regextext.Replace("\"", "\"\"") #>", <#= string.Join(" | ", optionlist.Select(o => "RegexOptions." + o)) #>));
-<#+		}
+<#+	
 	}
 #>
 		}
@@ -75,7 +69,7 @@ namespace EinCompiler.FrontEnds
 	{
 <#+
 		foreach(var name in tokenNames) {
-#>		public static readonly string <#= name #> = "<#= name #>";
+#>		public static readonly TokenType <#= name #> = new TokenType("<#= name #>");
 <#+
 		}
 		#>

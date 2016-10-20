@@ -8,6 +8,8 @@ namespace EinCompiler
 {
 	public sealed class ModuleDescription
 	{
+		public TypeContainer Types { get; set; } = new TypeContainer();
+
 		public VariableContainer Variables { get; } = new VariableContainer();
 
 		public ConstantContainer Constants { get; } = new ConstantContainer();

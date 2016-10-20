@@ -6,78 +6,108 @@ namespace EinCompiler.FrontEnds
 	{
 		public PsiTokenizer()
 		{
-			this.Add(PsiTokens.COMMENT, new Regex(@"\/\*.*?\*\/", RegexOptions.Singleline));
-			this.Add(PsiTokens.COMMENT, new Regex(@"\/\/[^\n]*", RegexOptions.None));
-			this.Add(new TokenType(PsiTokens.RAW_BLOCK, new Regex(@"\[\[.*?\]\]", RegexOptions.Singleline))
+			// COMMENT(noemit,singleline) := \/\*.*?\*\/
+			this.Add(new TokenCode(PsiTokens.COMMENT, new Regex(@"\/\*.*?\*\/", RegexOptions.Singleline))
+			{
+				Emitted = false,
+			});
+			// COMMENT(noemit)       := \/\/[^\n]*
+			this.Add(new TokenCode(PsiTokens.COMMENT, new Regex(@"\/\/[^\n]*", RegexOptions.None))
+			{
+				Emitted = false,
+			});
+			// RAW_BLOCK(singleline) := \[\[.*?\]\]
+			this.Add(new TokenCode(PsiTokens.RAW_BLOCK, new Regex(@"\[\[.*?\]\]", RegexOptions.Singleline))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.STRING, new Regex(@""".*?(?<!\\)""", RegexOptions.None))
+			// STRING				  := ".*?(?<!\\)"
+			this.Add(new TokenCode(PsiTokens.STRING, new Regex(@""".*?(?<!\\)""", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(PsiTokens.WHITESPACE, new Regex(@"\s+", RegexOptions.None));
-			this.Add(new TokenType(PsiTokens.O_BRACKET, new Regex(@"\(", RegexOptions.None))
+			// WHITESPACE(noemit)    := \s+
+			this.Add(new TokenCode(PsiTokens.WHITESPACE, new Regex(@"\s+", RegexOptions.None))
+			{
+				Emitted = false,
+			});
+			// O_BRACKET             := \(
+			this.Add(new TokenCode(PsiTokens.O_BRACKET, new Regex(@"\(", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.C_BRACKET, new Regex(@"\)", RegexOptions.None))
+			// C_BRACKET             := \)
+			this.Add(new TokenCode(PsiTokens.C_BRACKET, new Regex(@"\)", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.O_CBRACKET, new Regex(@"\{", RegexOptions.None))
+			// O_CBRACKET            := \{
+			this.Add(new TokenCode(PsiTokens.O_CBRACKET, new Regex(@"\{", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.C_CBRACKET, new Regex(@"\}", RegexOptions.None))
+			// C_CBRACKET            := \}
+			this.Add(new TokenCode(PsiTokens.C_CBRACKET, new Regex(@"\}", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.O_SBRACKET, new Regex(@"\[", RegexOptions.None))
+			// O_SBRACKET            := \[
+			this.Add(new TokenCode(PsiTokens.O_SBRACKET, new Regex(@"\[", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.C_SBRACKET, new Regex(@"\]", RegexOptions.None))
+			// C_SBRACKET            := \]
+			this.Add(new TokenCode(PsiTokens.C_SBRACKET, new Regex(@"\]", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.SEPARATOR, new Regex(@"\,", RegexOptions.None))
+			// SEPARATOR             := \,
+			this.Add(new TokenCode(PsiTokens.SEPARATOR, new Regex(@"\,", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.DELIMITER, new Regex(@"\;", RegexOptions.None))
+			// DELIMITER             := \;
+			this.Add(new TokenCode(PsiTokens.DELIMITER, new Regex(@"\;", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.ASSIGNMENT, new Regex(@"\:\=", RegexOptions.None))
+			// ASSIGNMENT            := \:\=
+			this.Add(new TokenCode(PsiTokens.ASSIGNMENT, new Regex(@"\:\=", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.COLON, new Regex(@"\:", RegexOptions.None))
+			// COLON                 := \:
+			this.Add(new TokenCode(PsiTokens.COLON, new Regex(@"\:", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.ARROW, new Regex(@"\-\>", RegexOptions.None))
+			// ARROW                 := \-\>
+			this.Add(new TokenCode(PsiTokens.ARROW, new Regex(@"\-\>", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.NUMBER, new Regex(@"(?<sign>-?)(?:(?<hex>0x[0-9A-Fa-f]+)|(?<bin>0b[01]+)|(?<float>\d+\.\d*)|(?<int>\d+))", RegexOptions.None))
+			// NUMBER                := (?<sign>-?)(?:(?<hex>0x[0-9A-Fa-f]+)|(?<bin>0b[01]+)|(?<float>\d+\.\d*)|(?<int>\d+))
+			this.Add(new TokenCode(PsiTokens.NUMBER, new Regex(@"(?<sign>-?)(?:(?<hex>0x[0-9A-Fa-f]+)|(?<bin>0b[01]+)|(?<float>\d+\.\d*)|(?<int>\d+))", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.CHARACTER, new Regex(@"'\\?.'", RegexOptions.None))
+			// CHARACTER             := '\\?.'
+			this.Add(new TokenCode(PsiTokens.CHARACTER, new Regex(@"'\\?.'", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.BINARY_OPERATOR, new Regex(@"!=|>=|<=|>|<|=|\+|\-|\*|\/|\%", RegexOptions.None))
+			// OPERATOR              := !=|>=|<=|>|<|=|\+|\-|\*|\/|\%
+			this.Add(new TokenCode(PsiTokens.OPERATOR, new Regex(@"!=|>=|<=|>|<|=|\+|\-|\*|\/|\%", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.KEYWORD, new Regex(@"\b(include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b", RegexOptions.None))
+			// KEYWORD               := \b(include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b
+			this.Add(new TokenCode(PsiTokens.KEYWORD, new Regex(@"\b(include|var|fn|const|static|private|global|shared|export|naked|inline|return|if|else|while|break)\b", RegexOptions.None))
 			{
 				Emitted = true,
 			});
-			this.Add(new TokenType(PsiTokens.IDENTIFIER, new Regex(@"\b[A-Za-z_]\w*\b", RegexOptions.None))
+			// IDENTIFIER            := \b[A-Za-z_]\w*\b
+			this.Add(new TokenCode(PsiTokens.IDENTIFIER, new Regex(@"\b[A-Za-z_]\w*\b", RegexOptions.None))
 			{
 				Emitted = true,
 			});
@@ -86,25 +116,25 @@ namespace EinCompiler.FrontEnds
 
 	public static class PsiTokens
 	{
-		public static readonly string COMMENT = "COMMENT";
-		public static readonly string RAW_BLOCK = "RAW_BLOCK";
-		public static readonly string STRING = "STRING";
-		public static readonly string WHITESPACE = "WHITESPACE";
-		public static readonly string O_BRACKET = "O_BRACKET";
-		public static readonly string C_BRACKET = "C_BRACKET";
-		public static readonly string O_CBRACKET = "O_CBRACKET";
-		public static readonly string C_CBRACKET = "C_CBRACKET";
-		public static readonly string O_SBRACKET = "O_SBRACKET";
-		public static readonly string C_SBRACKET = "C_SBRACKET";
-		public static readonly string SEPARATOR = "SEPARATOR";
-		public static readonly string DELIMITER = "DELIMITER";
-		public static readonly string ASSIGNMENT = "ASSIGNMENT";
-		public static readonly string COLON = "COLON";
-		public static readonly string ARROW = "ARROW";
-		public static readonly string NUMBER = "NUMBER";
-		public static readonly string CHARACTER = "CHARACTER";
-		public static readonly string BINARY_OPERATOR = "BINARY_OPERATOR";
-		public static readonly string KEYWORD = "KEYWORD";
-		public static readonly string IDENTIFIER = "IDENTIFIER";
+		public static readonly TokenType COMMENT = new TokenType("COMMENT");
+		public static readonly TokenType RAW_BLOCK = new TokenType("RAW_BLOCK");
+		public static readonly TokenType STRING = new TokenType("STRING");
+		public static readonly TokenType WHITESPACE = new TokenType("WHITESPACE");
+		public static readonly TokenType O_BRACKET = new TokenType("O_BRACKET");
+		public static readonly TokenType C_BRACKET = new TokenType("C_BRACKET");
+		public static readonly TokenType O_CBRACKET = new TokenType("O_CBRACKET");
+		public static readonly TokenType C_CBRACKET = new TokenType("C_CBRACKET");
+		public static readonly TokenType O_SBRACKET = new TokenType("O_SBRACKET");
+		public static readonly TokenType C_SBRACKET = new TokenType("C_SBRACKET");
+		public static readonly TokenType SEPARATOR = new TokenType("SEPARATOR");
+		public static readonly TokenType DELIMITER = new TokenType("DELIMITER");
+		public static readonly TokenType ASSIGNMENT = new TokenType("ASSIGNMENT");
+		public static readonly TokenType COLON = new TokenType("COLON");
+		public static readonly TokenType ARROW = new TokenType("ARROW");
+		public static readonly TokenType NUMBER = new TokenType("NUMBER");
+		public static readonly TokenType CHARACTER = new TokenType("CHARACTER");
+		public static readonly TokenType OPERATOR = new TokenType("OPERATOR");
+		public static readonly TokenType KEYWORD = new TokenType("KEYWORD");
+		public static readonly TokenType IDENTIFIER = new TokenType("IDENTIFIER");
 	}
 }

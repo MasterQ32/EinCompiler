@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Collections.Generic;
 
 namespace EinCompiler.BackEnds
 {
@@ -10,9 +11,24 @@ namespace EinCompiler.BackEnds
 		private int indent = 0;
 		private bool beginOfLine = true;
 
+		private readonly List<ModuleDescription> builtin = new List<ModuleDescription>();
+
 		public void IncreaseIndentation() => indent++;
 		public void DecreaseIndentation() => indent--;
 		public void ResetIndentation() => indent = 0;
+
+		/// <summary>
+		/// Gets or sets a list of built-in modules of this backend.
+		/// </summary>
+		/// <value>The built ins.</value>
+		public List<ModuleDescription> BuiltIns 
+		{
+			get { return this.builtin; }
+			set {
+				this.builtin.Clear ();
+				this.builtin.AddRange (value);
+			}
+		}
 
 		public static void GenerateCode<T>(ModuleDescription module, TextWriter code)
 			where T : BackEnd, new()

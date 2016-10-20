@@ -4,13 +4,16 @@ namespace EinCompiler
 {
 	public class Token
 	{
-		public Token(TokenType type, Match match)
+		public Token(TokenType type, Match match, int lineno) 
 		{
 			this.Type = type;
 			this.Start = match.Index;
 			this.Length = match.Length;
 			this.Text = match.Value;
+			this.LineNumber = lineno;
 		}
+
+		public int LineNumber { get; private set; }
 
 		public string Text { get; private set; }
 

@@ -1,6 +1,4 @@
-﻿include("das-os.psi");
-
-var scalar : int;
+﻿var scalar : int;
 var array  : int[10];
 
 fn main() -> int
@@ -15,13 +13,11 @@ fn main() -> int
 	array[0]      := 10;
 	array[scalar] := 20;
 
-	puti(arrayToInt(array));
+	// puti(arrayToInt(array));
 	puti(array[0]);
 	puti(array[scalar]);
 	putc('B');
 }
-
-naked inline fn arrayToInt(a : int[10]) -> int [[ ]]
 
 // Module Support planned:
 // import "";
