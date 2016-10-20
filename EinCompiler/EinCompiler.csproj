@@ -112,6 +112,7 @@
     <Compile Include="FrontEnds\TokenCode.cs" />
     <Compile Include="FrontEnds\Tokenizer.cs" />
     <Compile Include="FrontEnds\TokenType.cs" />
+    <Compile Include="Dispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
