@@ -4,35 +4,26 @@ using System.Runtime.Serialization;
 namespace EinCompiler
 {
 	[Serializable]
-	internal class SemanticException : Exception
+	internal class SemanticException : CompilationException
 	{
-		public SemanticException(Token errorToken) : 
-			base($"{errorToken.Text} is invalid here.")
+		public SemanticException(Token token) : base(token, $"{token.Text} is invalid here.")
 		{
-			this.Token = errorToken;
+			
 		}
 
-		public SemanticException(Token errorToken, string message) : base(message)
+		public SemanticException(Token token, string message) : base(token, message)
 		{
-			this.Token = errorToken;
+			
 		}
 
-		public SemanticException(Token errorToken, string message, Exception innerException) : base(message, innerException)
+		public SemanticException(Token token, string message, Exception innerException) : base(token, message, innerException)
 		{
-			this.Token = errorToken;
+
 		}
 
 		protected SemanticException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
-			this.Token = (Token)info.GetValue("Token", typeof(Token));
-		}
 
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			base.GetObjectData(info, context);
-			info.AddValue("Token", this.Token, typeof(Token));
 		}
-
-		public Token Token { get; private set; }
 	}
 }

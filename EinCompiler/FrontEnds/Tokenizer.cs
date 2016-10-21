@@ -11,6 +11,7 @@ namespace EinCompiler
 	public abstract class Tokenizer : IReadOnlyList<TokenCode>
 	{
 		// private static readonly Regex tokenizerFormat = new Regex(@"^(?<key>\w+)(?:\((?<options>\w+(?:,\w+)*)\))?\s*:=\s*(?<value>.*?)\s*$", RegexOptions.Compiled);
+		private static readonly Regex invalidTokenMatcher = new Regex(@".", RegexOptions.Compiled);
 		private readonly List<TokenCode> tokenCodes = new List<TokenCode> ();
 
 		protected Tokenizer()
@@ -58,8 +59,10 @@ namespace EinCompiler
 					hadMatch = true;
 					break;
 				}
-				if (!hadMatch)
-					throw new InvalidOperationException("!!");
+				if (!hadMatch) {
+					var match = invalidTokenMatcher.Match (text, cursor);
+					throw new TokenizerException(new Token(TokenType.Invalid, match, lineno));
+				}
 			}
 			return tokens.ToArray();
 		}

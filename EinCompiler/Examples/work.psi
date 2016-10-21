@@ -1,19 +1,19 @@
 ﻿var scalar : int;
-var array  : string[] = { 1, 2, 3 };
+var array  : int[10];
 
 static var staticInt : int := 10;
 
 const PI : int := 3141;
 
-fn arrtest(b : int[])
-	var a : int[];
+fn arrtest(b : int[1])
 {
+	var a : int[1];
 	a := b;
 }
 
 fn main() -> int
-	var i : int;
 {
+	var i : int;
 	scalar := 'A';
 	putc(scalar);
 	putc(' ');
@@ -34,9 +34,9 @@ fn main() -> int
 }
 
 fn test_expressions()
+{
 	var x : int;
 	var a : int;
-{
 	x := 1; 
 	x := a; 
 	x := 1 + 2;
@@ -60,15 +60,15 @@ fn test_expressions()
 }
 
 fn test_return() -> int
-	var i : int;
 {
+	var i : int;
 	return i * i;
 }
 
 fn test_if()
+{
 	var i : int;
 	var x : int;
-{
 	if(1 + 2)
 	{
 		i := x;
@@ -87,9 +87,10 @@ fn test_if()
 }
 
 fn test_while()
+{
 	var i : int;
 	var x : int;
-{
+
 	while (i * i)
 	{
 		i := x;
@@ -104,8 +105,8 @@ fn test_while()
 
 
 fn test_call()
-	var i : int;
 {
+	var i : int;
 	sum(10, 5 + 5);
 	i := sum(10, 5 + 5);
 }

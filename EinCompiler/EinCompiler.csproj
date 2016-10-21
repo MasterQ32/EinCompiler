@@ -114,12 +114,11 @@
     <Compile Include="FrontEnds\TokenType.cs" />
     <Compile Include="Dispatcher.cs" />
     <Compile Include="RawSyntaxTree\RawExternFunctionNode.cs" />
+    <Compile Include="FrontEnds\TokenizerException.cs" />
+    <Compile Include="CompilationException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Examples\das-os.psi">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Examples\work.psi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -139,14 +138,17 @@
     <None Include="FrontEnds\Psi\psi.tok">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Examples\c-backend.psi">
+    <None Include="StandardLib\c.psi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\psi-lang.psi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="StandardLib\svma.psi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Examples\psi-language.psi">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Content Include="Examples\tokenizer-test.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -162,5 +164,6 @@
   <ItemGroup>
     <Folder Include="FrontEnds\Psi\" />
     <Folder Include="FrontEnds\MiBasic\" />
+    <Folder Include="StandardLib\" />
   </ItemGroup>
 </Project>

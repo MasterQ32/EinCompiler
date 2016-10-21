@@ -4,35 +4,26 @@ using System.Runtime.Serialization;
 namespace EinCompiler.FrontEnds
 {
 	[Serializable]
-	internal class ParserException : Exception
+	public sealed class ParserException : CompilationException
 	{
-		public ParserException(Token token) :
-			base($"{token.Text} ({token.Type.Name}) was not expected.")
+		public ParserException(Token token) : base(token, $"{token.Text} ({token.Type.Name}) was not expected.")
 		{
-			this.Token = token;
+			
 		}
 
-		public ParserException(Token token, string message) : base(message)
+		public ParserException(Token token, string message) : base(token, message)
 		{
-			this.Token = token;
+			
 		}
 
-		public ParserException(Token token, string message, Exception innerException) : base(message, innerException)
+		public ParserException(Token token, string message, Exception innerException) : base(token, message, innerException)
 		{
-			this.Token = token;
+			
 		}
 
-		protected ParserException(SerializationInfo info, StreamingContext context) : base(info, context)
+		private ParserException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
-			this.Token = (Token)info.GetValue("token", typeof(Token));
+			
 		}
-
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			base.GetObjectData(info, context);
-			info.AddValue("token", this.Token, typeof(Token));
-		}
-
-		public Token Token { get; private set; }
 	}
 }

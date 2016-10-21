@@ -24,9 +24,9 @@ namespace EinCompiler
 			var root = new Uri (file);
 			var source = File.ReadAllText (file);
 
-			var tokens = lang.Tokenizer().Tokenize (source);
-
 			try {
+				var tokens = lang.Tokenizer().Tokenize (source);
+
 				var rawTree = Parser.Parse (lang.Parser(), tokens);
 
 				var instancer = new ModuleInstancer (
@@ -40,7 +40,7 @@ namespace EinCompiler
 
 				return instancer.CreateInto (module, rawTree);
 			}
-			catch (SemanticException ex) {
+			catch (CompilationException ex) {
 				Console.Error.WriteLine ("{0}:{1}: {2}",
 					Path.GetFileName (fileName),
 					ex.Token.LineNumber,
@@ -75,13 +75,13 @@ namespace EinCompiler
 			});
 
 			{
-				var stdlib = Compile (null, languages [0], "Examples/c-backend.psi");
+				var stdlib = Compile (null, languages [0], "StandardLib/c.psi");
 				codegens.Add ("c", new CCodeBackEnd () {
 					BuiltIns = { stdlib }
 				});
 			}
 			{
-				var stdlib = Compile (null, languages [0], "Examples/das-os.psi");
+				var stdlib = Compile (null, languages [0], "StandardLib/svma.psi");
 				codegens.Add ("svma", new SVMABackEnd () {
 					BuiltIns =  {stdlib }
 				});

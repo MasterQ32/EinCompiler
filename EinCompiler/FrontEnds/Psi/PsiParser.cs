@@ -125,6 +125,8 @@ namespace EinCompiler.FrontEnds
 							};
 						} else {
 							var locals = new List<RawLocal> ();
+
+							/*
 							while (this.PeekToken ().Type != O_CBRACKET) {
 								var tok = this.ReadToken (KEYWORD);
 
@@ -142,9 +144,9 @@ namespace EinCompiler.FrontEnds
 									throw new ParserException (tok);
 								}
 							}
+							*/
 
-
-							var body = this.ReadBody ();
+							var body = this.ReadBody (locals);
 
 							return new RawFunctionNode (
 								name,
@@ -199,22 +201,24 @@ namespace EinCompiler.FrontEnds
 				}
 			});
 
-		private RawBodyNode ReadBody()
+		private RawBodyNode ReadBody(IList<RawLocal> locals)
 		{
 			var body = new List<RawInstructionNode>();
 
 			this.ReadToken(O_CBRACKET);
 			while (this.PeekToken().Type != C_CBRACKET)
 			{
-				var instruction = this.ReadInstruction();
-				body.Add(instruction);
+				var instruction = this.ReadInstruction(locals);
+				if (instruction != null) {
+					body.Add (instruction);
+				}
 			}
 			this.ReadToken(C_CBRACKET);
 
 			return new RawBodyNode(body);
 		}
 
-		private RawInstructionNode ReadInstruction()
+		private RawInstructionNode ReadInstruction(IList<RawLocal> locals)
 		{
 			var tok = this.PeekToken();
 
@@ -222,6 +226,19 @@ namespace EinCompiler.FrontEnds
 			{
 				switch (tok.Text)
 				{
+					case "var":
+					{
+						this.ReadToken (KEYWORD);
+
+						var locname = this.ReadToken (IDENTIFIER);
+						this.ReadToken (COLON);
+						var loctype = this.ReadType ();
+						this.ReadDelimiter ();
+
+						locals.Add (new RawLocal (locname, loctype));
+
+						return null;
+					}
 					case "break":
 					{
 						this.ReadToken(KEYWORD);
@@ -241,14 +258,14 @@ namespace EinCompiler.FrontEnds
 						this.ReadToken(O_BRACKET);
 						var condition = ConvertToExpression(
 							this.ReadTokensUntil(O_BRACKET, C_BRACKET));
-						var trueBlock = this.ReadBody();
+						var trueBlock = this.ReadBody(locals);
 						RawBodyNode falseBlock = null;
 						if (
 							this.PeekToken().Type == KEYWORD &&
 							this.PeekToken().Text == "else")
 						{
 							this.ReadToken(KEYWORD);
-							falseBlock = this.ReadBody();
+							falseBlock = this.ReadBody(locals);
 						}
 
 						return new RawIfInstructionNode(
@@ -262,7 +279,7 @@ namespace EinCompiler.FrontEnds
 						this.ReadToken(O_BRACKET);
 						var condition = ConvertToExpression(
 							this.ReadTokensUntil(O_BRACKET, C_BRACKET));
-						var block = this.ReadBody();
+						var block = this.ReadBody(locals);
 						return new RawWhileInstructionNode(
 							condition,
 							block);

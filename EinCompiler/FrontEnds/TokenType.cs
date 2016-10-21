@@ -7,6 +7,8 @@ namespace EinCompiler
 	/// </summary>
 	public sealed class TokenType
 	{
+		public static readonly TokenType Invalid = new TokenType("Invalid");
+
 		public TokenType (string name)
 		{
 			if (name == null)
