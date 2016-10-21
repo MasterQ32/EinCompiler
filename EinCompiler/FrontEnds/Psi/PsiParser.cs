@@ -233,11 +233,23 @@ namespace EinCompiler.FrontEnds
 						var locname = this.ReadToken (IDENTIFIER);
 						this.ReadToken (COLON);
 						var loctype = this.ReadType ();
-						this.ReadDelimiter ();
 
 						locals.Add (new RawLocal (locname, loctype));
 
-						return null;
+						if (PeekToken ().Type == ASSIGNMENT) {
+
+							var ass = this.ReadToken (ASSIGNMENT);
+
+							var expr = this.ReadTokensUntil (DELIMITER);
+
+							return new RawExpressionInstructionNode(new RawBinaryOperatorExpressionNode (
+								ass,
+								new RawVariableExpressionNode (locname),
+								ConvertToExpression(expr)));
+						} else {
+							this.ReadDelimiter ();
+							return null;
+						}
 					}
 					case "break":
 					{

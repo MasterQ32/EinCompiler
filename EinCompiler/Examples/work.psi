@@ -11,6 +11,14 @@ fn arrtest(b : int[1])
 	a := b;
 }
 
+fn testloc() -> int 
+{
+	var a : int := 10;
+	var b : int := 20;
+	var c : int := a + b;
+	return c;
+}
+
 fn main() -> int
 {
 	var i : int;
