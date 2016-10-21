@@ -62,7 +62,11 @@ namespace EinCompiler.BackEnds
 				return "uint16_t";
 			else if (type == Types.UInt32)
 				return "uint32_t";
-			return "int";
+			else if (type is ArrayType) {
+				var atype = (ArrayType)type;
+				return GetTypeName (atype.ElementType) + "*";
+			}
+			throw new InvalidOperationException ($"Invalid type: {type}");
 		}
 
 		protected override void Generate(ModuleDescription module)
@@ -75,7 +79,6 @@ namespace EinCompiler.BackEnds
 			WriteLine ("#undef putc");
 
 			foreach (var c in module.Constants) {
-
 				Write ("const ");
 				Write (GetTypeName (c.Type));
 				Write (" ");
@@ -83,7 +86,6 @@ namespace EinCompiler.BackEnds
 				Write (" = ");
 				Write (c.InitialValue.Value.ToString ());
 				WriteLine (";");
-
 			}
 
 			foreach (var v in module.Variables) {
@@ -94,9 +96,19 @@ namespace EinCompiler.BackEnds
 				Write (GetTypeName (v.Type));
 				Write (" ");
 				Write (v.Name);
-				if (v.InitialValue != null) {
-					Write (" = ");
-					Write (v.InitialValue.Value.ToString ());
+				if (v.Type is ArrayType) {
+					var atype = (ArrayType)v.Type;
+					Write (
+						"= ({0})({1}[{2}]){{}}",
+						GetTypeName (v.Type),
+						GetTypeName (atype.ElementType),
+						atype.Length);
+
+				} else {
+					if (v.InitialValue != null) {
+						Write (" = ");
+						Write (v.InitialValue.Value.ToString ());
+					}
 				}
 				WriteLine (";");
 

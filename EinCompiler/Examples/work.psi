@@ -1,25 +1,34 @@
 ﻿var scalar : int;
-// var array  : int[10];
+var array  : string[] = { 1, 2, 3 };
 
 static var staticInt : int := 10;
 
 const PI : int := 3141;
+
+fn arrtest(b : int[])
+	var a : int[];
+{
+	a := b;
+}
 
 fn main() -> int
 	var i : int;
 {
 	scalar := 'A';
 	putc(scalar);
+	putc(' ');
 	puti(scalar);
 
 	scalar := 1;
 
-	// array[0]      := 10;
-	// array[scalar] := 20;
+	array[0]      := 10;
+	array[scalar] := 20;
 
-	// puti(arrayToInt(array));
-	// puti(array[0]);
-	// puti(array[scalar]);
+	putc(' ');
+	puti(array[0]);
+	putc(' ');
+	puti(array[scalar]);
+	putc(' ');
 	putc('B');
 	putc('\n');
 }
