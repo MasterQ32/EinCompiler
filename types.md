@@ -2,6 +2,9 @@
 
 This document describes the type system with its primitive types that is used by EinCompiler.
 
+Each type has a subscript `'size'` which defines the size of the type itself in bytes. It also has a subscript `'address` which will return a pointer to the given value.
+There are some types that will not expose `'size` or `'address` due to logical restrictions.
+
 ## Integer Types
 
 | Name    | Size in Bits | Signed |
@@ -17,7 +20,9 @@ This document describes the type system with its primitive types that is used by
 | int     | System Width | yes    |
 | uint    | System Width | no     |
 
-Each integer has a subscript `'size` which contains the size in bytes of the type and a subscript `'signed` which returns a bool saying if the integer is signed or not.
+| Subscript   | Type     | Value                           |
+|-------------|----------|---------------------------------|
+| `'signed  ` | bool     | True if the integer is signed.  |
 
 ## Floating Point Types
 
@@ -28,7 +33,10 @@ Each integer has a subscript `'size` which contains the size in bytes of the typ
 | double  | 64           |
 | float   | System Width |
 
-Each floating point type has a subscript `'size` which contains the size in bytes of the type. There are also the subscripts `'exponent` and `'mantissa` which will return the size of either exponent or the mantissa of the floating point value in bits.
+| Subscript   | Type     | Value                           |
+|-------------|----------|---------------------------------|
+| `'exponent` | uint     | Number of bits in the exponent. |
+| `'mantissa` | uint     | Number of bits in the mantissa. |
 
 ## String Type
 
@@ -42,6 +50,11 @@ A `string` is a reference-counted block of memory, with a defined size. It has a
 
 The data of a `string` is implicitly allocated on creation and reference counted. As soon as the reference count reaches zero, the string data will be freed.
 
+| Subscript   | Type     | Value                           |
+|-------------|----------|---------------------------------|
+| `.length`   | uint     | Length of the string in bytes.  |
+| `.data`     | ptr(u8)  | Pointer to the string content.  |
+
 ### cstring
 A `cstring` is a raw pointer to an `u8` where as the length of the string is defined by the distance to the first `0` value in the string.
 
@@ -49,6 +62,10 @@ A `cstring` is a raw pointer to an `u8` where as the length of the string is def
 A pointer is an address value that references either `nullptr`, the invalid pointer, or a memory address where the value is located.
 
 The naming scheme for a pointer type is `ptr(base)` where `base` is the type of the value that is referenced. Each pointer has a subscript `.data` which is the referenced value.
+
+| Subscript   | Type     | Value                                       |
+|-------------|----------|---------------------------------------------|
+| `.data`     | base     | The value that is referenced by the string. |
 
 ## Reference Type
 A reference is a reference-counted, implicit pointer type that will reference any kind of values except references.
@@ -64,6 +81,14 @@ An enumeration type is a type that can only accept a defined list of distinct va
 
 Every enumeration value has the subscript `'size` which returns the size of the type in bytes and the subscript `'string` which will return the enumerations value name as a string representation. The subscript `'cstring` will return the same value as `'string` but of the type `cstring`'.
 
+| Subscript   | Type     | Value                                        |
+|-------------|----------|----------------------------------------------|
+| `.string`   | string   | The string representation of the enum value. |
+| `.cstring`  | cstring  | The string representation of the enum value. |
+
+### Boolean Value
+The boolean type is an enumeration type with the enumeration members `true` and `false`.
+
 ## Record Type
 A record type is a compound type defined by a list of (name, type) tuples. Each *name* will be available as a `.name` subscript representing a value of the *type*.
 
@@ -74,8 +99,17 @@ An array type is a list of values of the same type. Each array has a length acce
 
 The total size of the array can be accessed by `'size`.
 
+| Subscript   | Type     | Value                                        |
+|-------------|----------|----------------------------------------------|
+| `.length`   | uint     | The length of the array.                     |
+
+> TODO: Value type or reference type?
+> type[]  → unbound array, is reference type
+> type[n] → bound array, is value type
+
 ## Alias List
 
 | Type Name | Aliases             |
 |-----------|---------------------|
 | single    | float               |
+| ptr(u8)   | cstring             |

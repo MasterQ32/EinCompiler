@@ -1,0 +1,120 @@
+fn int_demo()
+{
+	var i_8  :   i8;
+	var u_8  :   u8;
+	var i_16 :  i16;
+	var u_16 :  u16;
+	var i_32 :  i32;
+	var u_32 :  u32;
+	var i_64 :  i64;
+	var u_64 :  u64;
+	var i    :  int;
+	var u    : uint;
+	
+	print("The size of an u8 is ", u_8'size);
+	
+	print("i16 is signed? ", i_16'signed);
+}
+
+fn float_demo()
+{
+	var f : float;
+	var h : half;
+	var s : single;
+	var d : double;
+	
+	print(
+		"The double type has a mantissa of ", 
+		d'mantissa, 
+		" and an exponent of ", 
+		d'exponent);
+	print(
+		"A float has a size of ", 
+		float'size,
+		" bytes.");
+}
+
+fn string_demo()
+{
+	var s : string  = "Hello String.";
+	var c : cstring = "Hello C-String!";
+	
+	print(s);
+	print(c);
+	
+	print("len(s) = ", s.length);
+	print("ptr(s) = ", s.data);
+}
+
+fn ptr_demo()
+{
+	var i : int = 10;
+	var p : ptr(int);
+
+	p := i'address;
+	
+	print("10 = ", p.data);
+	p.data = 20;
+	print("20 = ", i);
+}
+
+fn ref_demo()
+{
+	var obj : ref(int) = new<int>();
+	
+	obj := 10;
+	ref_demo_sub(obj);
+	print("post = ", obj);
+}
+
+fn ref_demo_sub(x : ref(int))
+{
+	print("pre = ", x);
+	x := 20;
+}
+
+enum mode = ( default, singlethreaded, multithreaded, distributed );
+
+fn enum_demo()
+{
+	var m : mode = default;
+	
+	print("m = ", m.string);
+}
+
+fn bool_demo()
+{
+	var b : bool = true;
+	
+	if (b) {
+		print("hi!");
+	}
+}
+
+record point = ( x : float, y : float );
+
+fn record_demo()
+{
+	var zero  : point = (0.0, 0.0);
+	var unitX : point = (1.0, 0.0);
+	var unitY : point = (0.0, 1.0);
+	
+	print("unitX.x = ", unitX.x);
+	print("unitX.y = ", unitX.y);
+}
+
+fn array_demo()
+{
+	var a : int[10];
+	var b : int[];
+	
+	b := a;
+	
+	a[1] := 2;
+	b[2] := 1;
+	
+	print("[1] = ", b[1]);
+	print("[2] = ", a[2]);
+	print("len(a) = ", a.length);
+	print("len(b) = ", b.length);
+}
