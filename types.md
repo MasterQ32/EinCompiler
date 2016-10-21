@@ -55,6 +55,8 @@ A reference is a reference-counted, implicit pointer type that will reference an
 
 A reference can be allocated by a language-dependant mechanism. The type is denoted by `ref(base)` where `base` is the referenced type and exposes all subscripts and operators of the `base` type.
 
+References can take the special value `null` which marks that the reference does not contain any referenced data. Accessing a `null`-value will result in undefined behaviour.
+
 Assignments to a reference type from a value type will override the referenced value, assignments from a reference type to another reference type will change the referenced object. Assignments from a reference type to a non-reference value will behave the same as a non-referenced assignment.
 
 ## Enumeration Type
