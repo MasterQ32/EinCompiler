@@ -1,7 +1,6 @@
 ﻿using EinCompiler.BackEnds;
 using EinCompiler.FrontEnds;
 using EinCompiler.RawSyntaxTree;
-using EinCompiler.BuiltInTypes;
 using System;
 using System.Collections.Generic;
 using System.IO;

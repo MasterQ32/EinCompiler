@@ -1,5 +1,4 @@
-﻿using EinCompiler.BuiltInTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +11,7 @@ namespace EinCompiler
 		public static readonly TypeDescription Void = new InvalidType("void");
 		public static readonly TypeDescription Invalid = new InvalidType("<invalid>");
 
-		public static readonly TypeDescription Int8 = new IntegerType("int8", true, 1);
+		public static readonly TypeDescription Int8 =  new IntegerType("int8", true, 1);
 		public static readonly TypeDescription Int16 = new IntegerType("int16", true, 2);
 		public static readonly TypeDescription Int32 = new IntegerType("int32", true, 4);
 
@@ -24,21 +23,6 @@ namespace EinCompiler
 		private sealed class InvalidType : TypeDescription
 		{
 			public InvalidType(string name) : base(name) { }
-
-			protected override object ParseValue(string text)
-			{
-				throw new NotSupportedException();
-			}
-
-			public override byte[] GetBinary(object value)
-			{
-				throw new NotSupportedException();
-			}
-
-			public override string GetString(object value)
-			{
-				throw new NotSupportedException();
-			}
 
 			public override int Size => 0;
 		}

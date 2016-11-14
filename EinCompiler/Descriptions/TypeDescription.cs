@@ -1,35 +1,30 @@
 ﻿using System;
-using System.Globalization;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace EinCompiler
 {
 	public abstract class TypeDescription : IDescription
 	{
+		private readonly string name;
+		private readonly List<SubscriptDescription> subscripts = new List<SubscriptDescription> ();
 
-		protected TypeDescription(string name)
+		protected TypeDescription (string name)
 		{
-			if (name == null) throw new ArgumentNullException(nameof(name));
-			this.Name = name;
+			this.name = name;
 		}
 
-		public ValueDescription CreateValueFromString(string text)
+		protected void AddSubscript(SubscriptDescription desc)
 		{
-			if (text == null) throw new ArgumentNullException(nameof(text));
-			return new ValueDescription(
-				this,
-				this.ParseValue(text));
+			if (this.subscripts.Any (s => s.SubscriptType == desc.SubscriptType && s.Name == desc.Name)) {
+				throw new InvalidOperationException ("A subscript with this name already exists.");
+			}
+			this.subscripts.Add (desc);
 		}
 
-		public abstract string GetString(object value);
-
-		public abstract byte[] GetBinary(object value);
-
-		protected abstract object ParseValue(string text);
-
-		public string Name { get; private set; }
-		
 		public abstract int Size { get; }
 
-		public override string ToString() => this.Name;
+		public string Name => this.name;
 	}
 }
+

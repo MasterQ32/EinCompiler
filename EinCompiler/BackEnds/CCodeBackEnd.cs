@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EinCompiler.BuiltInTypes;
 
 namespace EinCompiler.BackEnds
 {
@@ -97,12 +96,15 @@ namespace EinCompiler.BackEnds
 				Write (" ");
 				Write (v.Name);
 				if (v.Type is ArrayType) {
-					var atype = (ArrayType)v.Type;
+					throw new NotSupportedException ();
+					/**
+					 * var atype = (ArrayType)v.Type;
 					Write (
 						"= ({0})({1}[{2}]){{}}",
 						GetTypeName (v.Type),
 						GetTypeName (atype.ElementType),
 						atype.Length);
+						*/
 
 				} else {
 					if (v.InitialValue != null) {
