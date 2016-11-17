@@ -55,42 +55,51 @@ namespace EinCompiler.BackEnds
 		{
 			if (module.Variables.Count == 0)
 				return;
-			int globalAllocator = 0;
+			int globalAllocator = 0x1000;
 			var maxWidth = Math.Max(
-				module.Variables.Max(v => v.Name.Length),
-				8);
+				               module.Variables.Max(v => v.Name.Length),
+				               8);
 			var maxTypeWidth = Math.Max(
-				module.Variables.Max(v => v.Type.Name.Length),
-				4);
+				                   module.Variables.Max(v => v.Type.Name.Length),
+				                   4);
 
 			var header = string.Format(
-				"| {0} | {1} | {2} | {3} |",
-				"Variable".PadRight(maxWidth),
-				"Type".PadRight(maxTypeWidth),
-				"Address",
-				"Size");
+				             "| {0} | {1} | {2} | {3} |",
+				             "Variable".PadRight(maxWidth),
+				             "Type".PadRight(maxTypeWidth),
+				             "Address",
+				             "Size");
 			var separator = string.Format(
-				"|-{0}-|-{1}-|-{2}-|-{3}-|",
-				"--------".PadRight(maxWidth, '-'),
-				"----".PadRight(maxTypeWidth, '-'),
-				"-------",
-				"----");
+				                "|-{0}-|-{1}-|-{2}-|-{3}-|",
+				                "--------".PadRight(maxWidth, '-'),
+				                "----".PadRight(maxTypeWidth, '-'),
+				                "-------",
+				                "----");
 			WriteLineComment(header);
 			WriteLineComment(separator);
 			foreach (var var in module.Variables)
 			{
+			  var addr = globalAllocator;
+
 				// Allocate storage for each variable given by the types size.
-				globals[var] = globalAllocator;
+				globals[var] = addr;
+
+				var size = var.Type.Size;
+				if(var.Type is ArrayType)
+				{
+					var type = (ArrayType)var.Type;
+					if(type.Length != null)
+						size = type.ElementType.Size * (int)type.Length;
+				}
+				globalAllocator += size;
 
 				var desc = string.Format(
-					"| {0} | {1} | {2} | {3} |",
-					var.Name.PadRight(maxWidth),
-					var.Type.Name.PadRight(maxTypeWidth),
-					globalAllocator.ToString().PadLeft(7),
-					var.Type.Size.ToString().PadLeft(4));
+					           "| {0} | {1} | {2} | {3} |",
+					           var.Name.PadRight(maxWidth),
+					           var.Type.Name.PadRight(maxTypeWidth),
+											addr.ToString().PadLeft(7),
+					           size.ToString().PadLeft(4));
 				WriteLineComment(desc);
-
-				globalAllocator += var.Type.Size;
 			}
 		}
 
@@ -280,18 +289,23 @@ namespace EinCompiler.BackEnds
 			IndexerExpression idx,
 			bool isWriting)
 		{
-			if (globals.ContainsKey(idx.Array) == false)
-				throw new InvalidOperationException("Only global arrays can be indexed.");
+			// if (globals.ContainsKey(idx.Array) == false)
+			// 	throw new InvalidOperationException("Only global arrays can be indexed.");
 
 			// Determine index:
 			WriteExpression(context, idx.Index);
-			WriteCommand( // multiply by size  to get memory offset.
+			WriteCommand(// multiply by size  to get memory offset.
 				"[i0:arg] mul {0}",
 				idx.Type.Size);
-			WriteCommand( // then add memory base offset to get final address
+
+			PushVariable(idx.Array, "");
+			/*
+			WriteCommand(// then add memory base offset to get final address
 				"[i0:arg] add {0}",
 				globals[idx.Array]);
-			WriteCommand( // now load/store from global memory.
+			*/
+			WriteCommand("add");
+			WriteCommand(// now load/store from global memory.
 				"{0} {1} ; global {2}[]",
 				isWriting ? "store32i [r:push]" : "load32i",
 				flagText,
@@ -301,51 +315,48 @@ namespace EinCompiler.BackEnds
 		private void WriteVariableExpression(VariableExpression expression, string flagText)
 		{
 			var var = expression.Variable;
+			PushVariable(var, flagText);
+		}
+
+		void PushVariable(VariableDescription var, string flagText)
+		{
 			if (var is ParameterDescription)
 			{
-				if (var.Type is ArrayType) throw new NotSupportedException();
-
+				// Arrays are plain pointers, shouldn't be a problem.
+				// if (var.Type is ArrayType)
+				// throw new NotSupportedException();
 				var offset = ((ParameterDescription)var).Index;
 				var position = -(offset + 2);
-
-				WriteCommand(
-					"get {0} {1} ; argument {2}",
-					position,
-					flagText,
-					var.Name);
+				WriteCommand("get {0} {1} ; argument {2}", position, flagText, var.Name);
 			}
 			else if (var is LocalDecription)
 			{
-				if (var.Type is ArrayType) throw new NotSupportedException();
-
+				// Local arrays are just plain pointers....
+				// if (var.Type is ArrayType)
+				// 	throw new NotSupportedException();
 				var offset = ((LocalDecription)var).Index;
 				var position = 1 + offset;
-
-				WriteCommand(
-					"get {0} {1} ; local {2}",
-					position,
-					flagText,
-					var.Name);
+				WriteCommand("get {0} {1} ; local {2}", position, flagText, var.Name);
 			}
 			else
 			{
 				var location = globals[var];
 				if (var.Type is IntegerType)
 				{
-					WriteCommand(
-						"load32 {0} {1} ; global {2}",
-						location,
-						flagText,
-						var.Name);
+					WriteCommand("load32 {0} {1} ; global {2}", location, flagText, var.Name);
 				}
 				else if (var.Type is ArrayType)
 				{
-					// We can convert arrays to a pointer to their first memory
-					WriteCommand(
-						"push {0} {1} ; global ptr {2}",
-						location,
-						flagText,
-						var.Name);
+				  var type = (ArrayType)var.Type;
+				  if(type.Length != null)
+				  {
+						// We can convert arrays to a pointer to their first memory
+						WriteCommand("push {0} {1} ; global ptr {2}", location, flagText, var.Name);
+					}
+					else
+					{
+						WriteCommand("load32 {0} {1} ; global {2}", location, flagText, var.Name);
+					}
 				}
 				else
 				{
@@ -356,10 +367,13 @@ namespace EinCompiler.BackEnds
 
 		private void WriteLiteralExpression(string flagText, LiteralExpression expr)
 		{
-			WriteCommand(
-				"push {0} {1}",
-				expr.GetValue().GetString(),
-				flagText);
+			if (expr.Type is IntegerType)
+			{
+				WriteCommand(
+					"push {0} {1}",
+					expr.Literal.Value,
+					flagText);
+			}
 		}
 
 		private void WriteFunctionCallExpression(FunctionDescription context, Expression expression)
@@ -370,7 +384,7 @@ namespace EinCompiler.BackEnds
 			// If we have a return value and no inline naked,
 			// push a stub
 			if (fn.IsInline == false &&
-				fn.ReturnType != Types.Void)
+			    fn.ReturnType != Types.Void)
 				WriteCommand("push 0");
 
 			foreach (var arg in call.Arguments.Reverse())
@@ -404,74 +418,85 @@ namespace EinCompiler.BackEnds
 			WriteExpression(context, bin.LeftHandSide);
 			switch (bin.Operator)
 			{
-				case BinaryOperator.Addition: WriteCommand("add {0}", flagText); break;
-				case BinaryOperator.Subtraction: WriteCommand("sub {0}", flagText); break;
-				case BinaryOperator.Multiplication: WriteCommand("mul {0}", flagText); break;
-				case BinaryOperator.Division: WriteCommand("div {0}", flagText); break;
-				case BinaryOperator.EuclideanDivision: WriteCommand("mod {0}", flagText); break;
+				case BinaryOperator.Addition:
+					WriteCommand("add {0}", flagText);
+					break;
+				case BinaryOperator.Subtraction:
+					WriteCommand("sub {0}", flagText);
+					break;
+				case BinaryOperator.Multiplication:
+					WriteCommand("mul {0}", flagText);
+					break;
+				case BinaryOperator.Division:
+					WriteCommand("div {0}", flagText);
+					break;
+				case BinaryOperator.EuclideanDivision:
+					WriteCommand("mod {0}", flagText);
+					break;
 
 				case BinaryOperator.Equals:
-				{
-					WriteCommand("sub [f:yes] [r:discard]");
-					WriteCommand("[ex(z)=0] push 0");
-					WriteCommand("[ex(z)=1] push 1");
-					if (modifyFlags)
-						WriteCommand("[i0:peek] nop [f:yes]");
-					break;
-				}
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] push 0");
+						WriteCommand("[ex(z)=1] push 1");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
+						break;
+					}
 				case BinaryOperator.Differs:
-				{
-					WriteCommand("sub [f:yes] [r:discard]");
-					WriteCommand("[ex(z)=0] push 1");
-					WriteCommand("[ex(z)=1] push 0");
-					if (modifyFlags)
-						WriteCommand("[i0:peek] nop [f:yes]");
-					break;
-				}
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] push 1");
+						WriteCommand("[ex(z)=1] push 0");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
+						break;
+					}
 
 				case BinaryOperator.LessOrEqual:
-				{
-					WriteCommand("sub [f:yes] [r:discard]");
-					WriteCommand("[ex(z)=0] [ex(n)=0] push 1");
-					WriteCommand("[ex(z)=0] [ex(n)=1] push 0");
-					WriteCommand("[ex(z)=1] push 1");
-					if (modifyFlags)
-						WriteCommand("[i0:peek] nop [f:yes]");
-					break;
-				}
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] [ex(n)=0] push 1");
+						WriteCommand("[ex(z)=0] [ex(n)=1] push 0");
+						WriteCommand("[ex(z)=1] push 1");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
+						break;
+					}
 				case BinaryOperator.GreaterOrEqual:
-				{
-					WriteCommand("sub [f:yes] [r:discard]");
-					WriteCommand("[ex(z)=0] [ex(n)=0] push 0");
-					WriteCommand("[ex(z)=0] [ex(n)=1] push 1");
-					WriteCommand("[ex(z)=1] push 1");
-					if (modifyFlags)
-						WriteCommand("[i0:peek] nop [f:yes]");
-					break;
-				}
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] [ex(n)=0] push 0");
+						WriteCommand("[ex(z)=0] [ex(n)=1] push 1");
+						WriteCommand("[ex(z)=1] push 1");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
+						break;
+					}
 
 				case BinaryOperator.LessThan:
-				{
-					WriteCommand("sub [f:yes] [r:discard]");
-					WriteCommand("[ex(z)=0] [ex(n)=0] push 1");
-					WriteCommand("[ex(z)=0] [ex(n)=1] push 0");
-					WriteCommand("[ex(z)=1] push 0");
-					if (modifyFlags)
-						WriteCommand("[i0:peek] nop [f:yes]");
-					break;
-				}
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] [ex(n)=0] push 1");
+						WriteCommand("[ex(z)=0] [ex(n)=1] push 0");
+						WriteCommand("[ex(z)=1] push 0");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
+						break;
+					}
 				case BinaryOperator.GreaterThan:
-				{
-					WriteCommand("sub [f:yes] [r:discard]");
-					WriteCommand("[ex(z)=0] [ex(n)=0] push 0");
-					WriteCommand("[ex(z)=0] [ex(n)=1] push 1");
-					WriteCommand("[ex(z)=1] push 0");
-					if (modifyFlags)
-						WriteCommand("[i0:peek] nop [f:yes]");
-					break;
-				}
+					{
+						WriteCommand("sub [f:yes] [r:discard]");
+						WriteCommand("[ex(z)=0] [ex(n)=0] push 0");
+						WriteCommand("[ex(z)=0] [ex(n)=1] push 1");
+						WriteCommand("[ex(z)=1] push 0");
+						if (modifyFlags)
+							WriteCommand("[i0:peek] nop [f:yes]");
+						break;
+					}
 
-				default: throw new NotSupportedException();
+				default:
+					throw new NotSupportedException();
 			}
 		}
 

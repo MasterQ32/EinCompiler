@@ -1,70 +1,70 @@
-﻿
-// single line comment
-/* multi
+﻿var scalar : int;
+var array  : int[10];
 
-line
+static var staticInt : int := 10;
 
-comment*/
+const PI : int := 3141;
 
-/*
-	constants are typed values that can't be changed and
-	must be initialized. Their address can't be taken.
-*/
-const ANSWER : int = 42;
-
-const ANSWER_2 : int = 84;
-
-const ANSWER_1over2 : int = 21;
-
-/*
-	variables are a typed mutable value.
-	It's declaration consists of a type and a name
-	and may also define an initial value.
-*/
-var variable1 : int;
-var variable2 : int = 10;
-var variable3 : int = 0x10;
-
-/*
-	variables may also have a storage class
-	specifier that defines where the variable is
-	stored and how it's memory is shared.
-*/
 private        var variable4 : int; // one per instance
 static         var variable5 : int; // one per thread
 private static var variable6 : int; // one per instance and thread
 global         var variable7 : int; // one per process (default)
 shared         var variable8 : int; // one per executing system
 
-/* 
-	methods are declared by a type and a name
-	followed by an argument list enclosed in
-	round brackets.
+fn looptest()
+{
+	var i : int := 10;
+	while((i := i - 1) != 0)
+	{
+		
+	}
+}
 
-	parameters are separated by commands are are
-	declared ba a type followed by the parameter
-	name.
+fn arrtest(b : int[])
+{
+	var a : int[] := b;
+	var i : int;
 
-	each method header declaration must follow a method
-	body enclosed in curly brackets.
+	i := a[10];
+	i := b[10];
+}
 
-	each method can be exported by placing an 'export'
-	keyword in front of the method header.
-*/
-
-var x : int;
-var a : int;
-var i : int;
+fn testloc() -> int 
+{
+	var a : int := 10;
+	var b : int := 20;
+	var c : int := a + b;
+	return c;
+}
 
 fn main() -> int
 {
-	
+	var i : int;
+	scalar := 'A';
+	putc(scalar);
+	putc(' ');
+	puti(scalar);
+
+	scalar := 1;
+
+	array[0]      := 10;
+	array[scalar] := 20;
+
+	putc(' ');
+	puti(array[0]);
+	putc(' ');
+	puti(array[scalar]);
+	putc(' ');
+	putc('B');
+	putc('\n');
 }
 
 fn test_expressions()
 {
+	var x : int;
+	var a : int;
 	x := 1; 
-	x := variable1; 
+	x := a; 
 	x := 1 + 2;
 	x := a + 1;
 	x := 1 + a;
@@ -77,15 +77,24 @@ fn test_expressions()
 	x := (1 + 2);
 	x := (1 * (2 + 3));
 	x := (1 * (2 - (3 + 4)));
+	x := 1 = 2;
+	x := 1 != 2;
+	x := 1 >= 2;
+	x := 1 > 2;
+	x := 1 <= 2;
+	x := 1 < 2;
 }
 
-fn test_return()
+fn test_return() -> int
 {
+	var i : int;
 	return i * i;
 }
 
 fn test_if()
 {
+	var i : int;
+	var x : int;
 	if(1 + 2)
 	{
 		i := x;
@@ -105,6 +114,9 @@ fn test_if()
 
 fn test_while()
 {
+	var i : int;
+	var x : int;
+
 	while (i * i)
 	{
 		i := x;
@@ -117,8 +129,10 @@ fn test_while()
 	}
 }
 
+
 fn test_call()
 {
+	var i : int;
 	sum(10, 5 + 5);
 	i := sum(10, 5 + 5);
 }
@@ -133,56 +147,15 @@ fn square(i : int) -> int
 	return i * i;
 }
 
-export naked fn print_str(str : int)
-[[
-	bpget
-	spget
-	bpset
-
-	get -2
-print_str_loop:
-	[i0:peek] loadi [f:yes] ; write flags, also load result, don't discard pointer
-	[ex(z)=1] jmp @print_str_end_loop ; when *ptr == 0, then goto print_str_end_loop
-	[i0:pop] syscall [ci:1] ; removes the loaded character and prints it
-	[i0:arg] add 1 ; adds 1 to the stack top
-	jmp @print_str_loop
-print_str_end_loop:
-	drop ; discard the result from loadi
-	drop ; discard our pointer
-	
-	bpget ; leave function
-	spset ; by restoring parent base pointer
-	bpset
-	jmpi  ; and jumping back.
-]]
-
-export naked fn read_mem(ptr : int) -> int
-[[
-	bpget
-	spget
-	bpset
-
-	get -2 ; Get address
-	loadi
-	set -3 ; Set return value
-
-	bpget
-	spset
-	bpset
-	jmpi
-]]
-
-
 
 /**
  * Unoptimized string printing
  */
-fn print_str(str : int)
-	var c : int;
+export fn print_str(str : ptr)
 {
 	while (1)
 	{
-		c := read8(str);
+		var c : int := read8(str);
 		if (c = 0) {
 			break;
 		}
@@ -190,3 +163,7 @@ fn print_str(str : int)
 		str := str + 1;
 	}
 }
+
+// Module Support planned:
+// import "";
+// import "" as name;

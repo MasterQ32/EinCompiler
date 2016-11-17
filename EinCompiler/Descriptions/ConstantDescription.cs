@@ -7,7 +7,7 @@ namespace EinCompiler
 		public ConstantDescription(
 			TypeDescription type,
 			string name,
-			ValueDescription initialValue) 
+			LiteralDescription initialValue) 
 		{
 			if (type == null) throw new ArgumentNullException(nameof(type));
 			if (name == null) throw new ArgumentNullException(nameof(name));
@@ -21,7 +21,7 @@ namespace EinCompiler
 
 		public TypeDescription Type { get; private set; }
 
-		public ValueDescription InitialValue { get; private set; }
+		public LiteralDescription InitialValue { get; private set; }
 
 		public override string ToString() =>
 			$"{Type} {Name} = {InitialValue}";

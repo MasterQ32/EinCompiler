@@ -15,7 +15,7 @@ namespace EinCompiler
 		public VariableDescription(
 			TypeDescription type, 
 			string name,
-			ValueDescription initialValue) : 
+			LiteralDescription initialValue) : 
 			this(type, name)
 		{
 			this.InitialValue = initialValue;
@@ -25,7 +25,7 @@ namespace EinCompiler
 
 		public TypeDescription Type { get; private set; }
 
-		public ValueDescription InitialValue { get; private set; }
+		public LiteralDescription InitialValue { get; private set; }
 
 		public StorageModifier Storage { get; set; }
 

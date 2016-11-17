@@ -7,24 +7,76 @@ namespace EinCompiler
 	public abstract class TypeDescription : IDescription
 	{
 		private readonly string name;
-		private readonly List<SubscriptDescription> subscripts = new List<SubscriptDescription> ();
+		private readonly int size;
 
-		protected TypeDescription (string name)
+		protected TypeDescription(string name, int size)
 		{
 			this.name = name;
-		}
-
-		protected void AddSubscript(SubscriptDescription desc)
-		{
-			if (this.subscripts.Any (s => s.SubscriptType == desc.SubscriptType && s.Name == desc.Name)) {
-				throw new InvalidOperationException ("A subscript with this name already exists.");
+			switch (size)
+			{
+				case 1:
+				case 2:
+				case 4:
+					this.size = size;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(size));
 			}
-			this.subscripts.Add (desc);
 		}
 
-		public abstract int Size { get; }
+		public int Size { get { return this.size; } }
 
-		public string Name => this.name;
+		public string Name{ get { return this.name; } }
+
+		public override string ToString()
+		{
+			return this.name;
+		}
+	}
+
+	public sealed class ArrayType : TypeDescription
+	{
+		public ArrayType(TypeDescription elementType, int? length)
+			: base(elementType.Name + "[" + (length?.ToString() ?? "") + "]", 4)
+		{
+			this.ElementType = elementType;
+			this.Length = length;
+			if (length != null && length <= 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(length));
+			}
+		}
+
+		public TypeDescription ElementType { get; private set; }
+
+		public int? Length { get; private set; }
+	}
+
+	public sealed class IntegerType : TypeDescription
+	{
+		public IntegerType(bool signed, int size)
+			: base((signed ? "" : "u") + "int" + (size * 8), size)
+		{
+			this.IsSigned = signed;
+			switch (size)
+			{
+				case 1:
+					this.Mask = 0xFF;
+					break;
+				case 2:
+					this.Mask = 0xFFFF;
+					break;
+				case 4:
+					this.Mask = -1;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(size));
+			}
+		}
+
+		public int Mask { get; private set; }
+
+		public bool IsSigned { get; private set; }
 	}
 }
 

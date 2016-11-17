@@ -18,13 +18,13 @@ namespace EinCompiler
 		public ModuleDescription CreateInstance(RawModuleNode node)
 		{
 			var description = new ModuleDescription();
-			CreateInto (description, node);
+			CreateInto(description, node);
 			return description;
 		}
 
 		public ModuleDescription CreateInto(ModuleDescription description, RawModuleNode node)
 		{
-			description = description ?? new ModuleDescription ();
+			description = description ?? new ModuleDescription();
 
 			foreach (var include in node.Includes)
 			{
@@ -49,18 +49,18 @@ namespace EinCompiler
 			foreach (var func in node.Functions)
 			{
 				description.Functions.Add(new FunctionDescription(
-					func.Name.Text,
-					CreateType(func.ReturnType, true),
-					func.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray(),
-					func.Locals.Select((l, i) => new LocalDecription(CreateType(l.Type), l.Name.Text, i)).ToArray()));
+						func.Name.Text,
+						CreateType(func.ReturnType, true),
+						func.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray(),
+						func.Locals.Select((l, i) => new LocalDecription(CreateType(l.Type), l.Name.Text, i)).ToArray()));
 			}
 
 			foreach (var @extern in node.ExternFunctions)
 			{
 				description.Functions.Add(new FunctionDescription(
-					@extern.Name.Text,
-					CreateType(@extern.ReturnType, true),
-					@extern.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray()));
+						@extern.Name.Text,
+						CreateType(@extern.ReturnType, true),
+						@extern.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray()));
 			}
 
 			// Second, create all naked functions with their
@@ -68,13 +68,13 @@ namespace EinCompiler
 			foreach (var naked in node.NakedFunctions)
 			{
 				description.Functions.Add(new FunctionDescription(
-					naked.Name.Text,
-					CreateType(naked.ReturnType, true),
-					naked.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray(),
-					naked.Body.Substring(2, naked.Body.Length - 4))
-				{
-					IsInline = naked.IsInline
-				});
+						naked.Name.Text,
+						CreateType(naked.ReturnType, true),
+						naked.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray(),
+						naked.Body.Substring(2, naked.Body.Length - 4))
+					{
+						IsInline = naked.IsInline
+					});
 			}
 
 			// Then, translate all function bodies to
@@ -85,7 +85,7 @@ namespace EinCompiler
 				var fn = description.Functions[func.Name.Text];
 				var localVariables = new VariableContainer(description.Variables);
 
-				foreach(var param in fn.Parameters)
+				foreach (var param in fn.Parameters)
 				{
 					localVariables.Add(param);
 				}
@@ -96,9 +96,9 @@ namespace EinCompiler
 				
 				fn.Body =
 					func.Body.Translate(
-						types,
-						localVariables,
-						description.Functions);
+					types,
+					localVariables,
+					description.Functions);
 			}
 
 			return description;
@@ -108,7 +108,7 @@ namespace EinCompiler
 
 		private TypeDescription CreateType(RawTypeNode node, bool defaultNullToVoid = false)
 		{
-			if(node == null)
+			if (node == null)
 			{
 				if (defaultNullToVoid)
 					return Types.Void;
@@ -118,11 +118,21 @@ namespace EinCompiler
 			var type = types[node.Name.Text];
 			if (node.ArraySize != null)
 			{
-				int size = int.Parse(node.ArraySize.Text);
-				if (size <= 0)
-					throw new SemanticException(node.ArraySize, "Array size must be greater than zero.");
-
-				type = types.GetArrayType(type, size);
+				int size;
+				if(int.TryParse(node.ArraySize.Text, out size))
+				{
+					if (size <= 0)
+						throw new SemanticException(node.ArraySize, "Array size must be greater than zero.");
+					type = types.GetArrayType(type, size);
+				}
+				else
+				{
+					type = types.GetArrayType(type, null);
+				}
+			}
+			if(type == null)
+			{
+				throw new SemanticException(node.Name, $"Invalid type: {node.Name.Text}");
 			}
 			return type;
 		}
@@ -133,7 +143,7 @@ namespace EinCompiler
 			return new ConstantDescription(
 				type,
 				con.Name.Text,
-				type.CreateValueFromString(con.Value.Text));
+				new LiteralDescription(type, con.Value.Text));
 		}
 
 		private VariableDescription CreateVariable(RawVariableNode var)
@@ -141,13 +151,12 @@ namespace EinCompiler
 			VariableDescription vardesc;
 
 			var type = CreateType(var.Type);
-
 			if (var.Value != null)
 			{
 				vardesc = new VariableDescription(
 					type,
 					var.Name.Text,
-					type.CreateValueFromString(var.Value.Text));
+					new LiteralDescription(type, var.Value.Text));
 			}
 			else
 			{

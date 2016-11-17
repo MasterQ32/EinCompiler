@@ -9,10 +9,12 @@ namespace EinCompiler
 		public LiteralExpression(string literal)
 		{
 			if (literal == null) throw new ArgumentNullException(nameof(literal));
-			this.Literal = literal;
+			this.Value = literal;
 		}
 
-		public string Literal { get; private set; }
+		public string Value { get; private set; }
+
+		public LiteralDescription Literal { get; private set; }
 
 		public override void DeduceAndCheckType(TypeDescription typeHint)
 		{
@@ -20,11 +22,8 @@ namespace EinCompiler
 				throw new ArgumentNullException(nameof(typeHint), "Literals require a type hint to deduce types.");
 			this.type = typeHint;
 
-			// Check if the literal is convertible
-			this.type.CreateValueFromString(this.Literal);
+			this.Literal = new LiteralDescription(this.type, this.Value);
 		}
-
-		public ValueDescription GetValue() => this.type.CreateValueFromString(this.Literal);
 
 		public override TypeDescription Type => this.type;
 

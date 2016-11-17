@@ -55,9 +55,9 @@ namespace EinCompiler
 
 		public bool ContainsKey(string key) => contents.ContainsKey(key);
 
-		public TypeDescription GetArrayType(TypeDescription elementType, int length)
+		public TypeDescription GetArrayType(TypeDescription elementType, int? length)
 		{
-			var name = elementType.Name + "[" + length + "]";
+			var name = elementType.Name + "[" + (length?.ToString() ?? "") + "]";
 			var type = this[name];
 			if (type == null)
 			{

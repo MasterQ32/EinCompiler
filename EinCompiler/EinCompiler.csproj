@@ -92,7 +92,6 @@
     <Compile Include="Descriptions\Instructions\Expressions\VariableExpression.cs" />
     <Compile Include="Descriptions\Instructions\ReturnInstruction.cs" />
     <Compile Include="SemanticException.cs" />
-    <Compile Include="Descriptions\ValueDescription.cs" />
     <Compile Include="Descriptions\VariableDescription.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="FrontEnds\Psi\PsiParser.cs" />
@@ -116,15 +115,7 @@
     <Compile Include="Descriptions\TypeDescription.cs" />
     <Compile Include="Descriptions\SubscriptType.cs" />
     <Compile Include="Descriptions\SubscriptDescription.cs" />
-    <Compile Include="Descriptions\Types\RecordType.cs" />
-    <Compile Include="Descriptions\Types\PointerType.cs" />
-    <Compile Include="Descriptions\Types\ReferenceType.cs" />
-    <Compile Include="Descriptions\Types\StringType.cs" />
-    <Compile Include="Descriptions\Types\ArrayType.cs" />
-    <Compile Include="Descriptions\Types\EnumerationType.cs" />
-    <Compile Include="Descriptions\Types\FloatingPointType.cs" />
-    <Compile Include="Descriptions\Types\IntegerType.cs" />
-    <Compile Include="Descriptions\Types\PrimitiveType.cs" />
+    <Compile Include="Descriptions\LiteralDescription.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -174,6 +165,5 @@
     <Folder Include="FrontEnds\Psi\" />
     <Folder Include="FrontEnds\MiBasic\" />
     <Folder Include="StandardLib\" />
-    <Folder Include="Descriptions\Types\" />
   </ItemGroup>
 </Project>

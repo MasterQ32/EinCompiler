@@ -1,134 +1,18 @@
-﻿var scalar : int;
-var array  : int[10];
+﻿
+var text : string := "Hallo Welt!";
 
-static var staticInt : int := 10;
-
-const PI : int := 3141;
-
-fn arrtest(b : int[1])
+fn main()
 {
-	var a : int[1];
-	a := b;
+	var l : int := strlen(text);
+	puti(l);
 }
 
-fn testloc() -> int 
+fn strlen(text : string) -> int
 {
-	var a : int := 10;
-	var b : int := 20;
-	var c : int := a + b;
-	return c;
-}
-
-fn main() -> int
-{
-	var i : int;
-	scalar := 'A';
-	putc(scalar);
-	putc(' ');
-	puti(scalar);
-
-	scalar := 1;
-
-	array[0]      := 10;
-	array[scalar] := 20;
-
-	putc(' ');
-	puti(array[0]);
-	putc(' ');
-	puti(array[scalar]);
-	putc(' ');
-	putc('B');
-	putc('\n');
-}
-
-fn test_expressions()
-{
-	var x : int;
-	var a : int;
-	x := 1; 
-	x := a; 
-	x := 1 + 2;
-	x := a + 1;
-	x := 1 + a;
-	x := a + a;
-	x := 1 + 2 + 3;
-	x := 1 * 2 + 3;
-	x := 1 + 2 * 3;
-	x := (1);
-	x := (a);
-	x := (1 + 2);
-	x := (1 * (2 + 3));
-	x := (1 * (2 - (3 + 4)));
-	x := 1 = 2;
-	x := 1 != 2;
-	x := 1 >= 2;
-	x := 1 > 2;
-	x := 1 <= 2;
-	x := 1 < 2;
-}
-
-fn test_return() -> int
-{
-	var i : int;
-	return i * i;
-}
-
-fn test_if()
-{
-	var i : int;
-	var x : int;
-	if(1 + 2)
+	var i : int := 0;
+	while(text[i])
 	{
-		i := x;
-		i := x;
+		i := i + 1;
 	}
-
-	if(1 + 2)
-	{
-		i := x;
-		i := x;
-	}
-	else
-	{
-		i := x;
-	}
+	return i;
 }
-
-fn test_while()
-{
-	var i : int;
-	var x : int;
-
-	while (i * i)
-	{
-		i := x;
-		i := 10 * 10;
-	}
-
-	while(i * i)
-	{
-		break;
-	}
-}
-
-
-fn test_call()
-{
-	var i : int;
-	sum(10, 5 + 5);
-	i := sum(10, 5 + 5);
-}
-
-export fn sum(a : int, b : int) -> int
-{
-	return a + b;
-}
-
-fn square(i : int) -> int
-{
-	return i * i;
-}
-
-// Module Support planned:
-// import "";
-// import "" as name;

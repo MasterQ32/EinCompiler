@@ -22,111 +22,118 @@ namespace EinCompiler.FrontEnds
 			switch (@class.Text)
 			{
 				case "include":
-				{
-					this.ReadToken(O_BRACKET);
-					var text = this.ReadToken(STRING);
-					this.ReadToken(C_BRACKET);
-					this.ReadDelimiter();
+					{
+						this.ReadToken(O_BRACKET);
+						var text = this.ReadToken(STRING);
+						this.ReadToken(C_BRACKET);
+						this.ReadDelimiter();
 
-					var fileName = Unescape(text.Text);
-					fileName = fileName.Substring(1, fileName.Length - 2);
-					return new RawIncludeNode(fileName);
-				}
+						var fileName = Unescape(text.Text);
+						fileName = fileName.Substring(1, fileName.Length - 2);
+						return new RawIncludeNode(fileName);
+					}
 				case "const":
-				{
-					var name = this.ReadToken(IDENTIFIER);
-					this.ReadToken(COLON);
-					var type = this.ReadType();
-					this.ReadToken(ASSIGNMENT);
-					var value = this.ReadValue();
-					this.ReadDelimiter();
-					return new RawConstantNode(name, type, value);
-				}
+					{
+						var name = this.ReadToken(IDENTIFIER);
+						this.ReadToken(COLON);
+						var type = this.ReadType();
+						this.ReadToken(ASSIGNMENT);
+						var value = this.ReadValue();
+						this.ReadDelimiter();
+						return new RawConstantNode(name, type, value);
+					}
 				case "private":
 				case "static":
 				case "shared":
 				case "global":
 				case "var":
-				{
-					var classes = new List<Token>();
-					while (@class.Text != "var")
 					{
-						classes.Add(@class);
-						@class = this.ReadToken(KEYWORD);
-					}
-					var name = this.ReadToken(IDENTIFIER);
-					this.ReadToken(COLON);
-					var type = this.ReadType();
+						var classes = new List<Token>();
+						while (@class.Text != "var")
+						{
+							classes.Add(@class);
+							@class = this.ReadToken(KEYWORD);
+						}
+						var name = this.ReadToken(IDENTIFIER);
+						this.ReadToken(COLON);
+						var type = this.ReadType();
 					
-					Token value = null;
+						Token value = null;
 
-					var option = this.PeekToken(DELIMITER, ASSIGNMENT);
-					if (option.Type == ASSIGNMENT)
-					{
-						this.ReadToken(ASSIGNMENT);
-						value = this.ReadValue();
+						var option = this.PeekToken(DELIMITER, ASSIGNMENT);
+						if (option.Type == ASSIGNMENT)
+						{
+							this.ReadToken(ASSIGNMENT);
+							value = this.ReadValue();
+						}
+						this.ReadDelimiter();
+
+						return new RawVariableNode(
+							name,
+							type,
+							value,
+							classes.ToArray());
 					}
-					this.ReadDelimiter();
-
-					return new RawVariableNode(
-						name,
-						type,
-						value,
-						classes.ToArray());
-				}
 				case "export":
 				case "naked":
 				case "inline":
 				case "extern":
 				case "fn":
-				{
-					var modifiers = new List<string>();
-					while (@class.Text != "fn")
 					{
-						modifiers.Add(@class.Text);
-						@class = this.ReadToken(KEYWORD);
-					}
+						var modifiers = new List<string>();
+						while (@class.Text != "fn")
+						{
+							modifiers.Add(@class.Text);
+							@class = this.ReadToken(KEYWORD);
+						}
 
-					var parameters = new List<RawParameterNode>();
-					var name = this.ReadToken(IDENTIFIER);
-					this.ReadToken(O_BRACKET);
-					while (this.PeekToken().Type != C_BRACKET)
-					{
-						var pname = this.ReadToken(IDENTIFIER);
-						this.ReadToken(COLON);
-						var ptype = this.ReadType();
-						parameters.Add(new RawParameterNode(pname, ptype));
-						if (this.PeekToken().Type != C_BRACKET)
-							this.ReadToken(SEPARATOR);
-					}
-					this.ReadToken(C_BRACKET);
-					RawTypeNode returnType = null;
-					if (this.PeekToken().Type == ARROW)
-					{
-						this.ReadToken(ARROW);
-						returnType = this.ReadType();
-					}
+						var parameters = new List<RawParameterNode>();
+						var name = this.ReadToken(IDENTIFIER);
+						this.ReadToken(O_BRACKET);
+						while (this.PeekToken().Type != C_BRACKET)
+						{
+							var pname = this.ReadToken(IDENTIFIER);
+							this.ReadToken(COLON);
+							var ptype = this.ReadType();
+							parameters.Add(new RawParameterNode(pname, ptype));
+							if (this.PeekToken().Type != C_BRACKET)
+								this.ReadToken(SEPARATOR);
+						}
+						this.ReadToken(C_BRACKET);
+						RawTypeNode returnType = null;
+						if (this.PeekToken().Type == ARROW)
+						{
+							this.ReadToken(ARROW);
+							returnType = this.ReadType();
+						}
 
-					if (modifiers.Contains ("extern")) {
-						this.ReadToken (DELIMITER);
-						return new RawExternFunctionNode (
-							name,
-							returnType,
-							parameters);
-					} else {
-						if (modifiers.Contains ("naked") || modifiers.Contains ("inline")) {
-							var body = this.ReadToken (RAW_BLOCK);
-							return new RawNakedFunctionNode (
+						if (modifiers.Contains("extern"))
+						{
+							this.ReadToken(DELIMITER);
+							return new RawExternFunctionNode(
 								name,
 								returnType,
-								parameters,
-								body.Text) {
-								IsInline = modifiers.Contains ("inline"),
-							};
-						} else {
-							var locals = new List<RawLocal> ();
+								parameters);
+						}
+						else
+						{
+							if (modifiers.Contains("naked") || modifiers.Contains("inline"))
+							{
+								var body = this.ReadToken(RAW_BLOCK);
+								return new RawNakedFunctionNode(
+									name,
+									returnType,
+									parameters,
+									body.Text)
+								{
+									IsInline = modifiers.Contains("inline"),
+								};
+							}
+							else
+							{
+								var locals = new List<RawLocal>();
 
-							/*
+								/*
 							while (this.PeekToken ().Type != O_CBRACKET) {
 								var tok = this.ReadToken (KEYWORD);
 
@@ -146,23 +153,24 @@ namespace EinCompiler.FrontEnds
 							}
 							*/
 
-							var body = this.ReadBody (locals);
+								var body = this.ReadBody(locals);
 
-							return new RawFunctionNode (
-								name,
-								returnType,
-								parameters,
-								locals,
-								body) {
-								IsExported = modifiers.Contains ("export"),
-							};
+								return new RawFunctionNode(
+									name,
+									returnType,
+									parameters,
+									locals,
+									body)
+								{
+									IsExported = modifiers.Contains("export"),
+								};
+							}
 						}
 					}
-				}
 				default:
-				{
-					throw new ParserException(@class);
-				}
+					{
+						throw new ParserException(@class);
+					}
 			}
 
 		}
@@ -176,8 +184,9 @@ namespace EinCompiler.FrontEnds
 			if (option.Type == O_SBRACKET)
 			{
 				this.ReadToken(O_SBRACKET);
-				arraySize = this.ReadToken(NUMBER);
-				this.ReadToken(C_SBRACKET);
+				arraySize = this.ReadToken(NUMBER, C_SBRACKET);
+				if(arraySize.Type == NUMBER)
+					this.ReadToken(C_SBRACKET);
 			}
 
 			return new RawTypeNode(name, arraySize);
@@ -185,7 +194,7 @@ namespace EinCompiler.FrontEnds
 
 		private void ReadDelimiter() => this.ReadToken(DELIMITER);
 
-		private string Unescape(string text) => 
+		private string Unescape(string text) =>
 			unescaper.Replace(text, (m) =>
 			{
 				switch(m.Groups[1].Value)
@@ -209,8 +218,9 @@ namespace EinCompiler.FrontEnds
 			while (this.PeekToken().Type != C_CBRACKET)
 			{
 				var instruction = this.ReadInstruction(locals);
-				if (instruction != null) {
-					body.Add (instruction);
+				if (instruction != null)
+				{
+					body.Add(instruction);
 				}
 			}
 			this.ReadToken(C_CBRACKET);
@@ -227,76 +237,80 @@ namespace EinCompiler.FrontEnds
 				switch (tok.Text)
 				{
 					case "var":
-					{
-						this.ReadToken (KEYWORD);
-
-						var locname = this.ReadToken (IDENTIFIER);
-						this.ReadToken (COLON);
-						var loctype = this.ReadType ();
-
-						locals.Add (new RawLocal (locname, loctype));
-
-						if (PeekToken ().Type == ASSIGNMENT) {
-
-							var ass = this.ReadToken (ASSIGNMENT);
-
-							var expr = this.ReadTokensUntil (DELIMITER);
-
-							return new RawExpressionInstructionNode(new RawBinaryOperatorExpressionNode (
-								ass,
-								new RawVariableExpressionNode (locname),
-								ConvertToExpression(expr)));
-						} else {
-							this.ReadDelimiter ();
-							return null;
-						}
-					}
-					case "break":
-					{
-						this.ReadToken(KEYWORD);
-						this.ReadDelimiter();
-						return new RawBreakInstructionNode();
-					}
-					case "return":
-					{
-						this.ReadToken(KEYWORD);
-						var items = ReadTokensUntil(DELIMITER);
-						return new RawReturnInstructionNode(
-							ConvertToExpression(items));
-					}
-					case "if":
-					{
-						this.ReadToken(KEYWORD);
-						this.ReadToken(O_BRACKET);
-						var condition = ConvertToExpression(
-							this.ReadTokensUntil(O_BRACKET, C_BRACKET));
-						var trueBlock = this.ReadBody(locals);
-						RawBodyNode falseBlock = null;
-						if (
-							this.PeekToken().Type == KEYWORD &&
-							this.PeekToken().Text == "else")
 						{
 							this.ReadToken(KEYWORD);
-							falseBlock = this.ReadBody(locals);
-						}
 
-						return new RawIfInstructionNode(
-							condition,
-							trueBlock,
-							falseBlock);
-					}
+							var locname = this.ReadToken(IDENTIFIER);
+							this.ReadToken(COLON);
+							var loctype = this.ReadType();
+
+							locals.Add(new RawLocal(locname, loctype));
+
+							if (PeekToken().Type == ASSIGNMENT)
+							{
+
+								var ass = this.ReadToken(ASSIGNMENT);
+
+								var expr = this.ReadTokensUntil(DELIMITER);
+
+								return new RawExpressionInstructionNode(new RawBinaryOperatorExpressionNode(
+										ass,
+										new RawVariableExpressionNode(locname),
+										ConvertToExpression(expr)));
+							}
+							else
+							{
+								this.ReadDelimiter();
+								return null;
+							}
+						}
+					case "break":
+						{
+							this.ReadToken(KEYWORD);
+							this.ReadDelimiter();
+							return new RawBreakInstructionNode();
+						}
+					case "return":
+						{
+							this.ReadToken(KEYWORD);
+							var items = ReadTokensUntil(DELIMITER);
+							return new RawReturnInstructionNode(
+								ConvertToExpression(items));
+						}
+					case "if":
+						{
+							this.ReadToken(KEYWORD);
+							this.ReadToken(O_BRACKET);
+							var condition = ConvertToExpression(
+								                this.ReadTokensUntil(O_BRACKET, C_BRACKET));
+							var trueBlock = this.ReadBody(locals);
+							RawBodyNode falseBlock = null;
+							if (
+								this.PeekToken().Type == KEYWORD &&
+								this.PeekToken().Text == "else")
+							{
+								this.ReadToken(KEYWORD);
+								falseBlock = this.ReadBody(locals);
+							}
+
+							return new RawIfInstructionNode(
+								condition,
+								trueBlock,
+								falseBlock);
+						}
 					case "while":
-					{
-						this.ReadToken(KEYWORD);
-						this.ReadToken(O_BRACKET);
-						var condition = ConvertToExpression(
-							this.ReadTokensUntil(O_BRACKET, C_BRACKET));
-						var block = this.ReadBody(locals);
-						return new RawWhileInstructionNode(
-							condition,
-							block);
-					}
-					default: throw new ParserException(tok);
+						{
+							this.ReadToken(KEYWORD);
+							this.ReadToken(O_BRACKET);
+							var condition = ConvertToExpression(
+								                this.ReadTokensUntil(O_BRACKET, C_BRACKET));
+							var block = this.ReadBody(locals);
+							return new RawWhileInstructionNode(
+								condition,
+								block);
+						}
+					default:
+						throw new ParserException(tok);
 				}
 			}
 			else if (tok.Type == DELIMITER)
@@ -319,18 +333,22 @@ namespace EinCompiler.FrontEnds
 		{
 			int depth = 0;
 
-			return ReadTokensUntil(t => {
-				if(t.Type == begin) {
-					depth++;
-				} 
-				else if(t.Type == end) {
-					if(depth == 0) {
-						return true;
+			return ReadTokensUntil(t =>
+				{
+					if (t.Type == begin)
+					{
+						depth++;
 					}
-					depth -= 1;
-				}
-				return false;
-			});
+					else if (t.Type == end)
+					{
+						if (depth == 0)
+						{
+							return true;
+						}
+						depth -= 1;
+					}
+					return false;
+				});
 		}
 
 		private Token[] ReadTokensUntil(Predicate<Token> predicate)
@@ -376,7 +394,7 @@ namespace EinCompiler.FrontEnds
 			var operators = new[]
 			{
 				":=",
-				">", "<",">=", "<=", "=", "!=",
+				">", "<", ">=", "<=", "=", "!=",
 				"+", "-", "*", "/", "%"
 			};
 			foreach (var op in operators)
@@ -416,8 +434,8 @@ namespace EinCompiler.FrontEnds
 				{
 					// This is a function call
 					var args = SplitTokens(
-						tokens.Skip(2).Take(tokens.Length - 3).ToArray(),
-						t => t.Type == SEPARATOR);
+						           tokens.Skip(2).Take(tokens.Length - 3).ToArray(),
+						           t => t.Type == SEPARATOR);
 
 
 					return new RawFunctionCallExpression(
