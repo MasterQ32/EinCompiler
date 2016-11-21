@@ -116,6 +116,8 @@
     <Compile Include="Descriptions\SubscriptType.cs" />
     <Compile Include="Descriptions\SubscriptDescription.cs" />
     <Compile Include="Descriptions\LiteralDescription.cs" />
+    <Compile Include="RawSyntaxTree\RawDeclarationNode.cs" />
+    <Compile Include="Descriptions\DeclarationDescription.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -145,6 +147,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="StandardLib\svma.psi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="StandardLib\runtime.asm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

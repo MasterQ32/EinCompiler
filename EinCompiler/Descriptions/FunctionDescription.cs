@@ -3,17 +3,16 @@ using System.Collections.Generic;
 
 namespace EinCompiler
 {
-	public sealed class FunctionDescription : IDescription
+	public sealed class FunctionDescription : DeclarationDescription
 	{
 		public FunctionDescription(
 			string name,
 			TypeDescription returnType,
-			ParameterDescription[] parameters)
+			ParameterDescription[] parameters) : 
+			base(name)
 		{
-			if (name == null) throw new ArgumentNullException(nameof(name));
 			if (returnType == null) throw new ArgumentNullException(nameof(returnType));
 			if (parameters == null) throw new ArgumentNullException(nameof(parameters));
-			this.Name = name;
 			this.ReturnType = returnType;
 			this.Parameters = parameters;
 		}

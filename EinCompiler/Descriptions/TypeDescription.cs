@@ -34,20 +34,34 @@ namespace EinCompiler
 		}
 	}
 
-	public sealed class ArrayType : TypeDescription
+	public class PointerType : TypeDescription
 	{
-		public ArrayType(TypeDescription elementType, int? length)
-			: base(elementType.Name + "[" + (length?.ToString() ?? "") + "]", 4)
+		public PointerType(TypeDescription elementType) : 
+			this(elementType, $"{elementType.Name}*")
+		{
+
+		}
+
+		protected PointerType(TypeDescription elementType, string name) : 
+			base(name, 4)
 		{
 			this.ElementType = elementType;
+		}
+
+		public TypeDescription ElementType { get; private set; }
+	}
+
+	public sealed class ArrayType : PointerType
+	{
+		public ArrayType(TypeDescription elementType, int? length)
+			: base(elementType, elementType.Name + "[" + (length?.ToString() ?? "") + "]")
+		{
 			this.Length = length;
 			if (length != null && length <= 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(length));
 			}
 		}
-
-		public TypeDescription ElementType { get; private set; }
 
 		public int? Length { get; private set; }
 	}

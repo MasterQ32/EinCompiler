@@ -1,5 +1,5 @@
 ﻿
-naked inline fn putc(chr : int)
+naked inline fn putc(chr : u8)
 [[
 	[i0:pop] syscall[ci:1]
 ]]
@@ -9,17 +9,17 @@ naked inline fn puti(chr : int)
 	[i0:pop] syscall[ci:2]
 ]]
 
-naked inline fn read8(address : ptr) -> int
+naked inline fn read8(address : ptr) -> u8
 [[
 	loadi [ci:0]
 ]]
 
-naked inline fn read16(address : ptr) -> int
+naked inline fn read16(address : ptr) -> u16
 [[
 	loadi [ci:1]
 ]]
 
-naked inline fn read32(address : ptr) -> int
+naked inline fn read32(address : ptr) -> u32
 [[
 	loadi [ci:2]
 ]]

@@ -2,14 +2,12 @@
 
 namespace EinCompiler
 {
-	public class VariableDescription : IDescription
+	public class VariableDescription : DeclarationDescription
 	{
-		public VariableDescription(TypeDescription type, string name)
+		public VariableDescription(TypeDescription type, string name) : base(name)
 		{
 			if (type == null) throw new ArgumentNullException(nameof(type));
-			if (name == null) throw new ArgumentNullException(nameof(name));
 			this.Type = type;
-			this.Name = name;
 		}
 
 		public VariableDescription(
@@ -20,8 +18,6 @@ namespace EinCompiler
 		{
 			this.InitialValue = initialValue;
 		}
-
-		public string Name { get; private set; }
 
 		public TypeDescription Type { get; private set; }
 

@@ -34,13 +34,15 @@ namespace EinCompiler
 
 			foreach (var con in node.Constants)
 			{
-				description.Constants.Add(CreateConstant(con));
+				var c = CreateConstant(con);
+				CopyAttributes(c, con);
+				description.Constants.Add(c);
 			}
 
 			foreach (var var in node.Variables)
 			{
 				VariableDescription vardesc = CreateVariable(var);
-
+				CopyAttributes(vardesc, var);
 				description.Variables.Add(vardesc);
 			}
 
@@ -48,19 +50,24 @@ namespace EinCompiler
 			// them available at all code.
 			foreach (var func in node.Functions)
 			{
-				description.Functions.Add(new FunctionDescription(
+				var fn = new FunctionDescription(
 						func.Name.Text,
 						CreateType(func.ReturnType, true),
 						func.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray(),
-						func.Locals.Select((l, i) => new LocalDecription(CreateType(l.Type), l.Name.Text, i)).ToArray()));
+						func.Locals.Select((l, i) => new LocalDecription(CreateType(l.Type), l.Name.Text, i)).ToArray());
+						CopyAttributes(fn, func);
+				description.Functions.Add(fn);
 			}
 
 			foreach (var @extern in node.ExternFunctions)
 			{
-				description.Functions.Add(new FunctionDescription(
+				var fn = new FunctionDescription(
 						@extern.Name.Text,
 						CreateType(@extern.ReturnType, true),
-						@extern.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray()));
+						@extern.Parameters.Select((p, i) => new ParameterDescription(CreateType(p.Type), p.Name.Text, i)).ToArray());
+				CopyAttributes(fn, @extern);
+				description.Functions.Add(fn);
+
 			}
 
 			// Second, create all naked functions with their
@@ -102,6 +109,11 @@ namespace EinCompiler
 			}
 
 			return description;
+		}
+
+		private void CopyAttributes(DeclarationDescription target, RawDeclarationNode source)
+		{
+			target.Attributes.UnionWith(source.Attributes);
 		}
 
 		private ModuleDescription LoadSubModule(string include) => fileLoader(include);

@@ -2,7 +2,7 @@
 
 namespace EinCompiler.RawSyntaxTree
 {
-	public sealed class RawVariableNode : RawSyntaxNode
+	public sealed class RawVariableNode : RawDeclarationNode
 	{
 		public RawVariableNode(
 			Token name,

@@ -1,18 +1,12 @@
 ﻿
-var text : string := "Hallo Welt!";
 
-fn main()
-{
-	var l : int := strlen(text);
-	puti(l);
-}
+:a var i : int;
 
-fn strlen(text : string) -> int
-{
-	var i : int := 0;
-	while(text[i])
-	{
-		i := i + 1;
-	}
-	return i;
-}
+:ab const c : int := 10;
+
+:abb fn main() { }
+
+:abb() var j : int;
+:abb(a) var k : int;
+:abb(a,b) var l : int;
+:abb(a,b,c) var m : int;

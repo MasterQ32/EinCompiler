@@ -4,14 +4,14 @@ namespace EinCompiler
 {
 	public sealed class IndexerExpression : Expression
 	{
-		private readonly ArrayType type;
+		private readonly PointerType type;
 
 		public IndexerExpression(VariableDescription var, Expression expression)
 		{
 			if (var == null) throw new ArgumentNullException(nameof(var));
 			if (expression == null) throw new ArgumentNullException(nameof(expression));
 
-			this.type = var.Type as ArrayType;
+			this.type = var.Type as PointerType;
 			if (this.type == null)
 				throw new ArgumentException("The variable must be of an array type.", nameof(var));
 

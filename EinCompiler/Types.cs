@@ -21,7 +21,7 @@ namespace EinCompiler
 
 		public static readonly TypeDescription Pointer = new IntegerType(false, 4);
 
-		public static readonly TypeDescription String = new ArrayType(Types.UInt8, null);
+		public static readonly TypeDescription String = new PointerType(Types.UInt8);
 
 		private sealed class InvalidType : TypeDescription
 		{

@@ -80,16 +80,16 @@ namespace EinCompiler
 					Parser = () => new PsiParser(),
 				});
 
-			var root = Path.GetDirectoryName(new Uri(typeof(Language).Assembly.CodeBase).AbsolutePath) + "/";
+			
 			{
-				var stdlib = Compile(null, languages[0], root + "StandardLib/c.psi");
+				var stdlib = Compile(null, languages[0], Program.Root + "StandardLib/c.psi");
 				codegens.Add("c", new CCodeBackEnd()
 					{
 						BuiltIns = { stdlib }
 					});
 			}
 			{
-				var stdlib = Compile(null, languages[0], root + "StandardLib/svma.psi");
+				var stdlib = Compile(null, languages[0], Program.Root + "StandardLib/svma.psi");
 				codegens.Add("svma", new SVMABackEnd()
 					{
 						BuiltIns = { stdlib }
@@ -200,5 +200,7 @@ namespace EinCompiler
 
 			return 0;
 		}
+
+		public static string Root => Path.GetDirectoryName(new Uri(typeof(Language).Assembly.CodeBase).AbsolutePath) + "/";
 	}
 }

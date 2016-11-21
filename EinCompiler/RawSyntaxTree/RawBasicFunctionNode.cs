@@ -2,7 +2,7 @@
 
 namespace EinCompiler.RawSyntaxTree
 {
-	public abstract class RawBasicFunctionNode : RawSyntaxNode
+	public abstract class RawBasicFunctionNode : RawDeclarationNode
 	{
 		private List<RawParameterNode> parameters;
 

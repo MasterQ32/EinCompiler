@@ -1,6 +1,6 @@
 ﻿namespace EinCompiler.RawSyntaxTree
 {
-	public sealed class RawConstantNode : RawSyntaxNode
+	public sealed class RawConstantNode : RawDeclarationNode
 	{
 		public RawConstantNode(
 			Token name, 

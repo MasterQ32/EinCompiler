@@ -20,8 +20,8 @@ namespace EinCompiler.RawSyntaxTree
 			FunctionContainer funcs)
 		{
 			var var = vars[this.Variable.Text];
-			if ((var.Type is ArrayType) == false)
-				throw new SemanticException(this.Variable, "Variable must be an array variable.");
+			if ((var.Type is PointerType) == false)
+				throw new SemanticException(this.Variable, "Variable must be a pointer variable.");
 			return new IndexerExpression(
 				var,
 				this.Index.Translate(types, vars, funcs));

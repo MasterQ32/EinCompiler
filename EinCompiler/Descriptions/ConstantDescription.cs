@@ -2,22 +2,19 @@
 
 namespace EinCompiler
 {
-	public sealed class ConstantDescription : IDescription
+	public sealed class ConstantDescription : DeclarationDescription
 	{
 		public ConstantDescription(
 			TypeDescription type,
 			string name,
-			LiteralDescription initialValue) 
+			LiteralDescription initialValue) :
+			base(name)
 		{
 			if (type == null) throw new ArgumentNullException(nameof(type));
-			if (name == null) throw new ArgumentNullException(nameof(name));
 			if (initialValue == null) throw new ArgumentNullException(nameof(initialValue));
 			this.Type = type;
-			this.Name = name;
 			this.InitialValue = initialValue;
 		}
-
-		public string Name { get; private set; }
 
 		public TypeDescription Type { get; private set; }
 

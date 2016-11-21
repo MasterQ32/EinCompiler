@@ -34,7 +34,9 @@ namespace EinCompiler
 				// Deduce each argument type.
 				this.Arguments[i].DeduceAndCheckType(this.Function.Parameters[i].Type);
 				if (this.Arguments[i].Type != this.Function.Parameters[i].Type)
-					throw new InvalidOperationException("Parameter mismatch!");
+				{
+					throw new InvalidOperationException($"Parameter type mismatch: The parameter {this.Function.Parameters[i].Name} received a {this.Arguments[i].Type.Name}, but expected a {this.Function.Parameters[i].Type.Name}");
+				}
 			}
 		}
 

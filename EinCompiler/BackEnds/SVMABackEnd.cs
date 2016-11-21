@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace EinCompiler.BackEnds
 {
@@ -12,10 +13,25 @@ namespace EinCompiler.BackEnds
 
 		private string GenUniqueLabelName() => $"__internal__label{labelCounter++}";
 
-		private Dictionary<VariableDescription, int> globals = new Dictionary<VariableDescription, int>();
+		// private Dictionary<VariableDescription, int> globals = new Dictionary<VariableDescription, int>();
+
+		private List<VariableDecl> variables = new List<VariableDecl>();
+
+		private int localCounter = 0;
+
+		private string AllocateLocalLiteral()
+		{
+			return $"__local_{localCounter++}";
+		}
 
 		protected override void Generate(ModuleDescription module)
 		{
+			using(var input = new StreamReader(Program.Root + "StandardLib/runtime.asm", Encoding.UTF8))
+			{
+				var preamble = input.ReadToEnd();
+				this.WriteLine(preamble);
+			}
+
 			AllocateGlobalVariables(module);
 
 			WriteLine();
@@ -49,8 +65,44 @@ namespace EinCompiler.BackEnds
 					WriteLine();
 				}
 			}
+
+			WriteLine();
+			WriteLineComment("Variables:");
+			foreach(var var in this.variables)
+			{
+				WriteLine(
+					":VAR {0} {1} {2}",
+					var.Name,
+					var.Type,
+					var.Initial ?? "0");
+			}
 		}
 
+
+		private void AllocateGlobalVariables(ModuleDescription module)
+		{
+			foreach (var var in module.Variables)
+			{
+				if(var.Type == Types.String)
+				{
+					variables.Add(new VariableDecl{Name = var.Name, Type = "ZSTRING", Initial = var.InitialValue?.Value });
+				}
+				else if(var.Type is IntegerType)
+				{
+					variables.Add(new VariableDecl{Name = var.Name, Type = var.Type.Name.ToUpper(), Initial = var.InitialValue?.Value });
+				}
+				else if(var.Type is ArrayType)
+				{
+					throw new NotSupportedException("Global arrays are not supported yet.");
+				}
+				else
+				{
+					throw new NotSupportedException($"{var.Type.Name} is not supported yet.");
+				}
+			}
+		}
+
+		/*
 		private void AllocateGlobalVariables(ModuleDescription module)
 		{
 			if (module.Variables.Count == 0)
@@ -102,6 +154,7 @@ namespace EinCompiler.BackEnds
 				WriteLineComment(desc);
 			}
 		}
+		*/
 
 		private void WriteFunctionEnter()
 		{
@@ -340,10 +393,14 @@ namespace EinCompiler.BackEnds
 			}
 			else
 			{
-				var location = globals[var];
+				var location = "$" + var.Name;
 				if (var.Type is IntegerType)
 				{
 					WriteCommand("load32 {0} {1} ; global {2}", location, flagText, var.Name);
+				}
+				else if (var.Type is PointerType)
+				{
+					WriteCommand("push {0} {1} ; global ptr {2}", location, flagText, var.Name);
 				}
 				else if (var.Type is ArrayType)
 				{
@@ -373,6 +430,23 @@ namespace EinCompiler.BackEnds
 					"push {0} {1}",
 					expr.Literal.Value,
 					flagText);
+			}
+			else if(expr.Type == Types.String)
+			{
+				var var = AllocateLocalLiteral();
+				variables.Add(new VariableDecl {
+					Name = var,
+					Type = "ZSTRING",
+					Initial = expr.Value
+				});
+				WriteCommand(
+					"push ${0} ; {1}",
+					var,
+					expr.Value);
+			}
+			else
+			{
+				throw new InvalidOperationException($"Unsupported literal type: {expr.Type.Name}");
 			}
 		}
 
@@ -530,14 +604,16 @@ namespace EinCompiler.BackEnds
 				}
 				else
 				{
-					var location = globals[var];
+					var location = "$" + var.Name;
 					if (var.Type is IntegerType)
 					{
+						var itype = (IntegerType)var.Type;
 						WriteCommand(
-							"store {0} {1} [r:push] ; global {2}",
+							"store{3} {0} {1} [r:push] ; global {2}",
 							location,
 							flagText,
-							var.Name);
+							var.Name,
+							8 * itype.Size);
 					}
 					else
 					{
@@ -567,6 +643,15 @@ namespace EinCompiler.BackEnds
 		protected override void WriteLineComment(string text)
 		{
 			WriteLine("; {0}", text);
+		}
+
+		class VariableDecl
+		{
+			public string Name { get; set; }
+
+			public string Type { get; set; }
+
+			public string Initial { get; set; }
 		}
 	}
 }

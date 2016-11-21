@@ -17,8 +17,9 @@ namespace EinCompiler.FrontEnds
 
 		protected override RawSyntaxNode ReadNext()
 		{
-			var @class = this.ReadToken(KEYWORD);
+			var attribs = ReadAttributes();
 
+			var @class = this.ReadToken(KEYWORD);
 			switch (@class.Text)
 			{
 				case "include":
@@ -40,7 +41,7 @@ namespace EinCompiler.FrontEnds
 						this.ReadToken(ASSIGNMENT);
 						var value = this.ReadValue();
 						this.ReadDelimiter();
-						return new RawConstantNode(name, type, value);
+						return new RawConstantNode(name, type, value) { Attributes = attribs };
 					}
 				case "private":
 				case "static":
@@ -72,7 +73,10 @@ namespace EinCompiler.FrontEnds
 							name,
 							type,
 							value,
-							classes.ToArray());
+							classes.ToArray())
+						{
+							Attributes = attribs 
+						};
 					}
 				case "export":
 				case "naked":
@@ -113,7 +117,10 @@ namespace EinCompiler.FrontEnds
 							return new RawExternFunctionNode(
 								name,
 								returnType,
-								parameters);
+								parameters)
+							{ 
+								Attributes = attribs 
+							};
 						}
 						else
 						{
@@ -127,6 +134,7 @@ namespace EinCompiler.FrontEnds
 									body.Text)
 								{
 									IsInline = modifiers.Contains("inline"),
+									Attributes = attribs,
 								};
 							}
 							else
@@ -163,6 +171,7 @@ namespace EinCompiler.FrontEnds
 									body)
 								{
 									IsExported = modifiers.Contains("export"),
+									Attributes = attribs,
 								};
 							}
 						}
@@ -172,7 +181,35 @@ namespace EinCompiler.FrontEnds
 						throw new ParserException(@class);
 					}
 			}
+		}
 
+		private List<AttributeDeclaration> ReadAttributes()
+		{
+			var attributes = new List<AttributeDeclaration>();
+			while(PeekToken().Type == COLON)
+			{
+				ReadToken(COLON);
+
+				var args = new List<string>();
+				var name = ReadToken(IDENTIFIER);
+				if(PeekToken().Type == O_BRACKET)
+				{
+					ReadToken(O_BRACKET);
+
+					for(int i = 0; PeekToken().Type != C_BRACKET ; i++)
+					{
+						if(i > 0)
+							ReadToken(SEPARATOR);
+						var token = ReadToken(STRING, NUMBER, IDENTIFIER);
+						args.Add(token.Text);
+					}
+
+					ReadToken(C_BRACKET);
+				}
+
+				attributes.Add(new AttributeDeclaration(name.Text, args));
+			}
+			return attributes;
 		}
 
 		private RawTypeNode ReadType()
